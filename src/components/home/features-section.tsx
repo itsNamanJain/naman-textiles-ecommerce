@@ -1,0 +1,66 @@
+"use client";
+
+import {
+  Truck,
+  Shield,
+  RefreshCw,
+  Headphones,
+  type LucideIcon,
+} from "lucide-react";
+import { StaggerContainer, StaggerItem } from "@/components/ui/motion";
+import { api } from "@/trpc/react";
+import { formatPrice } from "@/lib/utils";
+import { DEFAULT_SETTINGS } from "@/lib/constants";
+
+export function FeaturesSection() {
+  const { data: settings } = api.settings.getPublicSettings.useQuery();
+
+  const freeShippingThreshold = Number(
+    settings?.shippingFreeThreshold ?? DEFAULT_SETTINGS.shippingFreeThreshold
+  );
+
+  const features: { icon: LucideIcon; title: string; description: string }[] = [
+    {
+      icon: Truck,
+      title: "Free Shipping",
+      description: `Free shipping on orders above ${formatPrice(freeShippingThreshold)}`,
+    },
+    {
+      icon: Shield,
+      title: "Secure Payment",
+      description: "100% secure payment gateway",
+    },
+    {
+      icon: RefreshCw,
+      title: "Easy Returns",
+      description: "7-day hassle-free returns",
+    },
+    {
+      icon: Headphones,
+      title: "24/7 Support",
+      description: "Dedicated customer support",
+    },
+  ];
+
+  return (
+    <section className="border-y bg-white py-8 md:py-12">
+      <div className="container mx-auto px-4">
+        <StaggerContainer className="grid grid-cols-2 gap-6 md:grid-cols-4">
+          {features.map((feature, index) => (
+            <StaggerItem key={index}>
+              <div className="flex flex-col items-center text-center">
+                <div className="mb-4 rounded-full bg-amber-100 p-4">
+                  <feature.icon className="h-6 w-6 text-amber-600 md:h-8 md:w-8" />
+                </div>
+                <h3 className="mb-1 font-semibold text-gray-900">
+                  {feature.title}
+                </h3>
+                <p className="text-sm text-gray-600">{feature.description}</p>
+              </div>
+            </StaggerItem>
+          ))}
+        </StaggerContainer>
+      </div>
+    </section>
+  );
+}
