@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Carousel,
@@ -9,10 +10,58 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  type CarouselApi,
 } from "@/components/ui/carousel";
 import { FadeIn } from "@/components/ui/motion";
 import { Sparkles, ArrowRight } from "lucide-react";
 import { api } from "@/trpc/react";
+
+// Typewriter component for animated text
+function TypewriterText({
+  text,
+  className,
+  isActive,
+}: {
+  text: string;
+  className?: string;
+  isActive: boolean;
+}) {
+  const [displayedText, setDisplayedText] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+
+  useEffect(() => {
+    if (!isActive) {
+      setDisplayedText("");
+      setIsTyping(false);
+      return;
+    }
+
+    setDisplayedText("");
+    setIsTyping(true);
+    let currentIndex = 0;
+
+    const typingInterval = setInterval(() => {
+      if (currentIndex < text.length) {
+        setDisplayedText(text.slice(0, currentIndex + 1));
+        currentIndex++;
+      } else {
+        setIsTyping(false);
+        clearInterval(typingInterval);
+      }
+    }, 50); // Speed of typing (50ms per character)
+
+    return () => clearInterval(typingInterval);
+  }, [text, isActive]);
+
+  return (
+    <span className={className}>
+      {displayedText}
+      {isTyping && (
+        <span className="ml-0.5 inline-block h-[1em] w-[3px] animate-pulse bg-current align-middle" />
+      )}
+    </span>
+  );
+}
 
 interface Banner {
   id: string;
@@ -51,8 +100,12 @@ const staticBanners: Banner[] = [
   },
 ];
 
+const AUTOPLAY_INTERVAL = 7500; // 7.5 seconds between slides
+
 export function HeroBanner() {
   const { data: dbBanners } = api.banner.getActive.useQuery();
+  const [carouselApi, setCarouselApi] = useState<CarouselApi>();
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   // Use DB banners if available, otherwise use static banners
   const banners: Banner[] =
@@ -67,6 +120,41 @@ export function HeroBanner() {
         }))
       : staticBanners;
 
+  // Handle slide changes
+  const onSelect = useCallback(() => {
+    if (!carouselApi) return;
+    setCurrentSlide(carouselApi.selectedScrollSnap());
+  }, [carouselApi]);
+
+  // Set up slide change listener
+  useEffect(() => {
+    if (!carouselApi) return;
+    onSelect();
+    carouselApi.on("select", onSelect);
+    return () => {
+      carouselApi.off("select", onSelect);
+    };
+  }, [carouselApi, onSelect]);
+
+  // Auto-play functionality
+  useEffect(() => {
+    if (!carouselApi) return;
+
+    const autoplayInterval = setInterval(() => {
+      carouselApi.scrollNext();
+    }, AUTOPLAY_INTERVAL);
+
+    return () => clearInterval(autoplayInterval);
+  }, [carouselApi]);
+
+  // Navigate to specific slide
+  const goToSlide = useCallback(
+    (index: number) => {
+      carouselApi?.scrollTo(index);
+    },
+    [carouselApi]
+  );
+
   return (
     <section className="relative">
       <Carousel
@@ -74,6 +162,7 @@ export function HeroBanner() {
           align: "start",
           loop: true,
         }}
+        setApi={setCarouselApi}
         className="w-full"
       >
         <CarouselContent>
@@ -126,7 +215,10 @@ export function HeroBanner() {
                           banner.image ? "text-white" : "text-gray-900"
                         }`}
                       >
-                        {banner.title}
+                        <TypewriterText
+                          text={banner.title}
+                          isActive={currentSlide === index}
+                        />
                       </h1>
                       {banner.subtitle && (
                         <p
@@ -197,7 +289,10 @@ export function HeroBanner() {
         {banners.map((_, index) => (
           <button
             key={index}
-            className="h-2 w-2 rounded-full bg-amber-600/50 transition-all hover:bg-amber-600"
+            onClick={() => goToSlide(index)}
+            className={`h-2 w-2 rounded-full transition-all hover:bg-amber-600 ${
+              currentSlide === index ? "w-6 bg-amber-600" : "bg-amber-600/50"
+            }`}
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}
