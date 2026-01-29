@@ -373,10 +373,17 @@ export function ProductForm({
       );
 
       const validImages = uploadedImages.filter(
-        (img): img is { url: string; publicId?: string } => Boolean(img)
+        (img): img is { url: string; publicId: string | undefined } =>
+          Boolean(img)
       );
       if (validImages.length > 0) {
-        setImages((prev) => [...prev, ...validImages]);
+        setImages((prev) => [
+          ...prev,
+          ...validImages.map(({ url, publicId }) => ({
+            url,
+            ...(publicId !== undefined && { publicId }),
+          })),
+        ]);
         toast.success("Image uploaded");
       }
     } catch (error) {
