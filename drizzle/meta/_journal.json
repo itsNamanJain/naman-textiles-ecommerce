@@ -57,6 +57,13 @@
       "when": 1769705931797,
       "tag": "0007_next_maggott",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1769708133755,
+      "tag": "0008_living_retro_girl",
+      "breakpoints": true
     }
   ]
 }

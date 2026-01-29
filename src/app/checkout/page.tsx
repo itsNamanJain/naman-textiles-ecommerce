@@ -244,6 +244,10 @@ function CheckoutContent() {
         pincode: address.pincode,
         saveAddress: false,
       });
+      form.setValue("state", normalizeStateValue(address.state), {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
     },
     [form]
   );
@@ -706,8 +710,9 @@ function CheckoutContent() {
                               <FormItem>
                                 <FormLabel>State</FormLabel>
                                 <Select
+                                  key={selectedAddressId ?? "new"}
                                   onValueChange={field.onChange}
-                                  value={field.value}
+                                  value={field.value || undefined}
                                   disabled={
                                     !isNewAddress && !!selectedAddressId
                                   }
