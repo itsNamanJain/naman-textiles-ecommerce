@@ -1,0 +1,33 @@
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";--> statement-breakpoint
+ALTER TABLE "user" ALTER COLUMN "id" SET DEFAULT (gen_random_uuid()::text);--> statement-breakpoint
+ALTER TABLE "user" ALTER COLUMN "created_at" SET DEFAULT now();--> statement-breakpoint
+ALTER TABLE "address" ALTER COLUMN "id" SET DEFAULT (gen_random_uuid()::text);--> statement-breakpoint
+ALTER TABLE "address" ALTER COLUMN "created_at" SET DEFAULT now();--> statement-breakpoint
+ALTER TABLE "category" ALTER COLUMN "id" SET DEFAULT (gen_random_uuid()::text);--> statement-breakpoint
+ALTER TABLE "category" ALTER COLUMN "created_at" SET DEFAULT now();--> statement-breakpoint
+ALTER TABLE "product" ALTER COLUMN "id" SET DEFAULT (gen_random_uuid()::text);--> statement-breakpoint
+ALTER TABLE "product" ALTER COLUMN "created_at" SET DEFAULT now();--> statement-breakpoint
+ALTER TABLE "product_image" ALTER COLUMN "id" SET DEFAULT (gen_random_uuid()::text);--> statement-breakpoint
+ALTER TABLE "product_image" ALTER COLUMN "created_at" SET DEFAULT now();--> statement-breakpoint
+ALTER TABLE "product_variant" ALTER COLUMN "id" SET DEFAULT (gen_random_uuid()::text);--> statement-breakpoint
+ALTER TABLE "product_variant" ALTER COLUMN "created_at" SET DEFAULT now();--> statement-breakpoint
+ALTER TABLE "cart" ALTER COLUMN "id" SET DEFAULT (gen_random_uuid()::text);--> statement-breakpoint
+ALTER TABLE "cart" ALTER COLUMN "created_at" SET DEFAULT now();--> statement-breakpoint
+ALTER TABLE "cart_item" ALTER COLUMN "id" SET DEFAULT (gen_random_uuid()::text);--> statement-breakpoint
+ALTER TABLE "cart_item" ALTER COLUMN "created_at" SET DEFAULT now();--> statement-breakpoint
+ALTER TABLE "wishlist" ALTER COLUMN "id" SET DEFAULT (gen_random_uuid()::text);--> statement-breakpoint
+ALTER TABLE "wishlist" ALTER COLUMN "created_at" SET DEFAULT now();--> statement-breakpoint
+ALTER TABLE "wishlist_item" ALTER COLUMN "id" SET DEFAULT (gen_random_uuid()::text);--> statement-breakpoint
+ALTER TABLE "wishlist_item" ALTER COLUMN "created_at" SET DEFAULT now();--> statement-breakpoint
+ALTER TABLE "order" ALTER COLUMN "id" SET DEFAULT (gen_random_uuid()::text);--> statement-breakpoint
+ALTER TABLE "order" ALTER COLUMN "created_at" SET DEFAULT now();--> statement-breakpoint
+ALTER TABLE "order_item" ALTER COLUMN "id" SET DEFAULT (gen_random_uuid()::text);--> statement-breakpoint
+ALTER TABLE "order_item" ALTER COLUMN "created_at" SET DEFAULT now();--> statement-breakpoint
+ALTER TABLE "review" ALTER COLUMN "id" SET DEFAULT (gen_random_uuid()::text);--> statement-breakpoint
+ALTER TABLE "review" ALTER COLUMN "created_at" SET DEFAULT now();--> statement-breakpoint
+ALTER TABLE "coupon" ALTER COLUMN "id" SET DEFAULT (gen_random_uuid()::text);--> statement-breakpoint
+ALTER TABLE "coupon" ALTER COLUMN "created_at" SET DEFAULT now();--> statement-breakpoint
+ALTER TABLE "banner" ALTER COLUMN "id" SET DEFAULT (gen_random_uuid()::text);--> statement-breakpoint
+ALTER TABLE "banner" ALTER COLUMN "created_at" SET DEFAULT now();--> statement-breakpoint
+ALTER TABLE "setting" ALTER COLUMN "id" SET DEFAULT (gen_random_uuid()::text);--> statement-breakpoint
+ALTER TABLE "setting" ALTER COLUMN "created_at" SET DEFAULT now();
