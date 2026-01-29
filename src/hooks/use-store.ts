@@ -14,7 +14,7 @@ import equal from "fast-deep-equal";
  * @example
  * const items = useXStateSelector(cartStore, ({ context }) => context.items);
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 export const useXStateSelector = <
   TStore extends Readable<any> & { getSnapshot: () => any },
   T,

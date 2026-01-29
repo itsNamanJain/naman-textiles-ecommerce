@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/postgres";
+import { jsonObjectFrom } from "kysely/helpers/postgres";
 import { TRPCError } from "@trpc/server";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
@@ -28,30 +28,22 @@ export const wishlistRouter = createTRPCRouter({
     // Get wishlist items with products
     const items = await ctx.db
       .selectFrom("wishlistItem")
-      .select([
+      .select((eb) => [
         "wishlistItem.id",
         "wishlistItem.wishlistId",
         "wishlistItem.productId",
         "wishlistItem.createdAt",
         jsonObjectFrom(
-          ctx.db
+          eb
             .selectFrom("product")
             .selectAll()
-            .select((eb) => [
+            .select((eb2) => [
               jsonObjectFrom(
-                eb
+                eb2
                   .selectFrom("category")
                   .selectAll()
                   .whereRef("category.id", "=", "product.categoryId")
               ).as("category"),
-              jsonArrayFrom(
-                eb
-                  .selectFrom("productImage")
-                  .selectAll()
-                  .whereRef("productImage.productId", "=", "product.id")
-                  .orderBy("position", "asc")
-                  .limit(1)
-              ).as("images"),
             ])
             .whereRef("product.id", "=", "wishlistItem.productId")
         ).as("product"),
