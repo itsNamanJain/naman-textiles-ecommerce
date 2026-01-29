@@ -14,7 +14,7 @@ import equal from "fast-deep-equal";
  * @example
  * const items = useXStateSelector(cartStore, ({ context }) => context.items);
  */
- 
+
 export const useXStateSelector = <
   TStore extends Readable<unknown> & { getSnapshot: () => unknown },
   T,

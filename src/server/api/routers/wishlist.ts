@@ -58,9 +58,11 @@ export const wishlistRouter = createTRPCRouter({
       .where("wishlistItem.wishlistId", "=", wishlist!.id)
       .orderBy("wishlistItem.createdAt", "asc")
       .execute();
-    
+
     // make sure the items having product and its category is not null
-    const validItems = items.filter((item) => item.product && item.product.category); 
+    const validItems = items.filter(
+      (item) => item.product && item.product.category
+    );
 
     // Filter out items where product is inactive
     const activeItems = validItems.filter((item) => item.product?.isActive);
