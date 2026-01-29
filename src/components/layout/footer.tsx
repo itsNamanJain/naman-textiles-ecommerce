@@ -72,17 +72,7 @@ export function Footer() {
   const { data: categories } = api.category.getAll.useQuery();
   const displayCategories = categories ?? [];
 
-  const codEnabled = DEFAULT_SETTINGS.codEnabled;
-  const onlinePaymentEnabled = DEFAULT_SETTINGS.onlinePaymentEnabled;
-
-  // Build payment methods list based on defaults
-  const paymentMethods: string[] = [];
-  if (onlinePaymentEnabled) {
-    paymentMethods.push("UPI", "Cards", "Net Banking");
-  }
-  if (codEnabled) {
-    paymentMethods.push("COD");
-  }
+  const paymentMethods = ["UPI", "Cards", "Net Banking"];
 
   return (
     <footer className="bg-ink-0 text-paper-20">

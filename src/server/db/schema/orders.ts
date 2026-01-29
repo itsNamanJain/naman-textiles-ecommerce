@@ -34,19 +34,16 @@ export const orders = createTable(
     paymentStatus: paymentStatusEnum("payment_status")
       .default("pending")
       .notNull(),
-    paymentMethod: varchar("payment_method", { length: 100 }),
     paymentId: varchar("payment_id", { length: 255 }),
 
     // Shipping address (snapshot at time of order)
-    shippingName: varchar("shipping_name", { length: 255 }).notNull(),
-    shippingPhone: varchar("shipping_phone", { length: 20 }).notNull(),
-    shippingAddressLine1: varchar("shipping_address_line1", {
-      length: 500,
-    }).notNull(),
-    shippingAddressLine2: varchar("shipping_address_line2", { length: 500 }),
-    shippingCity: varchar("shipping_city", { length: 100 }).notNull(),
-    shippingState: varchar("shipping_state", { length: 100 }).notNull(),
-    shippingPincode: varchar("shipping_pincode", { length: 10 }).notNull(),
+    name: varchar("name", { length: 255 }).notNull(),
+    phone: varchar("phone", { length: 20 }).notNull(),
+    addressLineOne: varchar("address_line_one", { length: 500 }).notNull(),
+    addressLineTwo: varchar("address_line_two", { length: 500 }),
+    city: varchar("city", { length: 100 }).notNull(),
+    state: varchar("state", { length: 100 }).notNull(),
+    pincode: varchar("pincode", { length: 10 }).notNull(),
     gstNumber: varchar("gst_number", { length: 15 }),
 
     // Tracking

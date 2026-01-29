@@ -240,7 +240,7 @@ export default function TrackOrderPage() {
                               Delivery Location
                             </span>
                             <span className="text-ink-1 font-medium">
-                              {order.shippingCity}, {order.shippingState}
+                              {order.city}, {order.state}
                             </span>
                           </div>
                           <div className="flex justify-between">

@@ -26,7 +26,6 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -50,7 +49,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { FadeIn } from "@/components/ui/motion";
 import { formatPrice, formatUnit, formatQuantity } from "@/lib/utils";
@@ -112,11 +110,11 @@ const checkoutSchema = z.object({
   phone: z
     .string()
     .regex(/^[6-9]\d{9}$/, "Enter a valid 10-digit Indian mobile number"),
-  addressLine1: z
+  addressLineOne: z
     .string()
     .min(10, "Please enter a complete address")
     .max(200, "Address is too long"),
-  addressLine2: z.string().max(200, "Address is too long").optional(),
+  addressLineTwo: z.string().max(200, "Address is too long").optional(),
   city: z
     .string()
     .min(2, "City name is required")
@@ -131,7 +129,6 @@ const checkoutSchema = z.object({
     .refine((value) => !value || GST_REGEX.test(value), {
       message: "Enter a valid GST number",
     }),
-  paymentMethod: z.enum(["cod", "online"]),
   customerNote: z.string().max(500, "Note is too long").optional(),
   saveAddress: z.boolean(),
 });
@@ -204,10 +201,8 @@ function CheckoutContent() {
 
   const utils = api.useUtils();
 
-  const shippingRate = DEFAULT_SETTINGS.shippingBaseRate;
-  const minOrderAmount = DEFAULT_SETTINGS.orderMinAmount;
-  const codEnabled = DEFAULT_SETTINGS.codEnabled;
-  const onlinePaymentEnabled = DEFAULT_SETTINGS.onlinePaymentEnabled;
+  const shippingRate = Number(DEFAULT_SETTINGS.shippingBaseRate);
+  const minOrderAmount = Number(DEFAULT_SETTINGS.orderMinAmount);
 
   const subtotal = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -226,13 +221,12 @@ function CheckoutContent() {
     defaultValues: {
       name: "",
       phone: "",
-      addressLine1: "",
-      addressLine2: "",
+      addressLineOne: "",
+      addressLineTwo: "",
       city: "",
       state: "",
       pincode: "",
       gstNumber: "",
-      paymentMethod: "cod",
       customerNote: "",
       saveAddress: false,
     },
@@ -242,8 +236,8 @@ function CheckoutContent() {
     (address: NonNullable<typeof savedAddresses>[0]) => {
       form.setValue("name", address.name);
       form.setValue("phone", address.phone);
-      form.setValue("addressLine1", address.addressLine1);
-      form.setValue("addressLine2", address.addressLine2 ?? "");
+      form.setValue("addressLineOne", address.addressLineOne);
+      form.setValue("addressLineTwo", address.addressLineTwo ?? "");
       form.setValue("city", address.city);
       form.setValue("state", address.state);
       form.setValue("pincode", address.pincode);
@@ -252,9 +246,7 @@ function CheckoutContent() {
   );
 
   // Set default payment method based on what's enabled
-  useEffect(() => {
-    form.setValue("paymentMethod", "cod");
-  }, [form]);
+  useEffect(() => {}, [form]);
 
   // When saved addresses load, select the default one
   useEffect(() => {
@@ -279,12 +271,11 @@ function CheckoutContent() {
       form.reset({
         name: "",
         phone: "",
-        addressLine1: "",
-        addressLine2: "",
+        addressLineOne: "",
+        addressLineTwo: "",
         city: "",
         state: "",
         pincode: "",
-        paymentMethod: form.getValues("paymentMethod"),
         customerNote: form.getValues("customerNote"),
         saveAddress: true,
       });
@@ -387,8 +378,8 @@ function CheckoutContent() {
         await createAddressMutation.mutateAsync({
           name: data.name,
           phone: data.phone,
-          addressLine1: data.addressLine1,
-          addressLine2: data.addressLine2,
+          addressLineOne: data.addressLineOne,
+          addressLineTwo: data.addressLineTwo,
           city: data.city,
           state: data.state,
           pincode: data.pincode,
@@ -407,14 +398,13 @@ function CheckoutContent() {
       shippingAddress: {
         name: data.name,
         phone: data.phone,
-        addressLine1: data.addressLine1,
-        addressLine2: data.addressLine2,
+        addressLineOne: data.addressLineOne,
+        addressLineTwo: data.addressLineTwo,
         city: data.city,
         state: data.state,
         pincode: data.pincode,
       },
       gstNumber: data.gstNumber ? data.gstNumber.toUpperCase() : undefined,
-      paymentMethod: data.paymentMethod,
       customerNote: data.customerNote,
       couponCode: appliedCoupon?.code,
     });
@@ -626,9 +616,9 @@ function CheckoutContent() {
                               )}
                             </div>
                             <p className="text-muted-1 mt-1 text-sm">
-                              {address.addressLine1}
-                              {address.addressLine2 &&
-                                `, ${address.addressLine2}`}
+                              {address.addressLineOne}
+                              {address.addressLineTwo &&
+                                `, ${address.addressLineTwo}`}
                             </p>
                             <p className="text-muted-1 text-sm">
                               {address.city}, {address.state} -{" "}
@@ -735,7 +725,7 @@ function CheckoutContent() {
 
                         <FormField
                           control={form.control}
-                          name="addressLine1"
+                          name="addressLineOne"
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Address Line 1</FormLabel>
@@ -756,7 +746,7 @@ function CheckoutContent() {
 
                         <FormField
                           control={form.control}
-                          name="addressLine2"
+                          name="addressLineTwo"
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Address Line 2 (Optional)</FormLabel>
@@ -912,52 +902,25 @@ function CheckoutContent() {
                   </CardContent>
                 </Card>
 
-                {/* Payment Method - Only show if at least one option is enabled */}
-                {(codEnabled || onlinePaymentEnabled) && (
-                  <Card className="border border-black/5 bg-white/80">
-                    <CardHeader>
-                      <CardTitle className="font-display text-ink-1 flex items-center gap-2 text-xl">
-                        <CreditCard className="h-5 w-5" />
-                        Payment Method
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <FormField
-                        control={form.control}
-                        name="paymentMethod"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <RadioGroup
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                                className="space-y-3"
-                              >
-                                {codEnabled && (
-                                  <div className="flex cursor-pointer items-center space-x-3 rounded-2xl border border-black/10 bg-white/80 p-4 transition-colors hover:bg-white">
-                                    <RadioGroupItem value="cod" id="cod" />
-                                    <Label
-                                      htmlFor="cod"
-                                      className="flex-1 cursor-pointer"
-                                    >
-                                      <div className="text-ink-1 font-medium">
-                                        Cash on Delivery
-                                      </div>
-                                      <div className="text-muted-1 text-sm">
-                                        Pay when you receive your order
-                                      </div>
-                                    </Label>
-                                  </div>
-                                )}
-                              </RadioGroup>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </CardContent>
-                  </Card>
-                )}
+                {/* Payment Method */}
+                <Card className="border border-black/5 bg-white/80">
+                  <CardHeader>
+                    <CardTitle className="font-display text-ink-1 flex items-center gap-2 text-xl">
+                      <CreditCard className="h-5 w-5" />
+                      Payment Method
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="rounded-2xl border border-black/10 bg-white/80 p-4">
+                      <p className="text-ink-1 font-medium">
+                        Online Payment (PhonePe)
+                      </p>
+                      <p className="text-muted-1 text-sm">
+                        Pay securely using PhonePe, UPI, cards, or net banking.
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
 
                 {/* Order Notes */}
                 <Card className="border border-black/5 bg-white/80">

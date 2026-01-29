@@ -84,13 +84,13 @@ export default function OrderConfirmationPage() {
 
   // Build shipping address object from individual fields
   const shippingAddress = {
-    name: order.shippingName,
-    phone: order.shippingPhone,
-    addressLine1: order.shippingAddressLine1,
-    addressLine2: order.shippingAddressLine2,
-    city: order.shippingCity,
-    state: order.shippingState,
-    pincode: order.shippingPincode,
+    name: order.name,
+    phone: order.phone,
+    addressLineOne: order.addressLineOne,
+    addressLineTwo: order.addressLineTwo,
+    city: order.city,
+    state: order.state,
+    pincode: order.pincode,
   };
 
   return (
@@ -248,9 +248,9 @@ export default function OrderConfirmationPage() {
                       {shippingAddress.name}
                     </p>
                     <p className="text-muted-1">
-                      {shippingAddress.addressLine1}
-                      {shippingAddress.addressLine2 && (
-                        <>, {shippingAddress.addressLine2}</>
+                      {shippingAddress.addressLineOne}
+                      {shippingAddress.addressLineTwo && (
+                        <>, {shippingAddress.addressLineTwo}</>
                       )}
                     </p>
                     <p className="text-muted-1">
@@ -326,9 +326,7 @@ export default function OrderConfirmationPage() {
                   <div className="rounded-2xl border border-black/5 bg-white/80 p-4">
                     <p className="text-muted-1 text-sm">
                       <span className="font-medium">Payment Method:</span>{" "}
-                      {order.paymentMethod === "cod"
-                        ? "Cash on Delivery"
-                        : "Online Payment"}
+                      Online Payment (PhonePe)
                     </p>
                     <p className="text-muted-1 mt-1 text-sm">
                       <span className="font-medium">Payment Status:</span>{" "}

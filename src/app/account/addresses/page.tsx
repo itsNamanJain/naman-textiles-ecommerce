@@ -51,8 +51,8 @@ const addressSchema = z.object({
   phone: z
     .string()
     .regex(/^[6-9]\d{9}$/, "Enter a valid 10-digit Indian mobile number"),
-  addressLine1: z.string().min(5, "Address is required"),
-  addressLine2: z.string().optional(),
+  addressLineOne: z.string().min(5, "Address is required"),
+  addressLineTwo: z.string().optional(),
   city: z.string().min(2, "City is required"),
   state: z.string().min(2, "State is required"),
   pincode: z.string().regex(/^[1-9][0-9]{5}$/, "Enter a valid pincode"),
@@ -119,8 +119,8 @@ export default function AddressesPage() {
     defaultValues: {
       name: "",
       phone: "",
-      addressLine1: "",
-      addressLine2: "",
+      addressLineOne: "",
+      addressLineTwo: "",
       city: "",
       state: "",
       pincode: "",
@@ -133,8 +133,8 @@ export default function AddressesPage() {
     form.reset({
       name: "",
       phone: "",
-      addressLine1: "",
-      addressLine2: "",
+      addressLineOne: "",
+      addressLineTwo: "",
       city: "",
       state: "",
       pincode: "",
@@ -148,8 +148,8 @@ export default function AddressesPage() {
     form.reset({
       name: address.name,
       phone: address.phone,
-      addressLine1: address.addressLine1,
-      addressLine2: address.addressLine2 ?? "",
+      addressLineOne: address.addressLineOne,
+      addressLineTwo: address.addressLineTwo ?? "",
       city: address.city,
       state: address.state,
       pincode: address.pincode,
@@ -229,9 +229,9 @@ export default function AddressesPage() {
                           )}
                         </div>
                         <p className="text-muted-1 mt-1 text-sm">
-                          {address.addressLine1}
-                          {address.addressLine2
-                            ? `, ${address.addressLine2}`
+                          {address.addressLineOne}
+                          {address.addressLineTwo
+                            ? `, ${address.addressLineTwo}`
                             : ""}
                         </p>
                         <p className="text-muted-1 text-sm">
@@ -362,7 +362,7 @@ export default function AddressesPage() {
 
               <FormField
                 control={form.control}
-                name="addressLine1"
+                name="addressLineOne"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Address Line 1</FormLabel>
@@ -380,7 +380,7 @@ export default function AddressesPage() {
 
               <FormField
                 control={form.control}
-                name="addressLine2"
+                name="addressLineTwo"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Address Line 2 (Optional)</FormLabel>

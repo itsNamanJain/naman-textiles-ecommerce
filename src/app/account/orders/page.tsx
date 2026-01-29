@@ -125,9 +125,7 @@ export default function OrdersPage() {
                           {formatPrice(Number(order.total))}
                         </p>
                         <p className="text-muted-2 text-xs">
-                          {order.paymentMethod === "cod"
-                            ? "Cash on Delivery"
-                            : "Paid Online"}
+                          Online Payment (PhonePe)
                         </p>
                       </div>
                       <div className="flex items-center gap-2">

@@ -50,6 +50,13 @@
       "when": 1769703185488,
       "tag": "0006_heavy_steve_rogers",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1769705931797,
+      "tag": "0007_next_maggott",
+      "breakpoints": true
     }
   ]
 }

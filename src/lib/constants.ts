@@ -35,8 +35,6 @@ export const STORE_INFO = {
 export const DEFAULT_SETTINGS = {
   shippingBaseRate: 199,
   orderMinAmount: 500,
-  codEnabled: false,
-  onlinePaymentEnabled: false,
 } as const;
 
 export const MAX_METER_ORDER_QUANTITY = 100;
