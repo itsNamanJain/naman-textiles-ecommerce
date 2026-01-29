@@ -228,13 +228,13 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             <Link href="/" className="text-muted-2 hover:text-brand-1">
               <Home className="h-4 w-4" />
             </Link>
-            <ChevronRight className="h-4 w-4 text-gray-400" />
+            <ChevronRight className="h-4 w-4 text-muted-3" />
             <Link href="/products" className="text-muted-2 hover:text-brand-1">
               Products
             </Link>
             {product.category && (
               <>
-                <ChevronRight className="h-4 w-4 text-gray-400" />
+                <ChevronRight className="h-4 w-4 text-muted-3" />
                 <Link
                   href={`/category/${product.category.slug}`}
                   className="text-muted-2 hover:text-brand-1"
@@ -243,7 +243,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 </Link>
               </>
             )}
-            <ChevronRight className="h-4 w-4 text-gray-400" />
+            <ChevronRight className="h-4 w-4 text-muted-3" />
             <span className="text-ink-1 line-clamp-1 font-medium">
               {product.name}
             </span>
@@ -267,7 +267,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 />
               ) : (
                 <div className="flex h-full items-center justify-center">
-                  <ImageIcon className="h-24 w-24 text-gray-300" />
+                  <ImageIcon className="h-24 w-24 text-muted-3" />
                 </div>
               )}
               {discount > 0 && (
@@ -340,8 +340,8 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             <div className="flex items-center gap-2">
               {inStock ? (
                 <>
-                  <Check className="h-5 w-5 text-emerald-600" />
-                  <span className="font-semibold text-emerald-700">
+                  <Check className="h-5 w-5 text-success-1" />
+                  <span className="font-semibold text-success-1">
                     In Stock
                   </span>
                   <span className="text-brand-3">
@@ -440,7 +440,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                             "flex h-10 w-10 items-center justify-center transition-all active:scale-95",
                             canDecrement
                               ? "text-ink-2 hover:bg-paper-1"
-                              : "cursor-not-allowed text-gray-300"
+                              : "cursor-not-allowed text-muted-3"
                           )}
                           onClick={handleDecrement}
                           disabled={!canDecrement}
@@ -457,7 +457,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                             "flex h-10 w-10 items-center justify-center transition-all active:scale-95",
                             canIncrement
                               ? "text-ink-2 hover:bg-paper-1"
-                              : "cursor-not-allowed text-gray-300"
+                              : "cursor-not-allowed text-muted-3"
                           )}
                           onClick={handleIncrement}
                           disabled={!canIncrement}
@@ -609,7 +609,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                             type="button"
                             onClick={() => setRating(value)}
                             className={
-                              value <= rating ? "text-brand-1" : "text-gray-300"
+                              value <= rating ? "text-brand-1" : "text-muted-3"
                             }
                             aria-label={`Rate ${value} stars`}
                           >

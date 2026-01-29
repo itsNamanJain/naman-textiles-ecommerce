@@ -88,8 +88,8 @@ export default function AdminDashboard() {
               <div className="mt-4 flex items-center text-sm">
                 {(stats?.revenueGrowth ?? 0) >= 0 ? (
                   <>
-                    <TrendingUp className="mr-1 h-4 w-4 text-emerald-600" />
-                    <span className="text-emerald-600">
+                    <TrendingUp className="mr-1 h-4 w-4 text-success-1" />
+                    <span className="text-success-1">
                       +{(stats?.revenueGrowth ?? 0).toFixed(1)}%
                     </span>
                   </>
@@ -126,8 +126,8 @@ export default function AdminDashboard() {
               <div className="mt-4 flex items-center text-sm">
                 {(stats?.ordersGrowth ?? 0) >= 0 ? (
                   <>
-                    <TrendingUp className="mr-1 h-4 w-4 text-emerald-600" />
-                    <span className="text-emerald-600">
+                    <TrendingUp className="mr-1 h-4 w-4 text-success-1" />
+                    <span className="text-success-1">
                       +{(stats?.ordersGrowth ?? 0).toFixed(1)}%
                     </span>
                   </>
@@ -189,8 +189,8 @@ export default function AdminDashboard() {
               <div className="mt-4 flex items-center text-sm">
                 {(stats?.customersGrowth ?? 0) >= 0 ? (
                   <>
-                    <TrendingUp className="mr-1 h-4 w-4 text-emerald-600" />
-                    <span className="text-emerald-600">
+                    <TrendingUp className="mr-1 h-4 w-4 text-success-1" />
+                    <span className="text-success-1">
                       +{(stats?.customersGrowth ?? 0).toFixed(1)}%
                     </span>
                   </>

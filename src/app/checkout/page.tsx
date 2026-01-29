@@ -513,7 +513,7 @@ function CheckoutContent() {
                   </span>
                 </div>
                 {serverTotals.discount > 0 && (
-                  <div className="flex justify-between text-emerald-600">
+                  <div className="flex justify-between text-success-1">
                     <span>Discount</span>
                     <span>-{formatPrice(serverTotals.discount)}</span>
                   </div>
@@ -561,11 +561,11 @@ function CheckoutContent() {
             >
               <Home className="h-4 w-4" />
             </Link>
-            <ChevronRight className="h-4 w-4 text-gray-400" />
+            <ChevronRight className="h-4 w-4 text-muted-3" />
             <Link href="/cart" className="text-muted-2 hover:text-brand-1">
               Cart
             </Link>
-            <ChevronRight className="h-4 w-4 text-gray-400" />
+            <ChevronRight className="h-4 w-4 text-muted-3" />
             <span className="text-ink-1 font-medium">Checkout</span>
           </nav>
         </div>
@@ -698,7 +698,7 @@ function CheckoutContent() {
                                 <FormLabel>Phone Number</FormLabel>
                                 <FormControl>
                                   <div className="relative">
-                                    <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500">
+                                    <span className="absolute top-1/2 left-3 -translate-y-1/2 text-muted-2">
                                       +91
                                     </span>
                                     <Input
@@ -1029,13 +1029,13 @@ function CheckoutContent() {
                         {appliedCoupon ? (
                           <div className="bg-success-2 flex items-center justify-between rounded-2xl p-3">
                             <div className="flex items-center gap-2">
-                              <Tag className="h-4 w-4 text-emerald-700" />
+                              <Tag className="h-4 w-4 text-success-1" />
                               <div>
-                                <p className="text-sm font-medium text-emerald-800">
+                                <p className="text-sm font-medium text-success-1">
                                   {appliedCoupon.code}
                                 </p>
                                 {appliedCoupon.description && (
-                                  <p className="text-xs text-emerald-700">
+                                  <p className="text-xs text-success-1">
                                     {appliedCoupon.description}
                                   </p>
                                 )}
@@ -1046,7 +1046,7 @@ function CheckoutContent() {
                               variant="ghost"
                               size="sm"
                               onClick={handleRemoveCoupon}
-                              className="h-8 w-8 p-0 text-emerald-700 hover:bg-emerald-100 hover:text-emerald-800"
+                              className="h-8 w-8 p-0 text-success-1 hover:bg-success-2 hover:text-success-1"
                             >
                               <X className="h-4 w-4" />
                             </Button>
@@ -1096,7 +1096,7 @@ function CheckoutContent() {
                           <span className="text-muted-1">Shipping</span>
                           <span>
                             {shipping === 0 ? (
-                              <span className="text-emerald-600">FREE</span>
+                              <span className="text-success-1">FREE</span>
                             ) : (
                               formatPrice(shipping)
                             )}
@@ -1104,8 +1104,8 @@ function CheckoutContent() {
                         </div>
                         {discount > 0 && (
                           <div className="flex justify-between text-sm">
-                            <span className="text-emerald-600">Discount</span>
-                            <span className="text-emerald-600">
+                            <span className="text-success-1">Discount</span>
+                            <span className="text-success-1">
                               -{formatPrice(discount)}
                             </span>
                           </div>

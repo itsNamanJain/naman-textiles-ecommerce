@@ -38,12 +38,12 @@ import { formatPrice } from "@/lib/utils";
 import { api } from "@/trpc/react";
 
 const statusColors: Record<string, string> = {
-  pending: "bg-yellow-100 text-yellow-800",
-  confirmed: "bg-blue-100 text-blue-800",
-  processing: "bg-purple-100 text-purple-800",
-  shipped: "bg-indigo-100 text-indigo-800",
-  delivered: "bg-green-100 text-green-800",
-  cancelled: "bg-red-100 text-red-800",
+  pending: "bg-paper-1 text-brand-3",
+  confirmed: "bg-info-2 text-info-1",
+  processing: "bg-purple-2 text-purple-1",
+  shipped: "bg-indigo-2 text-indigo-1",
+  delivered: "bg-success-2 text-success-1",
+  cancelled: "bg-danger-3 text-danger-4",
 };
 
 export default function AdminCustomersPage() {

@@ -19,30 +19,30 @@ const Toaster = ({ ...props }: ToasterProps) => {
         duration: 1500,
         classNames: {
           toast:
-            "group toast group-[.toaster]:bg-white group-[.toaster]:text-gray-900 group-[.toaster]:border group-[.toaster]:shadow-lg group-[.toaster]:rounded-xl group-[.toaster]:py-3 group-[.toaster]:px-4",
+            "group toast group-[.toaster]:bg-white/95 group-[.toaster]:text-ink-1 group-[.toaster]:border group-[.toaster]:border-black/10 group-[.toaster]:shadow-lg group-[.toaster]:rounded-xl group-[.toaster]:py-3 group-[.toaster]:px-4",
           title: "group-[.toast]:font-semibold group-[.toast]:text-sm",
-          description: "group-[.toast]:text-gray-500 group-[.toast]:text-xs",
+          description: "group-[.toast]:text-muted-2 group-[.toast]:text-xs",
           actionButton:
-            "group-[.toast]:bg-amber-600 group-[.toast]:text-white group-[.toast]:rounded-lg group-[.toast]:font-medium group-[.toast]:text-xs",
+            "group-[.toast]:bg-ink-1 group-[.toast]:text-paper-1 group-[.toast]:rounded-lg group-[.toast]:font-medium group-[.toast]:text-xs",
           cancelButton:
-            "group-[.toast]:bg-gray-100 group-[.toast]:text-gray-700 group-[.toast]:rounded-lg group-[.toast]:text-xs",
+            "group-[.toast]:bg-paper-2 group-[.toast]:text-muted-1 group-[.toast]:rounded-lg group-[.toast]:text-xs",
           closeButton:
-            "group-[.toast]:bg-gray-100 group-[.toast]:border-gray-200 group-[.toast]:text-gray-500 group-[.toast]:hover:bg-gray-200",
+            "group-[.toast]:bg-paper-2 group-[.toast]:border-black/10 group-[.toast]:text-muted-2 group-[.toast]:hover:bg-paper-1",
           success:
-            "group-[.toaster]:border-emerald-200 group-[.toaster]:bg-emerald-50 group-[.toaster]:text-emerald-900",
+            "group-[.toaster]:border-success-2 group-[.toaster]:bg-success-2 group-[.toaster]:text-success-1",
           error:
-            "group-[.toaster]:border-red-200 group-[.toaster]:bg-red-50 group-[.toaster]:text-red-900",
+            "group-[.toaster]:border-danger-5 group-[.toaster]:bg-danger-3 group-[.toaster]:text-danger-4",
           warning:
-            "group-[.toaster]:border-amber-200 group-[.toaster]:bg-amber-50 group-[.toaster]:text-amber-900",
-          info: "group-[.toaster]:border-blue-200 group-[.toaster]:bg-blue-50 group-[.toaster]:text-blue-900",
+            "group-[.toaster]:border-paper-11 group-[.toaster]:bg-paper-1 group-[.toaster]:text-brand-3",
+          info: "group-[.toaster]:border-info-2 group-[.toaster]:bg-info-2 group-[.toaster]:text-info-1",
         },
       }}
       icons={{
-        success: <CheckCircle2 className="size-4 text-emerald-600" />,
-        info: <Info className="size-4 text-blue-600" />,
-        warning: <AlertTriangle className="size-4 text-amber-600" />,
-        error: <XCircle className="size-4 text-red-600" />,
-        loading: <Loader2 className="size-4 animate-spin text-amber-600" />,
+        success: <CheckCircle2 className="size-4 text-success-1" />,
+        info: <Info className="size-4 text-info-1" />,
+        warning: <AlertTriangle className="size-4 text-brand-3" />,
+        error: <XCircle className="size-4 text-danger-4" />,
+        loading: <Loader2 className="size-4 animate-spin text-brand-1" />,
       }}
       expand
       closeButton

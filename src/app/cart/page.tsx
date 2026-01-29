@@ -121,7 +121,7 @@ export default function CartPage() {
             >
               <Home className="h-4 w-4" />
             </Link>
-            <ChevronRight className="h-4 w-4 text-gray-400" />
+            <ChevronRight className="h-4 w-4 text-muted-3" />
             <span className="text-ink-1 font-medium">Shopping Cart</span>
           </nav>
         </div>
@@ -161,7 +161,7 @@ export default function CartPage() {
                           />
                         ) : (
                           <div className="flex h-full items-center justify-center">
-                            <ShoppingCart className="h-8 w-8 text-gray-300" />
+                            <ShoppingCart className="h-8 w-8 text-muted-3" />
                           </div>
                         )}
                       </Link>
@@ -276,7 +276,7 @@ export default function CartPage() {
                     <span className="text-muted-1">Shipping</span>
                     <span className="font-medium">
                       {shipping === 0 ? (
-                        <span className="text-emerald-600">FREE</span>
+                        <span className="text-success-1">FREE</span>
                       ) : (
                         formatPrice(shipping)
                       )}

@@ -105,7 +105,7 @@ export default function OrderConfirmationPage() {
             >
               <Home className="h-4 w-4" />
             </Link>
-            <ChevronRight className="h-4 w-4 text-gray-400" />
+            <ChevronRight className="h-4 w-4 text-muted-3" />
             <span className="text-ink-1 font-medium">Order Confirmation</span>
           </nav>
         </div>
@@ -282,7 +282,7 @@ export default function OrderConfirmationPage() {
                     <span>{formatPrice(Number(order.subtotal))}</span>
                   </div>
                   {Number(order.discount) > 0 && (
-                    <div className="flex justify-between text-sm text-emerald-600">
+                    <div className="flex justify-between text-sm text-success-1">
                       <span>Discount</span>
                       <span>-{formatPrice(Number(order.discount))}</span>
                     </div>
@@ -299,7 +299,7 @@ export default function OrderConfirmationPage() {
                     <span className="text-muted-1">Shipping</span>
                     <span>
                       {Number(order.shippingCost) === 0 ? (
-                        <span className="text-emerald-600">FREE</span>
+                        <span className="text-success-1">FREE</span>
                       ) : (
                         formatPrice(Number(order.shippingCost))
                       )}
@@ -335,7 +335,7 @@ export default function OrderConfirmationPage() {
                       <span
                         className={
                           order.paymentStatus === "paid"
-                            ? "text-emerald-600"
+                            ? "text-success-1"
                             : "text-brand-1"
                         }
                       >

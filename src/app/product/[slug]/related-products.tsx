@@ -64,7 +64,7 @@ export function RelatedProducts({
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center">
-                      <ImageIcon className="h-12 w-12 text-gray-300" />
+                      <ImageIcon className="h-12 w-12 text-muted-3" />
                     </div>
                   )}
                   {discount > 0 && (

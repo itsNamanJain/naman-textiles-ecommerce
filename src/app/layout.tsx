@@ -57,7 +57,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${bodyFont.variable} ${displayFont.variable}`}>
-      <body className="min-h-screen bg-white font-sans antialiased">
+      <body className="min-h-screen bg-white font-body antialiased">
         <SessionProvider>
           <TRPCReactProvider>
             <MainLayout>{children}</MainLayout>
