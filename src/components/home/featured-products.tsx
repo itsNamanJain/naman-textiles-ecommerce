@@ -25,19 +25,19 @@ export function FeaturedProducts({
   });
 
   return (
-    <section className="bg-[#f8f1e7] py-12 md:py-16">
+    <section className="bg-paper-4 py-12 md:py-16">
       <div className="container mx-auto px-4">
         <FadeInView className="mb-8 flex flex-col items-center justify-between gap-4 md:mb-12 md:flex-row">
           <div className="text-center md:text-left">
-            <h2 className="font-display mb-2 text-2xl text-[#2d1c12] md:text-3xl lg:text-4xl">
+            <h2 className="font-display text-ink-1 mb-2 text-2xl md:text-3xl lg:text-4xl">
               {title}
             </h2>
-            <p className="text-sm text-[#6b5645] md:text-base">{subtitle}</p>
+            <p className="text-muted-1 text-sm md:text-base">{subtitle}</p>
           </div>
           <Button
             variant="outline"
             asChild
-            className="rounded-full border-black/10 bg-white/80 text-[#2d1c12] hover:bg-white"
+            className="text-ink-1 rounded-full border-black/10 bg-white/80 hover:bg-white"
           >
             <Link href="/products">View All Products</Link>
           </Button>
@@ -45,10 +45,10 @@ export function FeaturedProducts({
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-amber-600" />
+            <Loader2 className="text-brand-1 h-8 w-8 animate-spin" />
           </div>
         ) : !products || products.length === 0 ? (
-          <div className="py-12 text-center text-gray-500">
+          <div className="text-muted-2 py-12 text-center">
             No featured products available
           </div>
         ) : (

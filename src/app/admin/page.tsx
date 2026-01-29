@@ -22,12 +22,12 @@ import { formatPrice } from "@/lib/utils";
 import { api } from "@/trpc/react";
 
 const statusColors: Record<string, string> = {
-  pending: "bg-[#f7efe7] text-[#8a6642]",
-  confirmed: "bg-[#e8f0ff] text-[#2c4a7a]",
-  processing: "bg-[#efe7ff] text-[#4a2b7a]",
-  shipped: "bg-[#e7f0ff] text-[#2b3f7a]",
-  delivered: "bg-[#eaf4ea] text-[#2f6b3b]",
-  cancelled: "bg-[#f7e6e6] text-[#8a2f35]",
+  pending: "bg-paper-1 text-brand-3",
+  confirmed: "bg-info-2 text-info-1",
+  processing: "bg-purple-2 text-purple-1",
+  shipped: "bg-indigo-2 text-indigo-1",
+  delivered: "bg-success-2 text-success-1",
+  cancelled: "bg-danger-3 text-danger-4",
 };
 
 const statusIcons: Record<string, React.ReactNode> = {
@@ -60,8 +60,8 @@ export default function AdminDashboard() {
       {/* Page Header */}
       <FadeIn>
         <div>
-          <h1 className="font-display text-2xl text-[#2d1c12]">Dashboard</h1>
-          <p className="mt-1 text-[#6b5645]">
+          <h1 className="font-display text-ink-1 text-2xl">Dashboard</h1>
+          <p className="text-muted-1 mt-1">
             Welcome back! Here&apos;s what&apos;s happening with your store.
           </p>
         </div>
@@ -74,15 +74,15 @@ export default function AdminDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-[#6b5645]">
+                  <p className="text-muted-1 text-sm font-medium">
                     Total Revenue
                   </p>
-                  <p className="mt-1 text-2xl font-semibold text-[#2d1c12]">
+                  <p className="text-ink-1 mt-1 text-2xl font-semibold">
                     {formatPrice(stats?.totalRevenue ?? 0)}
                   </p>
                 </div>
-                <div className="rounded-full bg-[#eaf4ea] p-3">
-                  <IndianRupee className="h-6 w-6 text-[#2f6b3b]" />
+                <div className="bg-success-2 rounded-full p-3">
+                  <IndianRupee className="text-success-1 h-6 w-6" />
                 </div>
               </div>
               <div className="mt-4 flex items-center text-sm">
@@ -95,13 +95,13 @@ export default function AdminDashboard() {
                   </>
                 ) : (
                   <>
-                    <TrendingUp className="mr-1 h-4 w-4 rotate-180 text-[#b3474d]" />
-                    <span className="text-[#b3474d]">
+                    <TrendingUp className="text-danger-1 mr-1 h-4 w-4 rotate-180" />
+                    <span className="text-danger-1">
                       {(stats?.revenueGrowth ?? 0).toFixed(1)}%
                     </span>
                   </>
                 )}
-                <span className="ml-2 text-[#9c826a]">from last month</span>
+                <span className="text-muted-2 ml-2">from last month</span>
               </div>
             </CardContent>
           </Card>
@@ -112,15 +112,15 @@ export default function AdminDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-[#6b5645]">
+                  <p className="text-muted-1 text-sm font-medium">
                     Total Orders
                   </p>
-                  <p className="mt-1 text-2xl font-semibold text-[#2d1c12]">
+                  <p className="text-ink-1 mt-1 text-2xl font-semibold">
                     {stats?.totalOrders ?? 0}
                   </p>
                 </div>
-                <div className="rounded-full bg-[#e7f0ff] p-3">
-                  <ShoppingCart className="h-6 w-6 text-[#2b3f7a]" />
+                <div className="bg-indigo-2 rounded-full p-3">
+                  <ShoppingCart className="text-indigo-1 h-6 w-6" />
                 </div>
               </div>
               <div className="mt-4 flex items-center text-sm">
@@ -133,13 +133,13 @@ export default function AdminDashboard() {
                   </>
                 ) : (
                   <>
-                    <TrendingUp className="mr-1 h-4 w-4 rotate-180 text-[#b3474d]" />
-                    <span className="text-[#b3474d]">
+                    <TrendingUp className="text-danger-1 mr-1 h-4 w-4 rotate-180" />
+                    <span className="text-danger-1">
                       {(stats?.ordersGrowth ?? 0).toFixed(1)}%
                     </span>
                   </>
                 )}
-                <span className="ml-2 text-[#9c826a]">from last month</span>
+                <span className="text-muted-2 ml-2">from last month</span>
               </div>
             </CardContent>
           </Card>
@@ -150,19 +150,19 @@ export default function AdminDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-[#6b5645]">
+                  <p className="text-muted-1 text-sm font-medium">
                     Total Products
                   </p>
-                  <p className="mt-1 text-2xl font-semibold text-[#2d1c12]">
+                  <p className="text-ink-1 mt-1 text-2xl font-semibold">
                     {stats?.totalProducts ?? 0}
                   </p>
                 </div>
-                <div className="rounded-full bg-[#efe7ff] p-3">
-                  <Package className="h-6 w-6 text-[#4a2b7a]" />
+                <div className="bg-purple-2 rounded-full p-3">
+                  <Package className="text-purple-1 h-6 w-6" />
                 </div>
               </div>
               <div className="mt-4 flex items-center text-sm">
-                <span className="text-[#b8743a]">
+                <span className="text-brand-1">
                   {stats?.lowStockCount ?? 0} low stock
                 </span>
               </div>
@@ -175,15 +175,15 @@ export default function AdminDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-[#6b5645]">
+                  <p className="text-muted-1 text-sm font-medium">
                     Total Customers
                   </p>
-                  <p className="mt-1 text-2xl font-semibold text-[#2d1c12]">
+                  <p className="text-ink-1 mt-1 text-2xl font-semibold">
                     {stats?.totalCustomers ?? 0}
                   </p>
                 </div>
-                <div className="rounded-full bg-[#f7efe7] p-3">
-                  <Users className="h-6 w-6 text-[#b8743a]" />
+                <div className="bg-paper-1 rounded-full p-3">
+                  <Users className="text-brand-1 h-6 w-6" />
                 </div>
               </div>
               <div className="mt-4 flex items-center text-sm">
@@ -196,13 +196,13 @@ export default function AdminDashboard() {
                   </>
                 ) : (
                   <>
-                    <TrendingUp className="mr-1 h-4 w-4 rotate-180 text-[#b3474d]" />
-                    <span className="text-[#b3474d]">
+                    <TrendingUp className="text-danger-1 mr-1 h-4 w-4 rotate-180" />
+                    <span className="text-danger-1">
                       {(stats?.customersGrowth ?? 0).toFixed(1)}%
                     </span>
                   </>
                 )}
-                <span className="ml-2 text-[#9c826a]">from last month</span>
+                <span className="text-muted-2 ml-2">from last month</span>
               </div>
             </CardContent>
           </Card>
@@ -215,15 +215,10 @@ export default function AdminDashboard() {
         <FadeIn delay={0.2}>
           <Card className="border border-black/5 bg-white/80">
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="font-display text-lg text-[#2d1c12]">
+              <CardTitle className="font-display text-ink-1 text-lg">
                 Recent Orders
               </CardTitle>
-              <Button
-                variant="ghost"
-                size="sm"
-                asChild
-                className="text-[#2d1c12]"
-              >
+              <Button variant="ghost" size="sm" asChild className="text-ink-1">
                 <Link href="/admin/orders">
                   View All
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -239,20 +234,20 @@ export default function AdminDashboard() {
                       className="flex items-center justify-between rounded-2xl border border-black/5 bg-white/70 p-3"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#f7efe7] text-[#b8743a]">
+                        <div className="bg-paper-1 text-brand-1 flex h-10 w-10 items-center justify-center rounded-full">
                           {statusIcons[order.status]}
                         </div>
                         <div>
-                          <p className="font-medium text-[#2d1c12]">
+                          <p className="text-ink-1 font-medium">
                             #{order.orderNumber}
                           </p>
-                          <p className="text-sm text-[#9c826a]">
+                          <p className="text-muted-2 text-sm">
                             {new Date(order.createdAt).toLocaleDateString()}
                           </p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="font-medium text-[#2d1c12]">
+                        <p className="text-ink-1 font-medium">
                           {formatPrice(Number(order.total))}
                         </p>
                         <Badge
@@ -266,7 +261,7 @@ export default function AdminDashboard() {
                   ))}
                 </div>
               ) : (
-                <div className="py-8 text-center text-[#9c826a]">
+                <div className="text-muted-2 py-8 text-center">
                   No orders yet
                 </div>
               )}
@@ -278,15 +273,10 @@ export default function AdminDashboard() {
         <FadeIn delay={0.3}>
           <Card className="border border-black/5 bg-white/80">
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="font-display text-lg text-[#2d1c12]">
+              <CardTitle className="font-display text-ink-1 text-lg">
                 Low Stock Alert
               </CardTitle>
-              <Button
-                variant="ghost"
-                size="sm"
-                asChild
-                className="text-[#2d1c12]"
-              >
+              <Button variant="ghost" size="sm" asChild className="text-ink-1">
                 <Link href="/admin/products">
                   View All
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -302,10 +292,8 @@ export default function AdminDashboard() {
                       className="flex items-center justify-between rounded-2xl border border-black/5 bg-white/70 p-3"
                     >
                       <div>
-                        <p className="font-medium text-[#2d1c12]">
-                          {product.name}
-                        </p>
-                        <p className="text-sm text-[#9c826a]">
+                        <p className="text-ink-1 font-medium">{product.name}</p>
+                        <p className="text-muted-2 text-sm">
                           SKU: {product.sku ?? "N/A"}
                         </p>
                       </div>
@@ -313,13 +301,13 @@ export default function AdminDashboard() {
                         <p
                           className={`font-medium ${
                             Number(product.stockQuantity) <= 5
-                              ? "text-[#b3474d]"
-                              : "text-[#b8743a]"
+                              ? "text-danger-1"
+                              : "text-brand-1"
                           }`}
                         >
                           {product.stockQuantity} in stock
                         </p>
-                        <p className="text-sm text-[#9c826a]">
+                        <p className="text-muted-2 text-sm">
                           Min: {product.lowStockThreshold}
                         </p>
                       </div>
@@ -327,7 +315,7 @@ export default function AdminDashboard() {
                   ))}
                 </div>
               ) : (
-                <div className="py-8 text-center text-[#9c826a]">
+                <div className="text-muted-2 py-8 text-center">
                   All products are well stocked
                 </div>
               )}
@@ -340,34 +328,34 @@ export default function AdminDashboard() {
       <FadeIn delay={0.4}>
         <Card className="border border-black/5 bg-white/80">
           <CardHeader>
-            <CardTitle className="font-display text-lg text-[#2d1c12]">
+            <CardTitle className="font-display text-ink-1 text-lg">
               Order Status Overview
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
               {[
-                { status: "pending", label: "Pending", color: "bg-[#b8743a]" },
+                { status: "pending", label: "Pending", color: "bg-brand-1" },
                 {
                   status: "confirmed",
                   label: "Confirmed",
-                  color: "bg-[#2c4a7a]",
+                  color: "bg-info-1",
                 },
                 {
                   status: "processing",
                   label: "Processing",
-                  color: "bg-[#4a2b7a]",
+                  color: "bg-purple-1",
                 },
-                { status: "shipped", label: "Shipped", color: "bg-[#2b3f7a]" },
+                { status: "shipped", label: "Shipped", color: "bg-indigo-1" },
                 {
                   status: "delivered",
                   label: "Delivered",
-                  color: "bg-[#2f6b3b]",
+                  color: "bg-success-1",
                 },
                 {
                   status: "cancelled",
                   label: "Cancelled",
-                  color: "bg-[#b3474d]",
+                  color: "bg-danger-1",
                 },
               ].map((item) => (
                 <div
@@ -377,10 +365,10 @@ export default function AdminDashboard() {
                   <div
                     className={`mx-auto mb-2 h-3 w-3 rounded-full ${item.color}`}
                   />
-                  <p className="text-2xl font-semibold text-[#2d1c12]">
+                  <p className="text-ink-1 text-2xl font-semibold">
                     {stats?.ordersByStatus?.[item.status] ?? 0}
                   </p>
-                  <p className="text-sm text-[#9c826a]">{item.label}</p>
+                  <p className="text-muted-2 text-sm">{item.label}</p>
                 </div>
               ))}
             </div>

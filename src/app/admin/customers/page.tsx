@@ -88,8 +88,8 @@ export default function AdminCustomersPage() {
       <FadeIn>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="font-display text-2xl text-[#2d1c12]">Customers</h1>
-            <p className="mt-1 text-[#6b5645]">
+            <h1 className="font-display text-ink-1 text-2xl">Customers</h1>
+            <p className="text-muted-1 mt-1">
               Manage your customer database and view order history
             </p>
           </div>
@@ -101,12 +101,12 @@ export default function AdminCustomersPage() {
         <Card className="border border-black/5 bg-white/80">
           <CardContent className="p-4">
             <div className="relative">
-              <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[#9c826a]" />
+              <Search className="text-muted-2 absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
               <Input
                 placeholder="Search by name, email, or phone..."
                 value={search}
                 onChange={(e) => handleSearchChange(e.target.value)}
-                className="pl-10 rounded-2xl border-black/10 bg-white/80"
+                className="rounded-2xl border-black/10 bg-white/80 pl-10"
               />
             </div>
           </CardContent>
@@ -117,7 +117,7 @@ export default function AdminCustomersPage() {
       <FadeIn delay={0.2}>
         <Card className="border border-black/5 bg-white/80">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 font-display text-xl text-[#2d1c12]">
+            <CardTitle className="font-display text-ink-1 flex items-center gap-2 text-xl">
               <Users className="h-5 w-5" />
               All Customers
               {customers.length > 0 && (
@@ -130,15 +130,15 @@ export default function AdminCustomersPage() {
           <CardContent>
             {isLoading ? (
               <div className="flex items-center justify-center py-12">
-                <Loader2 className="h-8 w-8 animate-spin text-[#b8743a]" />
+                <Loader2 className="text-brand-1 h-8 w-8 animate-spin" />
               </div>
             ) : customers.length === 0 ? (
               <div className="py-12 text-center">
-                <Users className="mx-auto h-12 w-12 text-[#cbb5a1]" />
-                <h3 className="mt-4 text-lg font-medium text-[#2d1c12]">
+                <Users className="text-warm-1 mx-auto h-12 w-12" />
+                <h3 className="text-ink-1 mt-4 text-lg font-medium">
                   No customers found
                 </h3>
-                <p className="mt-2 text-[#6b5645]">
+                <p className="text-muted-1 mt-2">
                   {search
                     ? "Try adjusting your search terms"
                     : "Customers will appear here when they sign up"}
@@ -165,11 +165,11 @@ export default function AdminCustomersPage() {
                         <TableRow key={customer.id}>
                           <TableCell>
                             <div className="flex items-center gap-3">
-                              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#f7efe7] font-medium text-[#b8743a]">
+                              <div className="bg-paper-1 text-brand-1 flex h-10 w-10 items-center justify-center rounded-full font-medium">
                                 {customer.name?.charAt(0).toUpperCase() ?? "U"}
                               </div>
                               <div>
-                                <p className="font-medium text-[#2d1c12]">
+                                <p className="text-ink-1 font-medium">
                                   {customer.name ?? "Unknown"}
                                 </p>
                                 {customer.emailVerified && (
@@ -186,15 +186,15 @@ export default function AdminCustomersPage() {
                           <TableCell>
                             <div className="space-y-1">
                               <div className="flex items-center gap-1 text-sm">
-                                <Mail className="h-3 w-3 text-[#9c826a]" />
-                                <span className="text-[#6b5645]">
+                                <Mail className="text-muted-2 h-3 w-3" />
+                                <span className="text-muted-1">
                                   {customer.email}
                                 </span>
                               </div>
                               {customer.phone && (
                                 <div className="flex items-center gap-1 text-sm">
-                                  <Phone className="h-3 w-3 text-[#9c826a]" />
-                                  <span className="text-[#6b5645]">
+                                  <Phone className="text-muted-2 h-3 w-3" />
+                                  <span className="text-muted-1">
                                     {customer.phone}
                                   </span>
                                 </div>
@@ -203,16 +203,16 @@ export default function AdminCustomersPage() {
                           </TableCell>
                           <TableCell className="text-center">
                             <div className="flex items-center justify-center gap-1">
-                              <ShoppingBag className="h-4 w-4 text-[#9c826a]" />
-                              <span className="font-medium text-[#2d1c12]">
+                              <ShoppingBag className="text-muted-2 h-4 w-4" />
+                              <span className="text-ink-1 font-medium">
                                 {customer.orderCount}
                               </span>
                             </div>
                           </TableCell>
                           <TableCell className="text-right">
                             <div className="flex items-center justify-end gap-1">
-                              <IndianRupee className="h-4 w-4 text-[#9c826a]" />
-                              <span className="font-medium text-[#2d1c12]">
+                              <IndianRupee className="text-muted-2 h-4 w-4" />
+                              <span className="text-ink-1 font-medium">
                                 {formatPrice(customer.totalSpent).replace(
                                   "₹",
                                   ""
@@ -221,7 +221,7 @@ export default function AdminCustomersPage() {
                             </div>
                           </TableCell>
                           <TableCell>
-                            <div className="flex items-center gap-1 text-sm text-[#6b5645]">
+                            <div className="text-muted-1 flex items-center gap-1 text-sm">
                               <Calendar className="h-3 w-3" />
                               {new Date(customer.createdAt).toLocaleDateString(
                                 "en-IN",
@@ -237,7 +237,7 @@ export default function AdminCustomersPage() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="text-[#2d1c12]"
+                              className="text-ink-1"
                               onClick={() => setSelectedCustomerId(customer.id)}
                             >
                               <Eye className="h-4 w-4" />
@@ -259,7 +259,7 @@ export default function AdminCustomersPage() {
                       onClick={() =>
                         setCursorStack((prev) => prev.slice(0, -1))
                       }
-                      className="rounded-full border-black/10 bg-white/80 text-[#2d1c12] hover:bg-white"
+                      className="text-ink-1 rounded-full border-black/10 bg-white/80 hover:bg-white"
                     >
                       <ChevronLeft className="h-4 w-4" />
                       Previous
@@ -272,7 +272,7 @@ export default function AdminCustomersPage() {
                         data?.nextCursor &&
                         setCursorStack((prev) => [...prev, data.nextCursor!])
                       }
-                      className="rounded-full border-black/10 bg-white/80 text-[#2d1c12] hover:bg-white"
+                      className="text-ink-1 rounded-full border-black/10 bg-white/80 hover:bg-white"
                     >
                       Next
                       <ChevronRight className="h-4 w-4" />
@@ -290,33 +290,35 @@ export default function AdminCustomersPage() {
         open={!!selectedCustomerId}
         onOpenChange={(open) => !open && setSelectedCustomerId(null)}
       >
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl border border-black/5 bg-white/95">
           <DialogHeader>
-            <DialogTitle>Customer Details</DialogTitle>
+            <DialogTitle className="font-display text-ink-1">
+              Customer Details
+            </DialogTitle>
           </DialogHeader>
 
           {isLoadingDetails ? (
             <div className="flex items-center justify-center py-12">
-              <Loader2 className="text-primary h-8 w-8 animate-spin" />
+              <Loader2 className="text-brand-1 h-8 w-8 animate-spin" />
             </div>
           ) : customerDetails ? (
             <div className="space-y-6">
               {/* Customer Info */}
               <div className="flex items-start gap-4">
-                <div className="bg-primary/10 text-primary flex h-16 w-16 items-center justify-center rounded-full text-2xl font-medium">
+                <div className="bg-paper-1 text-brand-3 flex h-16 w-16 items-center justify-center rounded-full text-2xl font-medium">
                   {customerDetails.name?.charAt(0).toUpperCase() ?? "U"}
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-xl font-semibold">
+                  <h3 className="text-ink-1 text-xl font-semibold">
                     {customerDetails.name ?? "Unknown"}
                   </h3>
                   <div className="mt-1 space-y-1">
-                    <div className="flex items-center gap-2 text-gray-600">
+                    <div className="text-muted-2 flex items-center gap-2">
                       <Mail className="h-4 w-4" />
                       {customerDetails.email}
                     </div>
                     {customerDetails.phone && (
-                      <div className="flex items-center gap-2 text-gray-600">
+                      <div className="text-muted-2 flex items-center gap-2">
                         <Phone className="h-4 w-4" />
                         {customerDetails.phone}
                       </div>
@@ -327,25 +329,25 @@ export default function AdminCustomersPage() {
 
               {/* Stats */}
               <div className="grid grid-cols-3 gap-4">
-                <Card>
+                <Card className="border border-black/5 bg-white/80">
                   <CardContent className="p-4 text-center">
-                    <p className="text-primary text-2xl font-bold">
+                    <p className="text-brand-3 text-2xl font-bold">
                       {customerDetails.orderCount}
                     </p>
-                    <p className="text-sm text-gray-500">Total Orders</p>
+                    <p className="text-muted-2 text-sm">Total Orders</p>
                   </CardContent>
                 </Card>
-                <Card>
+                <Card className="border border-black/5 bg-white/80">
                   <CardContent className="p-4 text-center">
-                    <p className="text-2xl font-bold text-green-600">
+                    <p className="text-success-1 text-2xl font-bold">
                       {formatPrice(customerDetails.totalSpent)}
                     </p>
-                    <p className="text-sm text-gray-500">Total Spent</p>
+                    <p className="text-muted-2 text-sm">Total Spent</p>
                   </CardContent>
                 </Card>
-                <Card>
+                <Card className="border border-black/5 bg-white/80">
                   <CardContent className="p-4 text-center">
-                    <p className="text-2xl font-bold text-gray-900">
+                    <p className="text-ink-1 text-2xl font-bold">
                       {new Date(customerDetails.createdAt).toLocaleDateString(
                         "en-IN",
                         {
@@ -354,7 +356,7 @@ export default function AdminCustomersPage() {
                         }
                       )}
                     </p>
-                    <p className="text-sm text-gray-500">Member Since</p>
+                    <p className="text-muted-2 text-sm">Member Since</p>
                   </CardContent>
                 </Card>
               </div>
@@ -363,19 +365,17 @@ export default function AdminCustomersPage() {
               <div>
                 <h4 className="mb-3 font-medium">Recent Orders</h4>
                 {customerDetails.orders.length === 0 ? (
-                  <p className="py-4 text-center text-gray-500">
-                    No orders yet
-                  </p>
+                  <p className="text-muted-2 py-4 text-center">No orders yet</p>
                 ) : (
                   <div className="space-y-2">
                     {customerDetails.orders.map((order) => (
                       <div
                         key={order.id}
-                        className="flex items-center justify-between rounded-lg border p-3"
+                        className="flex items-center justify-between rounded-2xl border border-black/10 bg-white/90 p-3"
                       >
                         <div>
                           <p className="font-medium">#{order.orderNumber}</p>
-                          <p className="text-sm text-gray-500">
+                          <p className="text-muted-2 text-sm">
                             {new Date(order.createdAt).toLocaleDateString(
                               "en-IN"
                             )}

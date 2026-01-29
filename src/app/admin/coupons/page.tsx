@@ -221,15 +221,13 @@ export default function CouponsPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "active":
-        return <Badge className="bg-green-100 text-green-800">Active</Badge>;
+        return <Badge className="bg-success-2 text-success-1">Active</Badge>;
       case "inactive":
-        return <Badge variant="secondary">Inactive</Badge>;
+        return <Badge className="bg-gray-1 text-gray-2">Inactive</Badge>;
       case "expired":
-        return <Badge variant="destructive">Expired</Badge>;
+        return <Badge className="bg-danger-2 text-danger-4">Expired</Badge>;
       case "limit_reached":
-        return (
-          <Badge className="bg-orange-100 text-orange-800">Limit Reached</Badge>
-        );
+        return <Badge className="bg-paper-1 text-brand-3">Limit Reached</Badge>;
       default:
         return null;
     }
@@ -240,12 +238,12 @@ export default function CouponsPage() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Coupons</h1>
-          <p className="text-gray-500">Create and manage discount coupons</p>
+          <h1 className="font-display text-ink-1 text-2xl">Coupons</h1>
+          <p className="text-muted-1">Create and manage discount coupons</p>
         </div>
         <Button
           onClick={handleOpenCreate}
-          className="bg-amber-600 hover:bg-amber-700"
+          className="bg-ink-1 text-paper-1 hover:bg-ink-0 rounded-full"
         >
           <Plus className="mr-2 h-4 w-4" />
           Create Coupon
@@ -255,19 +253,19 @@ export default function CouponsPage() {
       {/* Filters */}
       <div className="flex flex-col gap-4 sm:flex-row">
         <div className="relative flex-1">
-          <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <Search className="text-muted-2 absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
           <Input
             placeholder="Search coupons..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
+            className="rounded-2xl border-black/10 bg-white/80 pl-10"
           />
         </div>
         <Select
           value={statusFilter}
           onValueChange={(v) => setStatusFilter(v as typeof statusFilter)}
         >
-          <SelectTrigger className="w-full sm:w-40">
+          <SelectTrigger className="w-full rounded-full border-black/10 bg-white/80 sm:w-40">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
@@ -280,17 +278,19 @@ export default function CouponsPage() {
       </div>
 
       {/* Table */}
-      <div className="rounded-lg border bg-white">
+      <div className="rounded-2xl border border-black/5 bg-white/80">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Code</TableHead>
-              <TableHead>Discount</TableHead>
-              <TableHead className="hidden md:table-cell">Usage</TableHead>
-              <TableHead className="hidden lg:table-cell">
+              <TableHead className="text-muted-2">Code</TableHead>
+              <TableHead className="text-muted-2">Discount</TableHead>
+              <TableHead className="text-muted-2 hidden md:table-cell">
+                Usage
+              </TableHead>
+              <TableHead className="text-muted-2 hidden lg:table-cell">
                 Valid Period
               </TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead className="text-muted-2">Status</TableHead>
               <TableHead className="w-12"></TableHead>
             </TableRow>
           </TableHeader>
@@ -321,11 +321,11 @@ export default function CouponsPage() {
             ) : filteredCoupons?.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} className="py-12 text-center">
-                  <Tag className="mx-auto h-12 w-12 text-gray-300" />
-                  <p className="mt-2 text-gray-500">No coupons found</p>
+                  <Tag className="text-muted-3 mx-auto h-12 w-12" />
+                  <p className="text-muted-2 mt-2">No coupons found</p>
                   <Button
                     variant="outline"
-                    className="mt-4"
+                    className="hover:bg-paper-1 mt-4 rounded-full border-black/10 bg-white/80"
                     onClick={handleOpenCreate}
                   >
                     Create your first coupon
@@ -337,22 +337,22 @@ export default function CouponsPage() {
                 <TableRow key={coupon.id}>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      <code className="rounded bg-gray-100 px-2 py-1 font-mono text-sm font-semibold">
+                      <code className="bg-paper-2 text-ink-1 rounded-full px-3 py-1 font-mono text-sm font-semibold">
                         {coupon.code}
                       </code>
                       <button
                         onClick={() => handleCopyCode(coupon.code)}
-                        className="text-gray-400 hover:text-gray-600"
+                        className="text-muted-3 hover:text-ink-1"
                       >
                         {copiedCode === coupon.code ? (
-                          <Check className="h-4 w-4 text-green-500" />
+                          <Check className="text-success-1 h-4 w-4" />
                         ) : (
                           <Copy className="h-4 w-4" />
                         )}
                       </button>
                     </div>
                     {coupon.description && (
-                      <p className="mt-1 line-clamp-1 text-xs text-gray-500">
+                      <p className="text-muted-2 mt-1 line-clamp-1 text-xs">
                         {coupon.description}
                       </p>
                     )}
@@ -361,14 +361,14 @@ export default function CouponsPage() {
                     <div className="flex items-center gap-1">
                       {coupon.discountType === "percentage" ? (
                         <>
-                          <Percent className="h-4 w-4 text-amber-600" />
+                          <Percent className="text-brand-3 h-4 w-4" />
                           <span className="font-medium">
                             {coupon.discountValue}%
                           </span>
                         </>
                       ) : (
                         <>
-                          <IndianRupee className="h-4 w-4 text-amber-600" />
+                          <IndianRupee className="text-brand-3 h-4 w-4" />
                           <span className="font-medium">
                             {coupon.discountValue}
                           </span>
@@ -376,13 +376,13 @@ export default function CouponsPage() {
                       )}
                     </div>
                     {coupon.minPurchase && (
-                      <p className="text-xs text-gray-500">
+                      <p className="text-muted-2 text-xs">
                         Min: {formatPrice(coupon.minPurchase)}
                       </p>
                     )}
                     {coupon.maxDiscount &&
                       coupon.discountType === "percentage" && (
-                        <p className="text-xs text-gray-500">
+                        <p className="text-muted-2 text-xs">
                           Max: {formatPrice(coupon.maxDiscount)}
                         </p>
                       )}
@@ -390,7 +390,7 @@ export default function CouponsPage() {
                   <TableCell className="hidden md:table-cell">
                     <span className="font-medium">{coupon.usageCount}</span>
                     {coupon.usageLimit && (
-                      <span className="text-gray-500">
+                      <span className="text-muted-2">
                         {" "}
                         / {coupon.usageLimit}
                       </span>
@@ -398,7 +398,7 @@ export default function CouponsPage() {
                   </TableCell>
                   <TableCell className="hidden lg:table-cell">
                     <div className="flex items-center gap-1 text-sm">
-                      <Calendar className="h-3.5 w-3.5 text-gray-400" />
+                      <Calendar className="text-muted-3 h-3.5 w-3.5" />
                       <span>
                         {dayjs(coupon.startDate).format("DD MMM")} -{" "}
                         {dayjs(coupon.endDate).format("DD MMM YYYY")}
@@ -411,7 +411,11 @@ export default function CouponsPage() {
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 rounded-full"
+                        >
                           <MoreHorizontal className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
@@ -432,7 +436,7 @@ export default function CouponsPage() {
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
-                          className="text-red-600"
+                          className="text-danger-4"
                           onClick={() => {
                             setDeletingCoupon({
                               id: coupon.id,
@@ -456,9 +460,9 @@ export default function CouponsPage() {
 
       {/* Create/Edit Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-md border border-black/5 bg-white/90">
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="font-display text-ink-1">
               {editingCoupon ? "Edit Coupon" : "Create Coupon"}
             </DialogTitle>
             <DialogDescription>
@@ -628,13 +632,17 @@ export default function CouponsPage() {
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setIsDialogOpen(false)}
+              className="rounded-full border-black/10 bg-white/80"
+            >
               Cancel
             </Button>
             <Button
               onClick={handleSubmit}
               disabled={createMutation.isPending || updateMutation.isPending}
-              className="bg-amber-600 hover:bg-amber-700"
+              className="bg-ink-1 text-paper-1 hover:bg-ink-0 rounded-full"
             >
               {createMutation.isPending || updateMutation.isPending ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -647,12 +655,12 @@ export default function CouponsPage() {
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent>
+        <DialogContent className="border border-black/5 bg-white/95">
           <DialogHeader>
             <DialogTitle>Delete Coupon</DialogTitle>
             <DialogDescription>
               Are you sure you want to delete the coupon{" "}
-              <code className="rounded bg-gray-100 px-1 font-mono">
+              <code className="bg-paper-2 text-ink-1 rounded px-1 font-mono">
                 {deletingCoupon?.code}
               </code>
               ? This action cannot be undone.
@@ -662,6 +670,7 @@ export default function CouponsPage() {
             <Button
               variant="outline"
               onClick={() => setIsDeleteDialogOpen(false)}
+              className="rounded-full border-black/10 bg-white/80"
             >
               Cancel
             </Button>

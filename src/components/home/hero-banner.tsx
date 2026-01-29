@@ -181,7 +181,7 @@ export function HeroBanner() {
                     priority={index === 0}
                   />
                 ) : (
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,248,238,1),rgba(255,255,255,0.8)),linear-gradient(120deg,#fff5e6,#f4e7d8,#fff2dd)]" />
+                  <div className="bg-hero-wash absolute inset-0" />
                 )}
 
                 {/* Overlay for images */}
@@ -192,9 +192,9 @@ export function HeroBanner() {
                 {/* Decorative circles (only for non-image banners) */}
                 {!banner.image && (
                   <>
-                    <div className="absolute -top-24 -right-28 h-96 w-96 rounded-full bg-[#f2cf9d]/40 blur-3xl" />
-                    <div className="absolute -bottom-28 -left-28 h-72 w-72 rounded-full bg-[#d8b28c]/40 blur-3xl" />
-                    <div className="absolute top-1/4 right-1/4 h-40 w-40 rounded-full bg-[#f7e5cd]/50 blur-2xl" />
+                    <div className="bg-sand-2/40 absolute -top-24 -right-28 h-96 w-96 rounded-full blur-3xl" />
+                    <div className="bg-sand-3/40 absolute -bottom-28 -left-28 h-72 w-72 rounded-full blur-3xl" />
+                    <div className="bg-sand-4/50 absolute top-1/4 right-1/4 h-40 w-40 rounded-full blur-2xl" />
                   </>
                 )}
 
@@ -207,14 +207,14 @@ export function HeroBanner() {
                       className="text-center md:text-left"
                     >
                       {banner.tag && (
-                        <span className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-[#b8743a] px-4 py-1.5 text-xs font-semibold tracking-[0.2em] text-white uppercase">
+                        <span className="bg-brand-1 mb-4 inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold tracking-[0.2em] text-white uppercase">
                           <Sparkles className="h-3.5 w-3.5" />
                           {banner.tag}
                         </span>
                       )}
                       <h1
                         className={`font-display mb-4 text-4xl leading-tight sm:text-5xl lg:text-6xl ${
-                          banner.image ? "text-white" : "text-[#2d1c12]"
+                          banner.image ? "text-white" : "text-ink-1"
                         }`}
                       >
                         <TypewriterText
@@ -225,7 +225,7 @@ export function HeroBanner() {
                       {banner.subtitle && (
                         <p
                           className={`mb-8 text-base leading-relaxed sm:text-lg ${
-                            banner.image ? "text-white/90" : "text-[#5c4a3d]"
+                            banner.image ? "text-white/90" : "text-ink-2"
                           }`}
                         >
                           {banner.subtitle}
@@ -235,7 +235,7 @@ export function HeroBanner() {
                         <Button
                           asChild
                           size="lg"
-                          className="rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
+                          className="bg-brand-1 hover:bg-brand-2 rounded-full"
                         >
                           <Link href={banner.link}>
                             Shop Now
@@ -246,7 +246,7 @@ export function HeroBanner() {
                           variant="outline"
                           asChild
                           size="lg"
-                          className="rounded-full border-black/10 bg-white/70 text-[#2d1c12] hover:bg-white"
+                          className="text-ink-1 rounded-full border-black/10 bg-white/70 hover:bg-white"
                         >
                           <Link href="/products">View Collection</Link>
                         </Button>
@@ -258,15 +258,15 @@ export function HeroBanner() {
                       <div className="hidden md:block">
                         <div className="relative">
                           <div className="relative mx-auto w-fit">
-                            <div className="absolute -top-4 -left-4 h-48 w-48 rotate-[-8deg] rounded-2xl bg-gradient-to-br from-[#e8c4a0] to-[#f4d9bf] shadow-lg lg:h-56 lg:w-56" />
-                            <div className="absolute -top-2 -right-4 h-48 w-48 rotate-[5deg] rounded-2xl bg-gradient-to-br from-[#f2cf9d] to-[#f7e2c8] shadow-lg lg:h-56 lg:w-56" />
-                            <div className="relative h-52 w-52 rounded-2xl bg-gradient-to-br from-[#fdf6ee] to-[#f2dfc6] shadow-xl lg:h-64 lg:w-64">
-                              <div className="absolute inset-4 rounded-xl border-2 border-dashed border-[#b8743a]/40" />
+                            <div className="from-paper-12 to-paper-11 absolute -top-4 -left-4 h-48 w-48 rotate-[-8deg] rounded-2xl bg-gradient-to-br shadow-lg lg:h-56 lg:w-56" />
+                            <div className="from-sand-2 to-paper-13 absolute -top-2 -right-4 h-48 w-48 rotate-[5deg] rounded-2xl bg-gradient-to-br shadow-lg lg:h-56 lg:w-56" />
+                            <div className="from-paper-10 to-paper-14 relative h-52 w-52 rounded-2xl bg-gradient-to-br shadow-xl lg:h-64 lg:w-64">
+                              <div className="border-brand-1/40 absolute inset-4 rounded-xl border-2 border-dashed" />
                               <div className="flex h-full flex-col items-center justify-center p-4 text-center">
-                                <span className="text-4xl font-semibold text-[#b8743a] lg:text-5xl">
+                                <span className="text-brand-1 text-4xl font-semibold lg:text-5xl">
                                   500+
                                 </span>
-                                <span className="mt-1 text-sm font-medium text-[#8a6642]">
+                                <span className="text-brand-3 mt-1 text-sm font-medium">
                                   Fabric Varieties
                                 </span>
                               </div>
@@ -274,12 +274,12 @@ export function HeroBanner() {
                           </div>
 
                           <div className="absolute top-1/2 -left-8 rounded-full bg-white px-4 py-2 shadow-lg">
-                            <span className="text-sm font-semibold text-[#2d1c12]">
+                            <span className="text-ink-1 text-sm font-semibold">
                               100% Quality
                             </span>
                           </div>
                           <div className="absolute -right-4 bottom-4 rounded-full bg-white px-4 py-2 shadow-lg">
-                            <span className="text-sm font-semibold text-[#2d1c12]">
+                            <span className="text-ink-1 text-sm font-semibold">
                               Best Prices
                             </span>
                           </div>
@@ -302,8 +302,8 @@ export function HeroBanner() {
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`h-2 w-2 rounded-full transition-all hover:bg-[#b8743a] ${
-              currentSlide === index ? "w-7 bg-[#b8743a]" : "bg-[#e2c7ab]"
+            className={`hover:bg-brand-1 h-2 w-2 rounded-full transition-all ${
+              currentSlide === index ? "bg-brand-1 w-7" : "bg-warm-6"
             }`}
             aria-label={`Go to slide ${index + 1}`}
           />

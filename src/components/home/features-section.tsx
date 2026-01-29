@@ -49,13 +49,13 @@ export function FeaturesSection() {
           {features.map((feature, index) => (
             <StaggerItem key={index}>
               <div className="flex flex-col items-center text-center">
-                <div className="mb-4 rounded-2xl bg-[#f7efe7] p-4">
-                  <feature.icon className="h-6 w-6 text-[#b8743a] md:h-7 md:w-7" />
+                <div className="bg-paper-1 mb-4 rounded-2xl p-4">
+                  <feature.icon className="text-brand-1 h-6 w-6 md:h-7 md:w-7" />
                 </div>
-                <h3 className="mb-1 font-semibold text-[#2d1c12]">
+                <h3 className="text-ink-1 mb-1 font-semibold">
                   {feature.title}
                 </h3>
-                <p className="text-xs text-[#6b5645] md:text-sm">
+                <p className="text-muted-1 text-xs md:text-sm">
                   {feature.description}
                 </p>
               </div>

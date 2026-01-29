@@ -307,18 +307,18 @@ export function ProductForm({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className={`max-h-[90vh] overflow-y-auto ${isQuickAdd ? "max-w-2xl" : "max-w-4xl"}`}
+        className={`max-h-[90vh] overflow-y-auto border border-black/5 bg-white/95 ${isQuickAdd ? "max-w-2xl" : "max-w-4xl"}`}
       >
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle className="font-display text-ink-1 flex items-center gap-2">
             {formTitle}
             {isQuickAdd && (
-              <span className="rounded bg-amber-100 px-2 py-0.5 text-xs font-normal text-amber-700">
+              <span className="bg-paper-1 text-brand-3 rounded-full px-3 py-1 text-xs font-normal">
                 Quick Mode
               </span>
             )}
             {duplicateProduct && (
-              <span className="rounded bg-blue-100 px-2 py-0.5 text-xs font-normal text-blue-700">
+              <span className="bg-indigo-2 text-indigo-1 rounded-full px-3 py-1 text-xs font-normal">
                 From: {duplicateProduct.name}
               </span>
             )}
@@ -327,9 +327,11 @@ export function ProductForm({
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Basic Info */}
-          <Card>
+          <Card className="border border-black/5 bg-white/80">
             <CardHeader>
-              <CardTitle className="text-lg">Basic Information</CardTitle>
+              <CardTitle className="text-ink-1 text-lg">
+                Basic Information
+              </CardTitle>
             </CardHeader>
             <CardContent className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
@@ -346,7 +348,7 @@ export function ProductForm({
                   }}
                 />
                 {errors.name && (
-                  <p className="text-sm text-red-500">{errors.name.message}</p>
+                  <p className="text-danger-4 text-sm">{errors.name.message}</p>
                 )}
               </div>
 
@@ -358,7 +360,7 @@ export function ProductForm({
                   {...register("slug")}
                 />
                 {errors.slug && (
-                  <p className="text-sm text-red-500">{errors.slug.message}</p>
+                  <p className="text-danger-4 text-sm">{errors.slug.message}</p>
                 )}
               </div>
 
@@ -401,7 +403,7 @@ export function ProductForm({
                   </SelectContent>
                 </Select>
                 {errors.categoryId && (
-                  <p className="text-sm text-red-500">
+                  <p className="text-danger-4 text-sm">
                     {errors.categoryId.message}
                   </p>
                 )}
@@ -417,9 +419,11 @@ export function ProductForm({
           </Card>
 
           {/* Pricing */}
-          <Card>
+          <Card className="border border-black/5 bg-white/80">
             <CardHeader>
-              <CardTitle className="text-lg">Pricing & Selling</CardTitle>
+              <CardTitle className="text-ink-1 text-lg">
+                Pricing & Selling
+              </CardTitle>
             </CardHeader>
             <CardContent
               className={`grid gap-4 ${isQuickAdd ? "md:grid-cols-2" : "md:grid-cols-3"}`}
@@ -434,7 +438,9 @@ export function ProductForm({
                   {...register("price")}
                 />
                 {errors.price && (
-                  <p className="text-sm text-red-500">{errors.price.message}</p>
+                  <p className="text-danger-4 text-sm">
+                    {errors.price.message}
+                  </p>
                 )}
               </div>
 
@@ -451,7 +457,7 @@ export function ProductForm({
                       placeholder="Leave empty if no discount"
                       {...register("comparePrice")}
                     />
-                    <p className="text-xs text-gray-500">
+                    <p className="text-muted-2 text-xs">
                       Original price before discount
                     </p>
                   </div>
@@ -465,7 +471,7 @@ export function ProductForm({
                       placeholder="For profit calculation"
                       {...register("costPrice")}
                     />
-                    <p className="text-xs text-gray-500">Your purchase cost</p>
+                    <p className="text-muted-2 text-xs">Your purchase cost</p>
                   </div>
 
                   <div className="space-y-2">
@@ -552,9 +558,11 @@ export function ProductForm({
 
           {/* Fabric Details - Hidden in Quick Add */}
           {!isQuickAdd && (
-            <Card>
+            <Card className="border border-black/5 bg-white/80">
               <CardHeader>
-                <CardTitle className="text-lg">Fabric Details</CardTitle>
+                <CardTitle className="text-ink-1 text-lg">
+                  Fabric Details
+                </CardTitle>
               </CardHeader>
               <CardContent className="grid gap-4 md:grid-cols-3">
                 <div className="space-y-2">
@@ -608,9 +616,9 @@ export function ProductForm({
           )}
 
           {/* Inventory - Simplified in Quick Add */}
-          <Card>
+          <Card className="border border-black/5 bg-white/80">
             <CardHeader>
-              <CardTitle className="text-lg">Inventory</CardTitle>
+              <CardTitle className="text-ink-1 text-lg">Inventory</CardTitle>
             </CardHeader>
             <CardContent
               className={`grid gap-4 ${isQuickAdd ? "md:grid-cols-1" : "md:grid-cols-2"}`}
@@ -641,9 +649,9 @@ export function ProductForm({
 
           {/* Images - Show for new products and duplicates */}
           {!editProduct && (
-            <Card>
+            <Card className="border border-black/5 bg-white/80">
               <CardHeader>
-                <CardTitle className="text-lg">Images</CardTitle>
+                <CardTitle className="text-ink-1 text-lg">Images</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex gap-2">
@@ -652,7 +660,11 @@ export function ProductForm({
                     value={newImageUrl}
                     onChange={(e) => setNewImageUrl(e.target.value)}
                   />
-                  <Button type="button" onClick={handleAddImage}>
+                  <Button
+                    type="button"
+                    onClick={handleAddImage}
+                    className="bg-ink-1 text-paper-1 hover:bg-ink-0 rounded-full"
+                  >
                     <Plus className="h-4 w-4" />
                   </Button>
                 </div>
@@ -661,7 +673,7 @@ export function ProductForm({
                   <div className="grid grid-cols-4 gap-4">
                     {images.map((img, idx) => (
                       <div key={idx} className="relative">
-                        <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100">
+                        <div className="bg-paper-2 relative aspect-square overflow-hidden rounded-2xl">
                           <Image
                             src={img.url}
                             alt={img.alt ?? "Product image"}
@@ -673,7 +685,7 @@ export function ProductForm({
                         <button
                           type="button"
                           onClick={() => handleRemoveImage(idx)}
-                          className="absolute -top-2 -right-2 rounded-full bg-red-500 p-1 text-white"
+                          className="bg-danger-4 absolute -top-2 -right-2 rounded-full p-1 text-white shadow-sm"
                         >
                           <X className="h-3 w-3" />
                         </button>
@@ -686,9 +698,9 @@ export function ProductForm({
           )}
 
           {/* Status */}
-          <Card>
+          <Card className="border border-black/5 bg-white/80">
             <CardHeader>
-              <CardTitle className="text-lg">Status</CardTitle>
+              <CardTitle className="text-ink-1 text-lg">Status</CardTitle>
             </CardHeader>
             <CardContent className="flex gap-8">
               <div className="flex items-center gap-2">
@@ -717,12 +729,13 @@ export function ProductForm({
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
+              className="rounded-full border-black/10 bg-white/80"
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              className="bg-amber-600 hover:bg-amber-700"
+              className="bg-ink-1 text-paper-1 hover:bg-ink-0 rounded-full"
               disabled={isLoading}
             >
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

@@ -54,15 +54,15 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[80vh] overflow-hidden p-0 sm:max-w-xl">
-        <DialogHeader className="border-b p-4">
+      <DialogContent className="max-h-[80vh] overflow-hidden border border-black/5 bg-white/95 p-0 sm:max-w-xl">
+        <DialogHeader className="border-b border-black/5 p-4">
           <DialogTitle className="sr-only">Search Products</DialogTitle>
           <div className="relative">
-            <Search className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-gray-400" />
+            <Search className="text-muted-3 absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
             <Input
               type="search"
               placeholder="Search fabrics, materials, colors..."
-              className="pr-10 pl-10"
+              className="rounded-2xl border-black/10 bg-white/80 pr-10 pl-10"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               autoFocus
@@ -82,28 +82,28 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
 
         <div className="max-h-[60vh] overflow-y-auto p-4">
           {!query || query.length < 2 ? (
-            <div className="py-8 text-center text-gray-500">
-              <Search className="mx-auto mb-3 h-12 w-12 text-gray-300" />
+            <div className="text-muted-2 py-8 text-center">
+              <Search className="text-muted-3 mx-auto mb-3 h-12 w-12" />
               <p>Start typing to search products</p>
               <p className="text-sm">Minimum 2 characters</p>
             </div>
           ) : isLoading ? (
             <div className="flex items-center justify-center py-8">
-              <Loader2 className="h-8 w-8 animate-spin text-amber-600" />
+              <Loader2 className="text-brand-1 h-8 w-8 animate-spin" />
             </div>
           ) : results && results.length > 0 ? (
             <div className="space-y-2">
-              <p className="mb-3 text-sm text-gray-500">
+              <p className="text-muted-2 mb-3 text-sm">
                 Found {results.length} result{results.length !== 1 ? "s" : ""}
               </p>
               {results.map((product) => (
                 <Link
                   key={product.id}
                   href={`/product/${product.slug}`}
-                  className="flex items-center gap-4 rounded-lg border p-3 transition-colors hover:bg-gray-50"
+                  className="hover:bg-paper-1 flex items-center gap-4 rounded-2xl border border-black/10 bg-white/80 p-3 transition-colors"
                   onClick={handleClose}
                 >
-                  <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-md bg-gray-100">
+                  <div className="bg-paper-2 relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl">
                     {product.images?.[0]?.url ? (
                       <Image
                         src={product.images[0].url}
@@ -114,18 +114,18 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
                       />
                     ) : (
                       <div className="flex h-full items-center justify-center">
-                        <ImageIcon className="h-6 w-6 text-gray-300" />
+                        <ImageIcon className="text-muted-3 h-6 w-6" />
                       </div>
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
                     <h4 className="truncate font-medium">{product.name}</h4>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-muted-2 text-sm">
                       {product.category?.name}
                     </p>
-                    <p className="font-semibold text-amber-600">
+                    <p className="text-brand-3 font-semibold">
                       {formatPrice(Number(product.price))}
-                      <span className="text-sm font-normal text-gray-500">
+                      <span className="text-muted-2 text-sm font-normal">
                         /{product.unit}
                       </span>
                     </p>
@@ -135,7 +135,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
               <div className="pt-3 text-center">
                 <Link
                   href={`/products?search=${encodeURIComponent(query)}`}
-                  className="text-sm text-amber-600 hover:underline"
+                  className="text-brand-3 text-sm hover:underline"
                   onClick={handleClose}
                 >
                   View all results for &quot;{query}&quot;
@@ -143,7 +143,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
               </div>
             </div>
           ) : (
-            <div className="py-8 text-center text-gray-500">
+            <div className="text-muted-2 py-8 text-center">
               <p>No products found for &quot;{query}&quot;</p>
               <p className="text-sm">Try a different search term</p>
             </div>

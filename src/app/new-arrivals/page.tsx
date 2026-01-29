@@ -40,18 +40,18 @@ export default async function NewArrivalsPage({ searchParams }: Props) {
           <nav className="flex items-center gap-2 text-sm">
             <Link
               href="/"
-              className="flex items-center text-[#9c826a] hover:text-[#b8743a]"
+              className="text-muted-2 hover:text-brand-1 flex items-center"
             >
               <Home className="h-4 w-4" />
             </Link>
-            <ChevronRight className="h-4 w-4 text-gray-400" />
-            <span className="font-medium text-[#2d1c12]">New Arrivals</span>
+            <ChevronRight className="text-muted-3 h-4 w-4" />
+            <span className="text-ink-1 font-medium">New Arrivals</span>
           </nav>
         </div>
       </div>
 
       {/* Header */}
-      <div className="bg-[radial-gradient(circle_at_top,rgba(255,248,238,0.9),rgba(255,255,255,0.7)),linear-gradient(120deg,#2d1c12,#6b3f24,#b8743a)] py-12">
+      <div className="bg-hero-dark py-12">
         <div className="container mx-auto px-4 text-center text-white">
           <div className="mb-4 flex justify-center">
             <div className="rounded-full bg-white/20 p-3">

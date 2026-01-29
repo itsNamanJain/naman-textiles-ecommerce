@@ -49,12 +49,12 @@ export default function ContactPage() {
           <nav className="flex items-center gap-2 text-sm">
             <Link
               href="/"
-              className="flex items-center text-[#9c826a] hover:text-[#b8743a]"
+              className="text-muted-2 hover:text-brand-1 flex items-center"
             >
               <Home className="h-4 w-4" />
             </Link>
             <ChevronRight className="h-4 w-4 text-gray-400" />
-            <span className="font-medium text-[#2d1c12]">Contact Us</span>
+            <span className="text-ink-1 font-medium">Contact Us</span>
           </nav>
         </div>
       </div>
@@ -63,10 +63,10 @@ export default function ContactPage() {
         <div className="mx-auto max-w-5xl">
           {/* Header */}
           <div className="animate-fade-in-up text-center">
-            <h1 className="font-display text-3xl text-[#2d1c12] md:text-4xl">
+            <h1 className="font-display text-ink-1 text-3xl md:text-4xl">
               Get in Touch
             </h1>
-            <p className="mt-3 text-base text-[#6b5645] md:text-lg">
+            <p className="text-muted-1 mt-3 text-base md:text-lg">
               We&apos;d love to hear from you. Reach out to us for any queries.
             </p>
           </div>
@@ -76,12 +76,12 @@ export default function ContactPage() {
             <div className="animate-fade-in-up animation-delay-100 space-y-4">
               <Card className="card-hover border border-black/5 bg-white/80">
                 <CardContent className="flex items-start gap-4 pt-6">
-                  <div className="rounded-2xl bg-[#f7efe7] p-3">
-                    <MapPin className="h-6 w-6 text-[#b8743a]" />
+                  <div className="bg-paper-1 rounded-2xl p-3">
+                    <MapPin className="text-brand-1 h-6 w-6" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-[#2d1c12]">Visit Us</h3>
-                    <p className="mt-1 text-sm text-[#6b5645]">
+                    <h3 className="text-ink-1 font-semibold">Visit Us</h3>
+                    <p className="text-muted-1 mt-1 text-sm">
                       {STORE_INFO.address.line1}
                       <br />
                       {STORE_INFO.address.line2}
@@ -92,7 +92,7 @@ export default function ContactPage() {
                       href={STORE_INFO.address.googleMapsUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-2 inline-block text-sm text-[#b8743a] hover:text-[#a4632f]"
+                      className="text-brand-1 hover:text-brand-2 mt-2 inline-block text-sm"
                     >
                       View on Google Maps →
                     </a>
@@ -102,12 +102,12 @@ export default function ContactPage() {
 
               <Card className="card-hover border border-black/5 bg-white/80">
                 <CardContent className="flex items-start gap-4 pt-6">
-                  <div className="rounded-2xl bg-[#f7efe7] p-3">
-                    <Phone className="h-6 w-6 text-[#b8743a]" />
+                  <div className="bg-paper-1 rounded-2xl p-3">
+                    <Phone className="text-brand-1 h-6 w-6" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-[#2d1c12]">Call Us</h3>
-                    <p className="mt-1 text-sm text-[#6b5645]">
+                    <h3 className="text-ink-1 font-semibold">Call Us</h3>
+                    <p className="text-muted-1 mt-1 text-sm">
                       {STORE_INFO.phone}
                     </p>
                   </div>
@@ -116,12 +116,12 @@ export default function ContactPage() {
 
               <Card className="card-hover border border-black/5 bg-white/80">
                 <CardContent className="flex items-start gap-4 pt-6">
-                  <div className="rounded-2xl bg-[#f7efe7] p-3">
-                    <Mail className="h-6 w-6 text-[#b8743a]" />
+                  <div className="bg-paper-1 rounded-2xl p-3">
+                    <Mail className="text-brand-1 h-6 w-6" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-[#2d1c12]">Email Us</h3>
-                    <p className="mt-1 text-sm text-[#6b5645]">
+                    <h3 className="text-ink-1 font-semibold">Email Us</h3>
+                    <p className="text-muted-1 mt-1 text-sm">
                       {STORE_INFO.email}
                     </p>
                   </div>
@@ -130,17 +130,15 @@ export default function ContactPage() {
 
               <Card className="card-hover border border-black/5 bg-white/80">
                 <CardContent className="flex items-start gap-4 pt-6">
-                  <div className="rounded-2xl bg-[#f7efe7] p-3">
-                    <Clock className="h-6 w-6 text-[#b8743a]" />
+                  <div className="bg-paper-1 rounded-2xl p-3">
+                    <Clock className="text-brand-1 h-6 w-6" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-[#2d1c12]">
-                      Business Hours
-                    </h3>
-                    <p className="mt-1 text-sm text-[#6b5645]">
+                    <h3 className="text-ink-1 font-semibold">Business Hours</h3>
+                    <p className="text-muted-1 mt-1 text-sm">
                       {getWorkingDays()}: {STORE_INFO.businessHours.open}
                       <br />
-                      <span className="text-[#b3474d]">
+                      <span className="text-danger-1">
                         {STORE_INFO.businessHours.closedDay}: Closed
                       </span>
                     </p>
@@ -167,14 +165,14 @@ export default function ContactPage() {
                     />
                   </div>
                   <div className="flex flex-col gap-2 border-t border-black/5 bg-white/80 p-3 sm:flex-row sm:items-center sm:justify-between">
-                    <p className="text-sm text-[#6b5645]">
+                    <p className="text-muted-1 text-sm">
                       {STORE_INFO.address.line1}, {STORE_INFO.address.city}
                     </p>
                     <Button
                       variant="outline"
                       size="sm"
                       asChild
-                      className="w-full rounded-full border-black/10 bg-white/80 text-[#2d1c12] hover:bg-white sm:w-auto"
+                      className="text-ink-1 w-full rounded-full border-black/10 bg-white/80 hover:bg-white sm:w-auto"
                     >
                       <a
                         href={STORE_INFO.address.googleMapsUrl}
@@ -192,7 +190,7 @@ export default function ContactPage() {
           </div>
 
           {/* WhatsApp CTA */}
-          <div className="animate-fade-in-up animation-delay-300 mt-12 rounded-3xl bg-gradient-to-r from-[#2d1c12] via-[#6b3f24] to-[#b8743a] p-8 text-center text-white shadow-[0_30px_70px_rgba(45,28,18,0.35)]">
+          <div className="animate-fade-in-up animation-delay-300 from-ink-1 via-muted-6 to-brand-1 mt-12 rounded-3xl bg-gradient-to-r p-8 text-center text-white shadow-[0_30px_70px_rgba(45,28,18,0.35)]">
             <h2 className="font-display text-2xl">
               Quick Support via WhatsApp
             </h2>
@@ -200,7 +198,7 @@ export default function ContactPage() {
               Get instant responses to your queries
             </p>
             <Button
-              className="mt-6 rounded-full bg-white text-[#2d1c12] hover:bg-white/90"
+              className="text-ink-1 mt-6 rounded-full bg-white hover:bg-white/90"
               size="lg"
               asChild
             >

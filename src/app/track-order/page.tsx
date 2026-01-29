@@ -76,12 +76,12 @@ export default function TrackOrderPage() {
           <nav className="flex items-center gap-2 text-sm">
             <Link
               href="/"
-              className="flex items-center text-[#9c826a] hover:text-[#b8743a]"
+              className="text-muted-2 hover:text-brand-1 flex items-center"
             >
               <Home className="h-4 w-4" />
             </Link>
             <ChevronRight className="h-4 w-4 text-gray-400" />
-            <span className="font-medium text-[#2d1c12]">Track Order</span>
+            <span className="text-ink-1 font-medium">Track Order</span>
           </nav>
         </div>
       </div>
@@ -90,11 +90,11 @@ export default function TrackOrderPage() {
         <FadeIn>
           <div className="mx-auto max-w-2xl">
             <div className="text-center">
-              <Package className="mx-auto h-16 w-16 text-[#b8743a]" />
-              <h1 className="font-display mt-4 text-3xl text-[#2d1c12]">
+              <Package className="text-brand-1 mx-auto h-16 w-16" />
+              <h1 className="font-display text-ink-1 mt-4 text-3xl">
                 Track Your Order
               </h1>
-              <p className="mt-2 text-[#6b5645]">
+              <p className="text-muted-1 mt-2">
                 Enter your order number to check the delivery status
               </p>
             </div>
@@ -104,7 +104,7 @@ export default function TrackOrderPage() {
               <CardContent className="pt-6">
                 <form onSubmit={handleSearch} className="flex gap-3">
                   <div className="relative flex-1">
-                    <Search className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-[#9c826a]" />
+                    <Search className="text-muted-2 absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
                     <Input
                       placeholder="Enter order number (e.g., NT-20241224-XXXX)"
                       className="rounded-2xl border-black/10 bg-white/80 pl-10"
@@ -114,7 +114,7 @@ export default function TrackOrderPage() {
                   </div>
                   <Button
                     type="submit"
-                    className="rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
+                    className="bg-brand-1 hover:bg-brand-2 rounded-full"
                     disabled={isLoading}
                   >
                     {isLoading ? (
@@ -133,17 +133,17 @@ export default function TrackOrderPage() {
                 {isLoading ? (
                   <Card className="mt-6 border border-black/5 bg-white/80">
                     <CardContent className="flex items-center justify-center py-12">
-                      <Loader2 className="h-8 w-8 animate-spin text-[#b8743a]" />
+                      <Loader2 className="text-brand-1 h-8 w-8 animate-spin" />
                     </CardContent>
                   </Card>
                 ) : error ? (
                   <Card className="mt-6 border border-black/5 bg-white/80">
                     <CardContent className="py-12 text-center">
-                      <Package className="mx-auto h-12 w-12 text-[#b0896d]" />
-                      <p className="mt-4 text-lg font-medium text-[#2d1c12]">
+                      <Package className="text-muted-3 mx-auto h-12 w-12" />
+                      <p className="text-ink-1 mt-4 text-lg font-medium">
                         Order not found
                       </p>
-                      <p className="mt-1 text-[#6b5645]">
+                      <p className="text-muted-1 mt-1">
                         Please check your order number and try again
                       </p>
                     </CardContent>
@@ -152,16 +152,16 @@ export default function TrackOrderPage() {
                   <Card className="mt-6 border border-black/5 bg-white/80">
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle className="font-display text-lg text-[#b8743a]">
+                        <CardTitle className="font-display text-brand-1 text-lg">
                           #{order.orderNumber}
                         </CardTitle>
                         <Badge
                           className={
                             order.status === "delivered"
-                              ? "bg-[#eaf4ea] text-[#2f6b3b]"
+                              ? "bg-success-2 text-success-1"
                               : order.status === "cancelled"
-                                ? "bg-[#f7e6e6] text-[#8a2f35]"
-                                : "bg-[#f7efe7] text-[#8a6642]"
+                                ? "bg-danger-3 text-danger-4"
+                                : "bg-paper-1 text-brand-3"
                           }
                         >
                           {order.status}
@@ -188,9 +188,9 @@ export default function TrackOrderPage() {
                                     <div
                                       className={`relative z-10 flex h-10 w-10 items-center justify-center rounded-full ${
                                         isCompleted
-                                          ? "bg-[#b8743a] text-white"
-                                          : "bg-[#f0f0f0] text-[#b0896d]"
-                                      } ${isCurrent ? "ring-4 ring-[#f7efe7]" : ""}`}
+                                          ? "bg-brand-1 text-white"
+                                          : "bg-gray-1 text-muted-3"
+                                      } ${isCurrent ? "ring-paper-1 ring-4" : ""}`}
                                     >
                                       <Icon className="h-5 w-5" />
                                     </div>
@@ -198,8 +198,8 @@ export default function TrackOrderPage() {
                                       <p
                                         className={`font-medium ${
                                           isCompleted
-                                            ? "text-[#2d1c12]"
-                                            : "text-[#9c826a]"
+                                            ? "text-ink-1"
+                                            : "text-muted-2"
                                         }`}
                                       >
                                         {step.label}
@@ -207,7 +207,7 @@ export default function TrackOrderPage() {
                                       {isCurrent &&
                                         step.status === "shipped" &&
                                         order.trackingNumber && (
-                                          <p className="text-sm text-[#6b5645]">
+                                          <p className="text-muted-1 text-sm">
                                             Tracking: {order.trackingNumber}
                                           </p>
                                         )}
@@ -223,8 +223,8 @@ export default function TrackOrderPage() {
                       <div className="rounded-2xl border border-black/5 bg-white/80 p-4">
                         <div className="grid gap-3 text-sm">
                           <div className="flex justify-between">
-                            <span className="text-[#6b5645]">Order Date</span>
-                            <span className="font-medium text-[#2d1c12]">
+                            <span className="text-muted-1">Order Date</span>
+                            <span className="text-ink-1 font-medium">
                               {new Date(order.createdAt).toLocaleDateString(
                                 "en-IN",
                                 {
@@ -236,22 +236,22 @@ export default function TrackOrderPage() {
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-[#6b5645]">
+                            <span className="text-muted-1">
                               Delivery Location
                             </span>
-                            <span className="font-medium text-[#2d1c12]">
+                            <span className="text-ink-1 font-medium">
                               {order.shippingCity}, {order.shippingState}
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-[#6b5645]">Total Amount</span>
-                            <span className="font-medium text-[#b8743a]">
+                            <span className="text-muted-1">Total Amount</span>
+                            <span className="text-brand-1 font-medium">
                               {formatPrice(Number(order.total))}
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-[#6b5645]">Items</span>
-                            <span className="font-medium text-[#2d1c12]">
+                            <span className="text-muted-1">Items</span>
+                            <span className="text-ink-1 font-medium">
                               {order.items.length} item(s)
                             </span>
                           </div>

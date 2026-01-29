@@ -141,12 +141,12 @@ export function ProductFilters({ categorySlug }: ProductFiltersProps) {
         <SheetTrigger asChild>
           <Button
             variant="outline"
-            className="gap-2 rounded-full border-black/10 bg-white/80 text-[#2d1c12] hover:bg-white"
+            className="text-ink-1 gap-2 rounded-full border-black/10 bg-white/80 hover:bg-white"
           >
             <SlidersHorizontal className="h-4 w-4" />
             Filters
             {hasActiveFilters && (
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#b8743a] text-xs text-white">
+              <span className="bg-brand-1 flex h-5 w-5 items-center justify-center rounded-full text-xs text-white">
                 !
               </span>
             )}
@@ -154,7 +154,7 @@ export function ProductFilters({ categorySlug }: ProductFiltersProps) {
         </SheetTrigger>
         <SheetContent side="right" className="w-full sm:max-w-md">
           <SheetHeader>
-            <SheetTitle className="font-display text-xl text-[#2d1c12]">
+            <SheetTitle className="font-display text-ink-1 text-xl">
               Filters
             </SheetTitle>
           </SheetHeader>
@@ -162,7 +162,7 @@ export function ProductFilters({ categorySlug }: ProductFiltersProps) {
           <div className="mt-6 space-y-6">
             {/* Price Range */}
             <div>
-              <Label className="text-sm font-semibold text-[#2d1c12]">
+              <Label className="text-ink-1 text-sm font-semibold">
                 Price Range
               </Label>
               <div className="mt-2 flex items-center gap-2">
@@ -173,7 +173,7 @@ export function ProductFilters({ categorySlug }: ProductFiltersProps) {
                   onChange={(e) => setMinPrice(e.target.value)}
                   className="w-full rounded-2xl border-black/10 bg-white/80"
                 />
-                <span className="text-gray-400">-</span>
+                <span className="text-muted-3">-</span>
                 <Input
                   type="number"
                   placeholder="Max"
@@ -188,7 +188,7 @@ export function ProductFilters({ categorySlug }: ProductFiltersProps) {
 
             {/* Selling Mode (Mobile) */}
             <div className="md:hidden">
-              <Label className="text-sm font-semibold text-[#2d1c12]">
+              <Label className="text-ink-1 text-sm font-semibold">
                 Selling Mode
               </Label>
               <div className="mt-2 flex flex-wrap gap-2">
@@ -200,7 +200,7 @@ export function ProductFilters({ categorySlug }: ProductFiltersProps) {
                     onClick={() => handleModeChange(mode.value)}
                     className={
                       currentMode === mode.value
-                        ? "rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
+                        ? "bg-brand-1 hover:bg-brand-2 rounded-full"
                         : "rounded-full border-black/10 bg-white/80"
                     }
                   >
@@ -216,13 +216,13 @@ export function ProductFilters({ categorySlug }: ProductFiltersProps) {
             <div className="flex gap-3">
               <Button
                 variant="outline"
-                className="flex-1 rounded-full border-black/10 bg-white/80 text-[#2d1c12] hover:bg-white"
+                className="text-ink-1 flex-1 rounded-full border-black/10 bg-white/80 hover:bg-white"
                 onClick={clearFilters}
               >
                 Clear All
               </Button>
               <Button
-                className="flex-1 rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
+                className="bg-brand-1 hover:bg-brand-2 flex-1 rounded-full"
                 onClick={handlePriceFilter}
               >
                 Apply Filters
@@ -239,7 +239,7 @@ export function ProductFilters({ categorySlug }: ProductFiltersProps) {
             <Button
               variant="secondary"
               size="sm"
-              className="h-7 gap-1 rounded-full bg-[#f7efe7] text-xs text-[#5c4a3d]"
+              className="bg-paper-1 text-ink-2 h-7 gap-1 rounded-full text-xs"
               onClick={() => {
                 setMinPrice("");
                 updateFilters({ minPrice: null });
@@ -253,7 +253,7 @@ export function ProductFilters({ categorySlug }: ProductFiltersProps) {
             <Button
               variant="secondary"
               size="sm"
-              className="h-7 gap-1 rounded-full bg-[#f7efe7] text-xs text-[#5c4a3d]"
+              className="bg-paper-1 text-ink-2 h-7 gap-1 rounded-full text-xs"
               onClick={() => {
                 setMaxPrice("");
                 updateFilters({ maxPrice: null });
@@ -267,7 +267,7 @@ export function ProductFilters({ categorySlug }: ProductFiltersProps) {
             <Button
               variant="secondary"
               size="sm"
-              className="h-7 gap-1 rounded-full bg-[#f7efe7] text-xs text-[#5c4a3d]"
+              className="bg-paper-1 text-ink-2 h-7 gap-1 rounded-full text-xs"
               onClick={() => handleModeChange("all")}
             >
               {currentMode === "meter" ? "By Meter" : "By Piece"}

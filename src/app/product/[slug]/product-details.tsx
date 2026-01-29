@@ -225,14 +225,11 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       <div className="border-b border-black/5 bg-white/70">
         <div className="container mx-auto px-4 py-3">
           <nav className="flex items-center gap-2 text-sm">
-            <Link href="/" className="text-[#9c826a] hover:text-[#b8743a]">
+            <Link href="/" className="text-muted-2 hover:text-brand-1">
               <Home className="h-4 w-4" />
             </Link>
             <ChevronRight className="h-4 w-4 text-gray-400" />
-            <Link
-              href="/products"
-              className="text-[#9c826a] hover:text-[#b8743a]"
-            >
+            <Link href="/products" className="text-muted-2 hover:text-brand-1">
               Products
             </Link>
             {product.category && (
@@ -240,14 +237,14 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 <ChevronRight className="h-4 w-4 text-gray-400" />
                 <Link
                   href={`/category/${product.category.slug}`}
-                  className="text-[#9c826a] hover:text-[#b8743a]"
+                  className="text-muted-2 hover:text-brand-1"
                 >
                   {product.category.name}
                 </Link>
               </>
             )}
             <ChevronRight className="h-4 w-4 text-gray-400" />
-            <span className="line-clamp-1 font-medium text-[#2d1c12]">
+            <span className="text-ink-1 line-clamp-1 font-medium">
               {product.name}
             </span>
           </nav>
@@ -258,7 +255,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Image Gallery */}
           <FadeIn className="space-y-3">
-            <div className="relative aspect-square overflow-hidden rounded-2xl border border-black/5 bg-[#f5efe7] shadow-[0_20px_50px_rgba(15,15,15,0.1)]">
+            <div className="bg-paper-2 relative aspect-square overflow-hidden rounded-2xl border border-black/5 shadow-[0_20px_50px_rgba(15,15,15,0.1)]">
               {product.images[selectedImage]?.url ? (
                 <Image
                   src={product.images[selectedImage].url}
@@ -274,7 +271,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 </div>
               )}
               {discount > 0 && (
-                <Badge className="absolute top-3 left-3 bg-[#b3474d] text-white">
+                <Badge className="bg-danger-1 absolute top-3 left-3 text-white">
                   -{discount}%
                 </Badge>
               )}
@@ -289,8 +286,8 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                     className={cn(
                       "relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl border-2 transition-colors",
                       selectedImage === index
-                        ? "border-[#b8743a]"
-                        : "border-transparent hover:border-[#e2c7ab]"
+                        ? "border-brand-1"
+                        : "hover:border-warm-6 border-transparent"
                     )}
                   >
                     <Image
@@ -311,30 +308,30 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             {product.category && (
               <Link
                 href={`/category/${product.category.slug}`}
-                className="text-xs font-semibold tracking-[0.2em] text-[#b0896d] uppercase hover:text-[#b8743a]"
+                className="text-muted-3 hover:text-brand-1 text-xs font-semibold tracking-[0.2em] uppercase"
               >
                 {product.category.name}
               </Link>
             )}
-            <h1 className="font-display text-2xl text-[#2d1c12] md:text-3xl">
+            <h1 className="font-display text-ink-1 text-2xl md:text-3xl">
               {product.name}
             </h1>
 
             {/* Price */}
             <div className="flex items-baseline gap-3">
-              <span className="text-3xl font-semibold text-[#b8743a]">
+              <span className="text-brand-1 text-3xl font-semibold">
                 {formatPrice(price)}
               </span>
-              <span className="text-[#8a6642]">/{product.unit}</span>
+              <span className="text-brand-3">/{product.unit}</span>
               {product.comparePrice && (
-                <span className="text-xl text-[#9c826a] line-through">
+                <span className="text-muted-2 text-xl line-through">
                   {formatPrice(Number(product.comparePrice))}
                 </span>
               )}
             </div>
 
             {product.shortDescription && (
-              <p className="text-sm text-[#6b5645] md:text-base">
+              <p className="text-muted-1 text-sm md:text-base">
                 {product.shortDescription}
               </p>
             )}
@@ -347,12 +344,12 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   <span className="font-semibold text-emerald-700">
                     In Stock
                   </span>
-                  <span className="text-[#8a6642]">
+                  <span className="text-brand-3">
                     ({product.stockQuantity} {product.unit}s available)
                   </span>
                 </>
               ) : (
-                <span className="font-semibold text-[#b3474d]">
+                <span className="text-danger-1 font-semibold">
                   Out of Stock
                 </span>
               )}
@@ -364,56 +361,56 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             <div className="grid grid-cols-2 gap-2 text-sm">
               {product.fabricType && (
                 <div>
-                  <span className="text-[#9c826a]">Fabric:</span>
-                  <span className="ml-2 font-medium text-[#2d1c12]">
+                  <span className="text-muted-2">Fabric:</span>
+                  <span className="text-ink-1 ml-2 font-medium">
                     {product.fabricType}
                   </span>
                 </div>
               )}
               {product.material && (
                 <div>
-                  <span className="text-[#9c826a]">Material:</span>
-                  <span className="ml-2 font-medium text-[#2d1c12]">
+                  <span className="text-muted-2">Material:</span>
+                  <span className="text-ink-1 ml-2 font-medium">
                     {product.material}
                   </span>
                 </div>
               )}
               {product.composition && (
                 <div>
-                  <span className="text-[#9c826a]">Composition:</span>
-                  <span className="ml-2 font-medium text-[#2d1c12]">
+                  <span className="text-muted-2">Composition:</span>
+                  <span className="text-ink-1 ml-2 font-medium">
                     {product.composition}
                   </span>
                 </div>
               )}
               {product.width && (
                 <div>
-                  <span className="text-[#9c826a]">Width:</span>
-                  <span className="ml-2 font-medium text-[#2d1c12]">
+                  <span className="text-muted-2">Width:</span>
+                  <span className="text-ink-1 ml-2 font-medium">
                     {product.width}
                   </span>
                 </div>
               )}
               {product.weight && (
                 <div>
-                  <span className="text-[#9c826a]">Weight:</span>
-                  <span className="ml-2 font-medium text-[#2d1c12]">
+                  <span className="text-muted-2">Weight:</span>
+                  <span className="text-ink-1 ml-2 font-medium">
                     {product.weight}
                   </span>
                 </div>
               )}
               {product.color && (
                 <div>
-                  <span className="text-[#9c826a]">Color:</span>
-                  <span className="ml-2 font-medium text-[#2d1c12]">
+                  <span className="text-muted-2">Color:</span>
+                  <span className="text-ink-1 ml-2 font-medium">
                     {product.color}
                   </span>
                 </div>
               )}
               {product.pattern && (
                 <div>
-                  <span className="text-[#9c826a]">Pattern:</span>
-                  <span className="ml-2 font-medium text-[#2d1c12]">
+                  <span className="text-muted-2">Pattern:</span>
+                  <span className="text-ink-1 ml-2 font-medium">
                     {product.pattern}
                   </span>
                 </div>
@@ -430,7 +427,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                     <div className="flex items-center gap-3">
                       {/* Trash Button */}
                       <button
-                        className="flex h-10 w-10 items-center justify-center rounded-full bg-[#f7e6e6] text-[#b3474d] transition-all hover:bg-[#f1d6d7] active:scale-95"
+                        className="bg-danger-3 text-danger-1 hover:bg-danger-5 flex h-10 w-10 items-center justify-center rounded-full transition-all active:scale-95"
                         onClick={handleRemove}
                       >
                         <Trash2 className="h-5 w-5" />
@@ -442,7 +439,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                           className={cn(
                             "flex h-10 w-10 items-center justify-center transition-all active:scale-95",
                             canDecrement
-                              ? "text-[#5c4a3d] hover:bg-[#f7efe7]"
+                              ? "text-ink-2 hover:bg-paper-1"
                               : "cursor-not-allowed text-gray-300"
                           )}
                           onClick={handleDecrement}
@@ -451,7 +448,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                           <Minus className="h-4 w-4" strokeWidth={2.5} />
                         </button>
                         <div className="flex h-10 min-w-[48px] items-center justify-center bg-white px-2">
-                          <span className="text-lg font-semibold text-[#2d1c12]">
+                          <span className="text-ink-1 text-lg font-semibold">
                             {quantityInCart}
                           </span>
                         </div>
@@ -459,7 +456,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                           className={cn(
                             "flex h-10 w-10 items-center justify-center transition-all active:scale-95",
                             canIncrement
-                              ? "text-[#5c4a3d] hover:bg-[#f7efe7]"
+                              ? "text-ink-2 hover:bg-paper-1"
                               : "cursor-not-allowed text-gray-300"
                           )}
                           onClick={handleIncrement}
@@ -469,13 +466,13 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                         </button>
                       </div>
 
-                      <span className="text-sm text-[#9c826a]">
+                      <span className="text-muted-2 text-sm">
                         {product.unit} (Step: {step})
                       </span>
                     </div>
 
                     {/* Cart Total */}
-                    <div className="inline-flex items-center gap-2 rounded-full bg-[#f7efe7] px-4 py-2 text-sm font-semibold text-[#8a6642]">
+                    <div className="bg-paper-1 text-brand-3 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold">
                       <ShoppingCart className="h-4 w-4" />
                       {formatPrice(price * quantityInCart)} in cart
                     </div>
@@ -484,13 +481,13 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   <div className="flex items-center gap-3">
                     <Button
                       size="lg"
-                      className="flex-1 rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
+                      className="bg-brand-1 hover:bg-brand-2 flex-1 rounded-full"
                       onClick={handleAddToCart}
                     >
                       <ShoppingCart className="mr-2 h-5 w-5" />
                       Add to Cart
                     </Button>
-                    <span className="text-sm text-[#9c826a]">
+                    <span className="text-muted-2 text-sm">
                       Min: {minQty} {product.unit}
                     </span>
                   </div>
@@ -502,21 +499,21 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             <div className="flex gap-2">
               <Button
                 variant="outline"
-                className="flex-1 rounded-full border-black/10 bg-white/80 text-[#2d1c12] hover:bg-white"
+                className="text-ink-1 flex-1 rounded-full border-black/10 bg-white/80 hover:bg-white"
                 onClick={handleToggleWishlist}
                 disabled={toggleWishlistMutation.isPending}
               >
                 <Heart
                   className={cn(
                     "mr-2 h-4 w-4",
-                    isInWishlist && "fill-[#b3474d] text-[#b3474d]"
+                    isInWishlist && "fill-danger-1 text-danger-1"
                   )}
                 />
                 {isInWishlist ? "In Wishlist" : "Add to Wishlist"}
               </Button>
               <Button
                 variant="outline"
-                className="rounded-full border-black/10 bg-white/80 text-[#2d1c12] hover:bg-white"
+                className="text-ink-1 rounded-full border-black/10 bg-white/80 hover:bg-white"
                 onClick={handleShare}
               >
                 <Share2 className="h-4 w-4" />
@@ -526,27 +523,27 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             {/* Features */}
             <div className="grid grid-cols-3 gap-2 rounded-2xl border border-black/5 bg-white/80 p-3">
               <div className="flex flex-col items-center text-center">
-                <Truck className="mb-1 h-5 w-5 text-[#b8743a]" />
+                <Truck className="text-brand-1 mb-1 h-5 w-5" />
                 <span className="text-xs font-medium">Free Delivery</span>
-                <span className="text-[10px] text-[#9c826a]">Above ₹999</span>
+                <span className="text-muted-2 text-[10px]">Above ₹999</span>
               </div>
               <div className="flex flex-col items-center text-center">
-                <Shield className="mb-1 h-5 w-5 text-[#b8743a]" />
+                <Shield className="text-brand-1 mb-1 h-5 w-5" />
                 <span className="text-xs font-medium">Quality Assured</span>
-                <span className="text-[10px] text-[#9c826a]">100% Genuine</span>
+                <span className="text-muted-2 text-[10px]">100% Genuine</span>
               </div>
               <div className="flex flex-col items-center text-center">
-                <RotateCcw className="mb-1 h-5 w-5 text-[#b8743a]" />
+                <RotateCcw className="text-brand-1 mb-1 h-5 w-5" />
                 <span className="text-xs font-medium">Easy Returns</span>
-                <span className="text-[10px] text-[#9c826a]">7 Days</span>
+                <span className="text-muted-2 text-[10px]">7 Days</span>
               </div>
             </div>
 
             {/* Description */}
             {product.description && (
               <div className="space-y-2">
-                <h3 className="font-semibold text-[#2d1c12]">Description</h3>
-                <p className="text-sm whitespace-pre-line text-[#6b5645]">
+                <h3 className="text-ink-1 font-semibold">Description</h3>
+                <p className="text-muted-1 text-sm whitespace-pre-line">
                   {product.description}
                 </p>
               </div>
@@ -554,11 +551,11 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
             {/* Reviews */}
             <div className="space-y-4 border-t pt-6">
-              <h3 className="font-semibold text-[#2d1c12]">Reviews</h3>
+              <h3 className="text-ink-1 font-semibold">Reviews</h3>
               {isLoadingReviews ? (
-                <p className="text-sm text-[#6b5645]">Loading reviews...</p>
+                <p className="text-muted-1 text-sm">Loading reviews...</p>
               ) : !reviews || reviews.length === 0 ? (
-                <p className="text-sm text-[#6b5645]">
+                <p className="text-muted-1 text-sm">
                   No reviews yet. Be the first to review this product.
                 </p>
               ) : (
@@ -570,27 +567,27 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <p className="font-medium text-[#2d1c12]">
+                          <p className="text-ink-1 font-medium">
                             {review.user?.name ?? "Customer"}
                           </p>
                           {review.isVerified && (
-                            <span className="rounded-full bg-[#f7efe7] px-2 py-0.5 text-xs font-semibold text-[#8a6642]">
+                            <span className="bg-paper-1 text-brand-3 rounded-full px-2 py-0.5 text-xs font-semibold">
                               Verified
                             </span>
                           )}
                         </div>
-                        <div className="flex items-center gap-1 text-[#b8743a]">
+                        <div className="text-brand-1 flex items-center gap-1">
                           {Array.from({ length: review.rating }).map((_, i) => (
                             <Star key={i} className="h-4 w-4" />
                           ))}
                         </div>
                       </div>
                       {review.title && (
-                        <p className="mt-2 font-medium text-[#2d1c12]">
+                        <p className="text-ink-1 mt-2 font-medium">
                           {review.title}
                         </p>
                       )}
-                      <p className="mt-1 text-sm text-[#6b5645]">
+                      <p className="text-muted-1 mt-1 text-sm">
                         {review.comment}
                       </p>
                     </div>
@@ -599,10 +596,10 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               )}
 
               <div className="rounded-2xl border border-black/5 bg-white/80 p-4">
-                <h4 className="font-medium text-[#2d1c12]">Write a review</h4>
+                <h4 className="text-ink-1 font-medium">Write a review</h4>
                 <div className="mt-3 space-y-3">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-[#6b5645]">Rating:</span>
+                    <span className="text-muted-1 text-sm">Rating:</span>
                     <div className="flex items-center gap-1">
                       {Array.from({ length: 5 }).map((_, i) => {
                         const value = i + 1;
@@ -612,9 +609,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                             type="button"
                             onClick={() => setRating(value)}
                             className={
-                              value <= rating
-                                ? "text-[#b8743a]"
-                                : "text-gray-300"
+                              value <= rating ? "text-brand-1" : "text-gray-300"
                             }
                             aria-label={`Rate ${value} stars`}
                           >
@@ -640,7 +635,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   <div className="flex items-center gap-2">
                     <Button
                       type="button"
-                      className="rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
+                      className="bg-brand-1 hover:bg-brand-2 rounded-full"
                       onClick={handleSubmitReview}
                       disabled={
                         createReviewMutation.isPending ||
@@ -652,7 +647,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                         : "Submit Review"}
                     </Button>
                     {!isAuthenticated && (
-                      <span className="text-sm text-[#9c826a]">
+                      <span className="text-muted-2 text-sm">
                         Sign in to submit
                       </span>
                     )}

@@ -142,14 +142,15 @@ export default function AdminProductsPage() {
       <FadeIn>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Products</h1>
-            <p className="mt-1 text-gray-500">Manage your product catalog</p>
+            <h1 className="font-display text-ink-1 text-2xl">Products</h1>
+            <p className="text-muted-1 mt-1">Manage your product catalog</p>
           </div>
           <div className="flex gap-2">
             <Button
               variant="outline"
               onClick={() => refetch()}
               disabled={isLoading}
+              className="text-ink-1 rounded-full border-black/10 bg-white/80 hover:bg-white"
             >
               <RefreshCw
                 className={`mr-2 h-4 w-4 ${isLoading ? "animate-spin" : ""}`}
@@ -164,12 +165,13 @@ export default function AdminProductsPage() {
                 setIsQuickAdd(true);
                 setIsFormOpen(true);
               }}
+              className="bg-paper-1 text-ink-1 hover:bg-paper-2 rounded-full border-black/10"
             >
               <Zap className="mr-2 h-4 w-4" />
               Quick Add
             </Button>
             <Button
-              className="bg-amber-600 hover:bg-amber-700"
+              className="bg-ink-1 text-paper-1 hover:bg-ink-0 rounded-full"
               onClick={() => {
                 setEditingProduct(null);
                 setDuplicatingProduct(null);
@@ -186,20 +188,20 @@ export default function AdminProductsPage() {
 
       {/* Filters */}
       <FadeIn delay={0.1}>
-        <Card>
+        <Card className="border border-black/5 bg-white/80">
           <CardContent className="p-4">
             <div className="flex flex-col gap-4 sm:flex-row">
               <div className="relative flex-1">
-                <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                <Search className="text-muted-2 absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                 <Input
                   placeholder="Search products by name, SKU..."
-                  className="pl-10"
+                  className="rounded-2xl border-black/10 bg-white/80 pl-10"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
               <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                <SelectTrigger className="w-full sm:w-48">
+                <SelectTrigger className="w-full rounded-full border-black/10 bg-white/80 sm:w-48">
                   <Filter className="mr-2 h-4 w-4" />
                   <SelectValue placeholder="Filter by category" />
                 </SelectTrigger>
@@ -219,9 +221,9 @@ export default function AdminProductsPage() {
 
       {/* Products Grid */}
       <FadeIn delay={0.2}>
-        <Card>
+        <Card className="border border-black/5 bg-white/80">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="font-display text-ink-1 flex items-center gap-2 text-xl">
               <Package className="h-5 w-5" />
               Products ({filteredProducts.length})
             </CardTitle>
@@ -229,19 +231,19 @@ export default function AdminProductsPage() {
           <CardContent>
             {isLoading ? (
               <div className="flex items-center justify-center py-12">
-                <Loader2 className="h-8 w-8 animate-spin text-amber-600" />
+                <Loader2 className="text-brand-1 h-8 w-8 animate-spin" />
               </div>
             ) : filteredProducts.length === 0 ? (
-              <div className="py-12 text-center text-gray-500">
+              <div className="text-muted-2 py-12 text-center">
                 No products found
               </div>
             ) : (
               <StaggerContainer className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                 {filteredProducts.map((product) => (
                   <StaggerItem key={product.id}>
-                    <div className="rounded-lg border p-3 transition-shadow hover:shadow-md">
+                    <div className="rounded-2xl border border-black/10 bg-white/90 p-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
                       {/* Product Image - Smaller aspect ratio */}
-                      <div className="relative mb-2 aspect-[4/3] overflow-hidden rounded-md bg-gray-100">
+                      <div className="bg-paper-2 relative mb-2 aspect-[4/3] overflow-hidden rounded-xl">
                         {product.images?.[0]?.url ? (
                           <Image
                             src={product.images[0].url}
@@ -252,21 +254,21 @@ export default function AdminProductsPage() {
                           />
                         ) : (
                           <div className="flex h-full items-center justify-center">
-                            <ImageIcon className="h-8 w-8 text-gray-300" />
+                            <ImageIcon className="text-muted-3 h-8 w-8" />
                           </div>
                         )}
                         {!product.isActive && (
                           <div className="absolute inset-0 flex items-center justify-center bg-black/50">
                             <Badge
                               variant="secondary"
-                              className="bg-red-100 text-xs text-red-800"
+                              className="bg-danger-2 text-danger-4 text-xs"
                             >
                               Inactive
                             </Badge>
                           </div>
                         )}
                         {product.isFeatured && (
-                          <Badge className="absolute top-1 left-1 bg-amber-500 text-xs">
+                          <Badge className="bg-paper-1 text-brand-3 absolute top-1 left-1 text-xs">
                             Featured
                           </Badge>
                         )}
@@ -274,31 +276,31 @@ export default function AdminProductsPage() {
 
                       {/* Product Info - More compact */}
                       <div className="space-y-1">
-                        <h3 className="line-clamp-1 text-sm font-medium">
+                        <h3 className="text-ink-1 line-clamp-1 text-sm font-semibold">
                           {product.name}
                         </h3>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-muted-2 text-xs">
                           {product.category?.name}
                         </p>
 
                         <div className="flex items-center justify-between">
-                          <p className="text-sm font-bold text-amber-600">
+                          <p className="text-brand-3 text-sm font-bold">
                             {formatPrice(Number(product.price))}
-                            <span className="text-xs font-normal text-gray-500">
+                            <span className="text-muted-2 text-xs font-normal">
                               /{product.unit}
                             </span>
                           </p>
                           <button
                             onClick={() => handleOpenStockEdit(product)}
-                            className="rounded px-1.5 py-0.5 text-xs transition-colors hover:bg-gray-100"
+                            className="hover:bg-paper-2 rounded-full px-2 py-1 text-xs transition-colors"
                             title="Click to edit stock"
                           >
                             <span
                               className={
                                 Number(product.stockQuantity) <=
                                 Number(product.lowStockThreshold)
-                                  ? "text-red-600"
-                                  : "text-gray-600"
+                                  ? "text-danger-4"
+                                  : "text-muted-2"
                               }
                             >
                               Stock: {product.stockQuantity}
@@ -311,7 +313,7 @@ export default function AdminProductsPage() {
                           <Button
                             variant="outline"
                             size="icon"
-                            className="h-7 w-7"
+                            className="hover:bg-paper-1 h-8 w-8 rounded-full border-black/10 bg-white/80"
                             asChild
                             title="View"
                           >
@@ -322,7 +324,7 @@ export default function AdminProductsPage() {
                           <Button
                             variant="outline"
                             size="icon"
-                            className="h-7 w-7"
+                            className="hover:bg-paper-1 h-8 w-8 rounded-full border-black/10 bg-white/80"
                             onClick={() => {
                               setEditingProduct(product.id);
                               setDuplicatingProduct(null);
@@ -336,7 +338,7 @@ export default function AdminProductsPage() {
                           <Button
                             variant="outline"
                             size="icon"
-                            className="h-7 w-7"
+                            className="hover:bg-paper-1 h-8 w-8 rounded-full border-black/10 bg-white/80"
                             onClick={() => {
                               setEditingProduct(null);
                               setDuplicatingProduct(product.id);
@@ -350,15 +352,15 @@ export default function AdminProductsPage() {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-7 w-7"
+                            className="h-8 w-8 rounded-full"
                             onClick={() => handleToggleStatus(product.id)}
                             disabled={toggleStatusMutation.isPending}
                             title={product.isActive ? "Deactivate" : "Activate"}
                           >
                             {product.isActive ? (
-                              <ToggleRight className="h-4 w-4 text-green-600" />
+                              <ToggleRight className="text-success-1 h-4 w-4" />
                             ) : (
-                              <ToggleLeft className="h-4 w-4 text-gray-400" />
+                              <ToggleLeft className="text-muted-3 h-4 w-4" />
                             )}
                           </Button>
                         </div>
@@ -401,9 +403,9 @@ export default function AdminProductsPage() {
         open={!!stockEditProduct}
         onOpenChange={(open) => !open && setStockEditProduct(null)}
       >
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="border border-black/5 bg-white/90 sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
+            <DialogTitle className="font-display text-ink-1 flex items-center gap-2">
               <PackagePlus className="h-5 w-5" />
               Update Stock
             </DialogTitle>
@@ -411,8 +413,10 @@ export default function AdminProductsPage() {
           {stockEditProduct && (
             <div className="space-y-4">
               <div>
-                <p className="font-medium">{stockEditProduct.name}</p>
-                <p className="text-sm text-gray-500">
+                <p className="text-ink-1 font-medium">
+                  {stockEditProduct.name}
+                </p>
+                <p className="text-muted-2 text-sm">
                   Current stock: {stockEditProduct.currentStock}
                 </p>
               </div>
@@ -435,6 +439,7 @@ export default function AdminProductsPage() {
               variant="outline"
               onClick={() => setStockEditProduct(null)}
               disabled={updateStockMutation.isPending}
+              className="rounded-full border-black/10 bg-white/80"
             >
               <X className="mr-2 h-4 w-4" />
               Cancel
@@ -442,7 +447,7 @@ export default function AdminProductsPage() {
             <Button
               onClick={handleUpdateStock}
               disabled={updateStockMutation.isPending}
-              className="bg-amber-600 hover:bg-amber-700"
+              className="bg-ink-1 text-paper-1 hover:bg-ink-0 rounded-full"
             >
               {updateStockMutation.isPending ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

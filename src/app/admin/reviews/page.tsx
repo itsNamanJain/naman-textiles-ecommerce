@@ -65,8 +65,8 @@ export default function AdminReviewsPage() {
       <FadeIn>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Reviews</h1>
-            <p className="mt-1 text-gray-500">
+            <h1 className="font-display text-ink-1 text-2xl">Reviews</h1>
+            <p className="text-muted-1 mt-1">
               Approve or remove customer reviews
             </p>
           </div>
@@ -76,7 +76,7 @@ export default function AdminReviewsPage() {
               setStatusFilter(value as typeof statusFilter)
             }
           >
-            <SelectTrigger className="w-full sm:w-48">
+            <SelectTrigger className="w-full rounded-full border-black/10 bg-white/80 sm:w-48">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
@@ -89,9 +89,9 @@ export default function AdminReviewsPage() {
       </FadeIn>
 
       <FadeIn delay={0.1}>
-        <Card>
+        <Card className="border border-black/5 bg-white/80">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="font-display text-ink-1 flex items-center gap-2 text-xl">
               <Star className="h-5 w-5" />
               Reviews ({list.length})
             </CardTitle>
@@ -99,37 +99,39 @@ export default function AdminReviewsPage() {
           <CardContent>
             {isLoading ? (
               <div className="flex items-center justify-center py-12">
-                <Loader2 className="h-8 w-8 animate-spin text-amber-600" />
+                <Loader2 className="text-brand-1 h-8 w-8 animate-spin" />
               </div>
             ) : list.length === 0 ? (
-              <div className="py-12 text-center text-gray-500">
+              <div className="text-muted-2 py-12 text-center">
                 No reviews found
               </div>
             ) : (
               <StaggerContainer className="space-y-4">
                 {list.map((review) => (
                   <StaggerItem key={review.id}>
-                    <div className="rounded-lg border p-4">
+                    <div className="rounded-2xl border border-black/10 bg-white/90 p-4 shadow-sm">
                       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                         <div className="space-y-2">
                           <div className="flex items-center gap-2">
-                            <p className="font-medium text-gray-900">
+                            <p className="text-ink-1 font-medium">
                               {review.user?.name ?? "Customer"}
                             </p>
                             {review.isVerified && (
-                              <Badge variant="secondary">Verified</Badge>
+                              <Badge className="bg-paper-1 text-brand-3">
+                                Verified
+                              </Badge>
                             )}
                             {review.isApproved ? (
-                              <Badge className="bg-green-100 text-green-800">
+                              <Badge className="bg-success-2 text-success-1">
                                 Approved
                               </Badge>
                             ) : (
-                              <Badge className="bg-amber-100 text-amber-800">
+                              <Badge className="bg-paper-1 text-brand-3">
                                 Pending
                               </Badge>
                             )}
                           </div>
-                          <div className="flex items-center gap-1 text-amber-500">
+                          <div className="text-brand-3 flex items-center gap-1">
                             {Array.from({ length: review.rating }).map(
                               (_, i) => (
                                 <Star key={i} className="h-4 w-4" />
@@ -137,11 +139,11 @@ export default function AdminReviewsPage() {
                             )}
                           </div>
                           {review.title && (
-                            <p className="font-medium text-gray-900">
+                            <p className="text-ink-1 font-medium">
                               {review.title}
                             </p>
                           )}
-                          <p className="text-sm text-gray-600">
+                          <p className="text-muted-2 text-sm">
                             {review.comment}
                           </p>
                         </div>
@@ -149,6 +151,7 @@ export default function AdminReviewsPage() {
                           <Button
                             variant="outline"
                             size="sm"
+                            className="hover:bg-paper-1 rounded-full border-black/10 bg-white/80"
                             onClick={() =>
                               approveMutation.mutate({
                                 id: review.id,
@@ -164,13 +167,13 @@ export default function AdminReviewsPage() {
                               <Button
                                 variant="outline"
                                 size="sm"
-                                className="text-red-600 hover:text-red-700"
+                                className="text-danger-4 hover:bg-danger-1 hover:text-danger-5 rounded-full border-black/10"
                               >
                                 <Trash2 className="mr-2 h-4 w-4" />
                                 Delete
                               </Button>
                             </AlertDialogTrigger>
-                            <AlertDialogContent>
+                            <AlertDialogContent className="border border-black/5 bg-white/95">
                               <AlertDialogHeader>
                                 <AlertDialogTitle>
                                   Delete Review
@@ -185,7 +188,7 @@ export default function AdminReviewsPage() {
                                   onClick={() =>
                                     deleteMutation.mutate({ id: review.id })
                                   }
-                                  className="bg-red-600 hover:bg-red-700"
+                                  className="bg-danger-4 hover:bg-danger-5 text-white"
                                 >
                                   Delete
                                 </AlertDialogAction>

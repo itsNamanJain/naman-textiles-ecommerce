@@ -47,8 +47,8 @@ function LoadingState() {
     <div className="min-h-[calc(100vh-200px)] bg-transparent">
       <div className="container mx-auto px-4 py-12">
         <div className="flex flex-col items-center justify-center py-16">
-          <Loader2 className="h-12 w-12 animate-spin text-[#b8743a]" />
-          <p className="mt-4 text-[#6b5645]">Loading...</p>
+          <Loader2 className="text-brand-1 h-12 w-12 animate-spin" />
+          <p className="text-muted-1 mt-4">Loading...</p>
         </div>
       </div>
     </div>
@@ -86,21 +86,19 @@ function AccountLayoutInner({ children }: { children: React.ReactNode }) {
           <nav className="flex items-center gap-2 text-sm">
             <Link
               href="/"
-              className="flex items-center text-[#9c826a] hover:text-[#b8743a]"
+              className="text-muted-2 hover:text-brand-1 flex items-center"
             >
               <Home className="h-4 w-4" />
             </Link>
-            <ChevronRight className="h-4 w-4 text-gray-400" />
-            <span className="font-medium text-[#2d1c12]">My Account</span>
+            <ChevronRight className="text-muted-3 h-4 w-4" />
+            <span className="text-ink-1 font-medium">My Account</span>
           </nav>
         </div>
       </div>
 
       <div className="container mx-auto px-4 py-8">
         <FadeIn>
-          <h1 className="font-display mb-8 text-3xl text-[#2d1c12]">
-            My Account
-          </h1>
+          <h1 className="font-display text-ink-1 mb-8 text-3xl">My Account</h1>
         </FadeIn>
 
         <div className="grid gap-8 lg:grid-cols-4">
@@ -122,8 +120,8 @@ function AccountLayoutInner({ children }: { children: React.ReactNode }) {
                         className={cn(
                           "flex items-center gap-3 border-l-4 px-4 py-3 text-sm font-medium transition-colors",
                           isActive
-                            ? "border-[#b8743a] bg-[#f7efe7] text-[#8a6642]"
-                            : "border-transparent text-[#6b5645] hover:bg-white hover:text-[#2d1c12]"
+                            ? "border-brand-1 bg-paper-1 text-brand-3"
+                            : "text-muted-1 hover:text-ink-1 border-transparent hover:bg-white"
                         )}
                       >
                         <item.icon className="h-5 w-5" />
@@ -133,7 +131,7 @@ function AccountLayoutInner({ children }: { children: React.ReactNode }) {
                   })}
                   <button
                     onClick={handleSignOut}
-                    className="flex items-center gap-3 border-l-4 border-transparent px-4 py-3 text-sm font-medium text-[#b3474d] transition-colors hover:bg-[#f7e6e6]"
+                    className="text-danger-1 hover:bg-danger-3 flex items-center gap-3 border-l-4 border-transparent px-4 py-3 text-sm font-medium transition-colors"
                   >
                     <LogOut className="h-5 w-5" />
                     Sign Out

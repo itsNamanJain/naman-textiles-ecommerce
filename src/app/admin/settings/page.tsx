@@ -74,7 +74,7 @@ export default function AdminSettingsPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-24">
-        <Loader2 className="text-primary h-8 w-8 animate-spin" />
+        <Loader2 className="text-brand-1 h-8 w-8 animate-spin" />
       </div>
     );
   }
@@ -85,14 +85,15 @@ export default function AdminSettingsPage() {
       <FadeIn>
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
-            <p className="mt-1 text-gray-500">
+            <h1 className="font-display text-ink-1 text-2xl">Settings</h1>
+            <p className="text-muted-1 mt-1">
               Configure shipping and payment settings
             </p>
           </div>
           <Button
             onClick={handleSave}
             disabled={!hasChanges || updateSettings.isPending}
+            className="bg-ink-1 text-paper-1 hover:bg-ink-0 rounded-full"
           >
             {updateSettings.isPending ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -113,13 +114,13 @@ export default function AdminSettingsPage() {
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Shipping Settings */}
         <FadeIn delay={0.1}>
-          <Card>
+          <Card className="border border-black/5 bg-white/80">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="font-display text-ink-1 flex items-center gap-2 text-xl">
                 <Truck className="h-5 w-5" />
                 Shipping Settings
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-muted-2">
                 Configure shipping rates and free shipping threshold
               </CardDescription>
             </CardHeader>
@@ -129,7 +130,7 @@ export default function AdminSettingsPage() {
                   Free Shipping Threshold
                 </Label>
                 <div className="relative">
-                  <IndianRupee className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                  <IndianRupee className="text-muted-2 absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                   <Input
                     id="shippingFreeThreshold"
                     type="number"
@@ -137,17 +138,17 @@ export default function AdminSettingsPage() {
                     onChange={(e) =>
                       handleChange("shippingFreeThreshold", e.target.value)
                     }
-                    className="pl-10"
+                    className="rounded-2xl border-black/10 bg-white/80 pl-10"
                   />
                 </div>
-                <p className="text-xs text-gray-500">
+                <p className="text-muted-2 text-xs">
                   Orders above this amount get free shipping
                 </p>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="shippingBaseRate">Shipping Rate</Label>
                 <div className="relative">
-                  <IndianRupee className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                  <IndianRupee className="text-muted-2 absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                   <Input
                     id="shippingBaseRate"
                     type="number"
@@ -155,10 +156,10 @@ export default function AdminSettingsPage() {
                     onChange={(e) =>
                       handleChange("shippingBaseRate", e.target.value)
                     }
-                    className="pl-10"
+                    className="rounded-2xl border-black/10 bg-white/80 pl-10"
                   />
                 </div>
-                <p className="text-xs text-gray-500">
+                <p className="text-muted-2 text-xs">
                   Flat shipping rate for orders below free shipping threshold
                 </p>
               </div>
@@ -168,13 +169,13 @@ export default function AdminSettingsPage() {
 
         {/* Order & Payment Settings */}
         <FadeIn delay={0.15}>
-          <Card>
+          <Card className="border border-black/5 bg-white/80">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="font-display text-ink-1 flex items-center gap-2 text-xl">
                 <CreditCard className="h-5 w-5" />
                 Order & Payment Settings
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-muted-2">
                 Configure order limits and payment options
               </CardDescription>
             </CardHeader>
@@ -182,7 +183,7 @@ export default function AdminSettingsPage() {
               <div className="space-y-2">
                 <Label htmlFor="orderMinAmount">Minimum Order Amount</Label>
                 <div className="relative">
-                  <IndianRupee className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                  <IndianRupee className="text-muted-2 absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                   <Input
                     id="orderMinAmount"
                     type="number"
@@ -190,10 +191,10 @@ export default function AdminSettingsPage() {
                     onChange={(e) =>
                       handleChange("orderMinAmount", e.target.value)
                     }
-                    className="pl-10"
+                    className="rounded-2xl border-black/10 bg-white/80 pl-10"
                   />
                 </div>
-                <p className="text-xs text-gray-500">
+                <p className="text-muted-2 text-xs">
                   Customers must order at least this amount
                 </p>
               </div>
@@ -203,7 +204,7 @@ export default function AdminSettingsPage() {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Cash on Delivery</Label>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-muted-2 text-xs">
                     Allow customers to pay on delivery
                   </p>
                 </div>
@@ -218,7 +219,7 @@ export default function AdminSettingsPage() {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Online Payment</Label>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-muted-2 text-xs">
                     Accept online payments (UPI, Cards, etc.)
                   </p>
                 </div>
@@ -243,7 +244,7 @@ export default function AdminSettingsPage() {
           <Button
             onClick={handleSave}
             disabled={!hasChanges || updateSettings.isPending}
-            className="w-full"
+            className="bg-ink-1 text-paper-1 hover:bg-ink-0 w-full rounded-full"
           >
             {updateSettings.isPending ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />

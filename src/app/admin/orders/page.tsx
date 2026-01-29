@@ -39,13 +39,13 @@ import { api } from "@/trpc/react";
 import { toast } from "sonner";
 
 const statusColors: Record<string, string> = {
-  pending: "bg-[#f7efe7] text-[#8a6642]",
-  confirmed: "bg-[#e8f0ff] text-[#2c4a7a]",
-  processing: "bg-[#efe7ff] text-[#4a2b7a]",
-  shipped: "bg-[#e7f0ff] text-[#2b3f7a]",
-  delivered: "bg-[#eaf4ea] text-[#2f6b3b]",
-  cancelled: "bg-[#f7e6e6] text-[#8a2f35]",
-  refunded: "bg-[#f0f0f0] text-[#5c5c5c]",
+  pending: "bg-paper-1 text-brand-3",
+  confirmed: "bg-info-2 text-info-1",
+  processing: "bg-purple-2 text-purple-1",
+  shipped: "bg-indigo-2 text-indigo-1",
+  delivered: "bg-success-2 text-success-1",
+  cancelled: "bg-danger-3 text-danger-4",
+  refunded: "bg-gray-1 text-gray-2",
 };
 
 const statusOptions = [
@@ -132,14 +132,14 @@ export default function AdminOrdersPage() {
       <FadeIn>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="font-display text-2xl text-[#2d1c12]">Orders</h1>
-            <p className="mt-1 text-[#6b5645]">Manage and track all orders</p>
+            <h1 className="font-display text-ink-1 text-2xl">Orders</h1>
+            <p className="text-muted-1 mt-1">Manage and track all orders</p>
           </div>
           <Button
             variant="outline"
             onClick={() => refetch()}
             disabled={isLoading}
-            className="rounded-full border-black/10 bg-white/80 text-[#2d1c12] hover:bg-white"
+            className="text-ink-1 rounded-full border-black/10 bg-white/80 hover:bg-white"
           >
             <RefreshCw
               className={`mr-2 h-4 w-4 ${isLoading ? "animate-spin" : ""}`}
@@ -155,7 +155,7 @@ export default function AdminOrdersPage() {
           <CardContent className="p-4">
             <div className="flex flex-col gap-4 sm:flex-row">
               <div className="relative flex-1">
-                <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[#9c826a]" />
+                <Search className="text-muted-2 absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                 <Input
                   placeholder="Search orders by number, customer..."
                   className="rounded-2xl border-black/10 bg-white/80 pl-10"
@@ -185,7 +185,7 @@ export default function AdminOrdersPage() {
       <FadeIn delay={0.2}>
         <Card className="border border-black/5 bg-white/80">
           <CardHeader>
-            <CardTitle className="font-display flex items-center gap-2 text-xl text-[#2d1c12]">
+            <CardTitle className="font-display text-ink-1 flex items-center gap-2 text-xl">
               <Package className="h-5 w-5" />
               Orders ({filteredOrders.length})
             </CardTitle>
@@ -193,17 +193,17 @@ export default function AdminOrdersPage() {
           <CardContent>
             {isLoading ? (
               <div className="flex items-center justify-center py-12">
-                <Loader2 className="h-8 w-8 animate-spin text-[#b8743a]" />
+                <Loader2 className="text-brand-1 h-8 w-8 animate-spin" />
               </div>
             ) : filteredOrders.length === 0 ? (
-              <div className="py-12 text-center text-[#9c826a]">
+              <div className="text-muted-2 py-12 text-center">
                 No orders found
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-black/5 text-left text-sm text-[#9c826a]">
+                    <tr className="text-muted-2 border-b border-black/5 text-left text-sm">
                       <th className="pb-3 font-medium">Order</th>
                       <th className="pb-3 font-medium">Customer</th>
                       <th className="pb-3 font-medium">Date</th>
@@ -232,22 +232,22 @@ export default function AdminOrdersPage() {
                           >
                             <tr>
                               <td className="py-4">
-                                <p className="font-medium text-[#b8743a]">
+                                <p className="text-brand-1 font-medium">
                                   #{order.orderNumber}
                                 </p>
-                                <p className="text-sm text-[#9c826a]">
+                                <p className="text-muted-2 text-sm">
                                   {order.items.length} item(s)
                                 </p>
                               </td>
                               <td className="py-4">
-                                <p className="font-medium text-[#2d1c12]">
+                                <p className="text-ink-1 font-medium">
                                   {order.user?.name ?? "Guest"}
                                 </p>
-                                <p className="text-sm text-[#9c826a]">
+                                <p className="text-muted-2 text-sm">
                                   {order.user?.email}
                                 </p>
                               </td>
-                              <td className="py-4 text-sm text-[#6b5645]">
+                              <td className="text-muted-1 py-4 text-sm">
                                 {new Date(order.createdAt).toLocaleDateString(
                                   "en-IN",
                                   {
@@ -257,7 +257,7 @@ export default function AdminOrdersPage() {
                                   }
                                 )}
                               </td>
-                              <td className="py-4 font-medium text-[#2d1c12]">
+                              <td className="text-ink-1 py-4 font-medium">
                                 {formatPrice(Number(order.total))}
                               </td>
                               <td className="py-4">
@@ -265,8 +265,8 @@ export default function AdminOrdersPage() {
                                   variant="secondary"
                                   className={
                                     order.paymentStatus === "paid"
-                                      ? "bg-[#eaf4ea] text-[#2f6b3b]"
-                                      : "bg-[#f7efe7] text-[#8a6642]"
+                                      ? "bg-success-2 text-success-1"
+                                      : "bg-paper-1 text-brand-3"
                                   }
                                 >
                                   {order.paymentStatus}
@@ -332,7 +332,7 @@ export default function AdminOrdersPage() {
                                         )
                                       }
                                     >
-                                      <CheckCircle2 className="mr-2 h-4 w-4 text-[#2f6b3b]" />
+                                      <CheckCircle2 className="text-success-1 mr-2 h-4 w-4" />
                                       Delivered
                                     </DropdownMenuItem>
                                     <DropdownMenuItem
@@ -342,7 +342,7 @@ export default function AdminOrdersPage() {
                                           "cancelled"
                                         )
                                       }
-                                      className="text-[#b3474d]"
+                                      className="text-danger-1"
                                     >
                                       <XCircle className="mr-2 h-4 w-4" />
                                       Cancelled
@@ -370,7 +370,7 @@ export default function AdminOrdersPage() {
                                       updateStatusMutation.isPending ||
                                       !canSaveTracking
                                     }
-                                    className="rounded-full border-black/10 bg-white/80 text-[#2d1c12] hover:bg-white"
+                                    className="text-ink-1 rounded-full border-black/10 bg-white/80 hover:bg-white"
                                     onClick={() =>
                                       handleTrackingSave(order.id, order.status)
                                     }
@@ -384,7 +384,7 @@ export default function AdminOrdersPage() {
                                   variant="ghost"
                                   size="sm"
                                   asChild
-                                  className="text-[#2d1c12]"
+                                  className="text-ink-1"
                                 >
                                   <Link
                                     href={`/order-confirmation/${order.id}`}

@@ -66,7 +66,7 @@ export default function WishlistPage() {
       <FadeIn>
         <Card className="border border-black/5 bg-white/80">
           <CardContent className="flex items-center justify-center py-16">
-            <Loader2 className="h-8 w-8 animate-spin text-[#b8743a]" />
+            <Loader2 className="text-brand-1 h-8 w-8 animate-spin" />
           </CardContent>
         </Card>
       </FadeIn>
@@ -78,13 +78,13 @@ export default function WishlistPage() {
       <FadeIn>
         <Card className="border border-black/5 bg-white/80">
           <CardContent className="py-16 text-center">
-            <Heart className="mx-auto mb-4 h-12 w-12 text-[#b0896d]" />
-            <h3 className="font-display text-lg text-[#2d1c12]">
+            <Heart className="text-muted-3 mx-auto mb-4 h-12 w-12" />
+            <h3 className="font-display text-ink-1 text-lg">
               Sign in to view your wishlist
             </h3>
-            <p className="mt-1 text-[#6b5645]">Save items you love for later</p>
+            <p className="text-muted-1 mt-1">Save items you love for later</p>
             <Button
-              className="mt-6 rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
+              className="bg-brand-1 hover:bg-brand-2 mt-6 rounded-full"
               asChild
             >
               <Link href="/auth/signin?callbackUrl=/account/wishlist">
@@ -105,11 +105,11 @@ export default function WishlistPage() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="font-display flex items-center gap-2 text-xl text-[#2d1c12]">
-                <Heart className="h-5 w-5 text-[#b3474d]" />
+              <CardTitle className="font-display text-ink-1 flex items-center gap-2 text-xl">
+                <Heart className="text-danger-1 h-5 w-5" />
                 My Wishlist
               </CardTitle>
-              <CardDescription className="text-[#6b5645]">
+              <CardDescription className="text-muted-1">
                 {items.length} item{items.length !== 1 ? "s" : ""} saved for
                 later
               </CardDescription>
@@ -121,7 +121,7 @@ export default function WishlistPage() {
                     variant="outline"
                     size="sm"
                     disabled={clearMutation.isPending}
-                    className="rounded-full border-black/10 bg-white/80 text-[#2d1c12] hover:bg-white"
+                    className="text-ink-1 rounded-full border-black/10 bg-white/80 hover:bg-white"
                   >
                     Clear All
                   </Button>
@@ -139,7 +139,7 @@ export default function WishlistPage() {
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                     <AlertDialogAction
                       onClick={handleClear}
-                      className="bg-[#b3474d] hover:bg-[#9a3a40]"
+                      className="bg-danger-1 hover:bg-danger-2"
                     >
                       Clear All
                     </AlertDialogAction>
@@ -152,17 +152,15 @@ export default function WishlistPage() {
         <CardContent className="p-4">
           {items.length === 0 ? (
             <div className="py-12 text-center">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#f7efe7]">
-                <Heart className="h-8 w-8 text-[#b0896d]" />
+              <div className="bg-paper-1 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full">
+                <Heart className="text-muted-3 h-8 w-8" />
               </div>
-              <h3 className="font-display text-lg text-[#2d1c12]">
+              <h3 className="font-display text-ink-1 text-lg">
                 Your wishlist is empty
               </h3>
-              <p className="mt-1 text-[#6b5645]">
-                Save items you like for later
-              </p>
+              <p className="text-muted-1 mt-1">Save items you like for later</p>
               <Button
-                className="mt-4 rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
+                className="bg-brand-1 hover:bg-brand-2 mt-4 rounded-full"
                 asChild
               >
                 <Link href="/products">

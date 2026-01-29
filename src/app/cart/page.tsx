@@ -52,8 +52,8 @@ export default function CartPage() {
       <div className="min-h-[calc(100vh-200px)] bg-transparent">
         <div className="container mx-auto px-4 py-12">
           <div className="flex flex-col items-center justify-center py-16">
-            <Loader2 className="h-12 w-12 animate-spin text-[#b8743a]" />
-            <p className="mt-4 text-[#6b5645]">Loading cart...</p>
+            <Loader2 className="text-brand-1 h-12 w-12 animate-spin" />
+            <p className="text-muted-1 mt-4">Loading cart...</p>
           </div>
         </div>
       </div>
@@ -84,17 +84,17 @@ export default function CartPage() {
       <div className="min-h-[calc(100vh-200px)] bg-transparent">
         <div className="container mx-auto px-4 py-12">
           <FadeIn className="flex flex-col items-center justify-center py-16">
-            <div className="rounded-full bg-[#f7efe7] p-8">
-              <ShoppingCart className="h-16 w-16 text-[#b0896d]" />
+            <div className="bg-paper-1 rounded-full p-8">
+              <ShoppingCart className="text-muted-3 h-16 w-16" />
             </div>
-            <h1 className="font-display mt-6 text-2xl text-[#2d1c12]">
+            <h1 className="font-display text-ink-1 mt-6 text-2xl">
               Your cart is empty
             </h1>
-            <p className="mt-2 text-[#6b5645]">
+            <p className="text-muted-1 mt-2">
               Looks like you haven&apos;t added anything to your cart yet
             </p>
             <Button
-              className="mt-8 rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
+              className="bg-brand-1 hover:bg-brand-2 mt-8 rounded-full"
               size="lg"
               asChild
             >
@@ -117,19 +117,19 @@ export default function CartPage() {
           <nav className="flex items-center gap-2 text-sm">
             <Link
               href="/"
-              className="flex items-center text-[#9c826a] hover:text-[#b8743a]"
+              className="text-muted-2 hover:text-brand-1 flex items-center"
             >
               <Home className="h-4 w-4" />
             </Link>
             <ChevronRight className="h-4 w-4 text-gray-400" />
-            <span className="font-medium text-[#2d1c12]">Shopping Cart</span>
+            <span className="text-ink-1 font-medium">Shopping Cart</span>
           </nav>
         </div>
       </div>
 
       <div className="container mx-auto px-4 py-8">
         <FadeIn>
-          <h1 className="font-display mb-8 text-3xl text-[#2d1c12]">
+          <h1 className="font-display text-ink-1 mb-8 text-3xl">
             Shopping Cart ({items.length}{" "}
             {items.length === 1 ? "item" : "items"})
           </h1>
@@ -149,7 +149,7 @@ export default function CartPage() {
                       {/* Product Image */}
                       <Link
                         href={`/product/${item.slug}`}
-                        className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-2xl border border-black/5 bg-[#f5efe7] md:h-32 md:w-32"
+                        className="bg-paper-2 relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-2xl border border-black/5 md:h-32 md:w-32"
                       >
                         {item.image ? (
                           <Image
@@ -172,11 +172,11 @@ export default function CartPage() {
                           <div>
                             <Link
                               href={`/product/${item.slug}`}
-                              className="font-medium text-[#2d1c12] hover:text-[#b8743a]"
+                              className="text-ink-1 hover:text-brand-1 font-medium"
                             >
                               {item.name}
                             </Link>
-                            <p className="mt-1 text-sm text-[#9c826a]">
+                            <p className="text-muted-2 mt-1 text-sm">
                               {formatPrice(item.price)} /{" "}
                               {formatUnit(item.unit)}
                             </p>
@@ -184,7 +184,7 @@ export default function CartPage() {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8 text-[#9c826a] hover:text-[#b3474d]"
+                            className="text-muted-2 hover:text-danger-1 h-8 w-8"
                             onClick={() => handleRemove(item.productId)}
                           >
                             <Trash2 className="h-4 w-4" />
@@ -203,7 +203,7 @@ export default function CartPage() {
                               >
                                 <Minus className="h-3 w-3 sm:h-4 sm:w-4" />
                               </Button>
-                              <div className="flex h-8 w-12 items-center justify-center text-sm font-medium text-[#2d1c12] sm:h-9 sm:w-16">
+                              <div className="text-ink-1 flex h-8 w-12 items-center justify-center text-sm font-medium sm:h-9 sm:w-16">
                                 {formatQuantity(item.quantity, item.unit)}
                               </div>
                               <Button
@@ -219,7 +219,7 @@ export default function CartPage() {
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-8 w-8 text-[#b3474d] hover:bg-[#f7e6e6] hover:text-[#9a3a40] sm:hidden"
+                              className="text-danger-1 hover:bg-danger-3 hover:text-danger-2 h-8 w-8 sm:hidden"
                               onClick={() => handleRemove(item.productId)}
                             >
                               <Trash2 className="h-4 w-4" />
@@ -227,7 +227,7 @@ export default function CartPage() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="hidden text-[#b3474d] hover:bg-[#f7e6e6] hover:text-[#9a3a40] sm:inline-flex"
+                              className="text-danger-1 hover:bg-danger-3 hover:text-danger-2 hidden sm:inline-flex"
                               onClick={() => handleRemove(item.productId)}
                             >
                               <Trash2 className="mr-1 h-4 w-4" />
@@ -236,7 +236,7 @@ export default function CartPage() {
                           </div>
 
                           {/* Item Total */}
-                          <span className="text-base font-semibold text-[#2d1c12] sm:text-lg">
+                          <span className="text-ink-1 text-base font-semibold sm:text-lg">
                             {formatPrice(item.price * item.quantity)}
                           </span>
                         </div>
@@ -249,7 +249,7 @@ export default function CartPage() {
 
             {/* Continue Shopping */}
             <div className="mt-4">
-              <Button variant="ghost" asChild className="text-[#2d1c12]">
+              <Button variant="ghost" asChild className="text-ink-1">
                 <Link href="/products">
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Continue Shopping
@@ -263,17 +263,17 @@ export default function CartPage() {
             <FadeIn delay={0.2}>
               <Card className="sticky top-24 border border-black/5 bg-white/80">
                 <CardHeader>
-                  <CardTitle className="font-display text-xl text-[#2d1c12]">
+                  <CardTitle className="font-display text-ink-1 text-xl">
                     Order Summary
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex justify-between text-sm">
-                    <span className="text-[#6b5645]">Subtotal</span>
+                    <span className="text-muted-1">Subtotal</span>
                     <span className="font-medium">{formatPrice(subtotal)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-[#6b5645]">Shipping</span>
+                    <span className="text-muted-1">Shipping</span>
                     <span className="font-medium">
                       {shipping === 0 ? (
                         <span className="text-emerald-600">FREE</span>
@@ -283,23 +283,23 @@ export default function CartPage() {
                     </span>
                   </div>
                   {subtotal < freeShippingThreshold && (
-                    <p className="text-xs text-[#b8743a]">
+                    <p className="text-brand-1 text-xs">
                       Add {formatPrice(freeShippingThreshold - subtotal)} more
                       for free shipping!
                     </p>
                   )}
                   <Separator />
                   <div className="flex justify-between">
-                    <span className="text-lg font-semibold text-[#2d1c12]">
+                    <span className="text-ink-1 text-lg font-semibold">
                       Total
                     </span>
-                    <span className="text-lg font-semibold text-[#b8743a]">
+                    <span className="text-brand-1 text-lg font-semibold">
                       {formatPrice(total)}
                     </span>
                   </div>
 
                   <Button
-                    className="w-full rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
+                    className="bg-brand-1 hover:bg-brand-2 w-full rounded-full"
                     size="lg"
                     asChild
                   >
@@ -308,14 +308,14 @@ export default function CartPage() {
 
                   {/* Trust Badges */}
                   <div className="grid grid-cols-2 gap-3 pt-4">
-                    <div className="flex items-center gap-2 text-xs text-[#6b5645]">
-                      <Truck className="h-4 w-4 text-[#b8743a]" />
+                    <div className="text-muted-1 flex items-center gap-2 text-xs">
+                      <Truck className="text-brand-1 h-4 w-4" />
                       <span>
                         Free shipping above {formatPrice(freeShippingThreshold)}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2 text-xs text-[#6b5645]">
-                      <Shield className="h-4 w-4 text-[#b8743a]" />
+                    <div className="text-muted-1 flex items-center gap-2 text-xs">
+                      <Shield className="text-brand-1 h-4 w-4" />
                       <span>Secure checkout</span>
                     </div>
                   </div>

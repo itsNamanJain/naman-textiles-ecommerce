@@ -87,16 +87,14 @@ export function SignInForm() {
       <FadeIn className="w-full max-w-md">
         <Card className="border border-black/5 bg-white/85 shadow-[0_30px_80px_rgba(15,15,15,0.12)]">
           <CardHeader className="space-y-1 text-center">
-            <h1 className="font-display text-2xl text-[#2d1c12]">
-              Welcome Back
-            </h1>
-            <p className="text-sm text-[#6b5645]">
+            <h1 className="font-display text-ink-1 text-2xl">Welcome Back</h1>
+            <p className="text-muted-1 text-sm">
               Sign in to your account to continue shopping
             </p>
           </CardHeader>
           <CardContent className="space-y-6">
             {error && (
-              <div className="rounded-2xl bg-[#f7e6e6] p-3 text-center text-sm text-[#b3474d]">
+              <div className="bg-danger-3 text-danger-1 rounded-2xl p-3 text-center text-sm">
                 {error === "CredentialsSignin"
                   ? "Invalid email or password"
                   : "An error occurred. Please try again."}
@@ -107,7 +105,7 @@ export function SignInForm() {
             <Button
               type="button"
               variant="outline"
-              className="w-full rounded-full border-black/10 bg-white/80 text-[#2d1c12] hover:bg-white"
+              className="text-ink-1 w-full rounded-full border-black/10 bg-white/80 hover:bg-white"
               onClick={handleGoogleSignIn}
               disabled={isGoogleLoading}
             >
@@ -138,7 +136,7 @@ export function SignInForm() {
 
             <div className="relative">
               <Separator />
-              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-2 text-xs text-[#9c826a]">
+              <span className="text-muted-2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-2 text-xs">
                 or continue with email
               </span>
             </div>
@@ -180,7 +178,7 @@ export function SignInForm() {
                         <FormLabel>Password</FormLabel>
                         <Link
                           href="/auth/forgot-password"
-                          className="text-xs text-[#b8743a] hover:underline"
+                          className="text-brand-1 text-xs hover:underline"
                         >
                           Forgot password?
                         </Link>
@@ -197,7 +195,7 @@ export function SignInForm() {
                           <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute top-1/2 right-3 -translate-y-1/2 text-[#9c826a] hover:text-[#6b5645]"
+                            className="text-muted-2 hover:text-muted-1 absolute top-1/2 right-3 -translate-y-1/2"
                           >
                             {showPassword ? (
                               <EyeOff className="h-4 w-4" />
@@ -214,7 +212,7 @@ export function SignInForm() {
 
                 <Button
                   type="submit"
-                  className="w-full rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
+                  className="bg-brand-1 hover:bg-brand-2 w-full rounded-full"
                   disabled={isLoading}
                 >
                   {isLoading ? (
@@ -229,11 +227,11 @@ export function SignInForm() {
               </form>
             </Form>
 
-            <p className="text-center text-sm text-[#6b5645]">
+            <p className="text-muted-1 text-center text-sm">
               Don&apos;t have an account?{" "}
               <Link
                 href="/auth/signup"
-                className="font-medium text-[#b8743a] hover:underline"
+                className="text-brand-1 font-medium hover:underline"
               >
                 Sign up
               </Link>

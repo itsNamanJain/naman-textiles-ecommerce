@@ -12,13 +12,13 @@ import { api } from "@/trpc/react";
 import { toast } from "sonner";
 
 const statusColors: Record<string, string> = {
-  pending: "bg-[#f7efe7] text-[#8a6642]",
-  confirmed: "bg-[#e8f0ff] text-[#2c4a7a]",
-  processing: "bg-[#efe7ff] text-[#4a2b7a]",
-  shipped: "bg-[#e7f0ff] text-[#2b3f7a]",
-  delivered: "bg-[#eaf4ea] text-[#2f6b3b]",
-  cancelled: "bg-[#f7e6e6] text-[#8a2f35]",
-  refunded: "bg-[#f0f0f0] text-[#5c5c5c]",
+  pending: "bg-paper-1 text-brand-3",
+  confirmed: "bg-info-2 text-info-1",
+  processing: "bg-purple-2 text-purple-1",
+  shipped: "bg-indigo-2 text-indigo-1",
+  delivered: "bg-success-2 text-success-1",
+  cancelled: "bg-danger-3 text-danger-4",
+  refunded: "bg-gray-1 text-gray-2",
 };
 
 export default function OrdersPage() {
@@ -41,8 +41,8 @@ export default function OrdersPage() {
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-16">
-        <Loader2 className="h-12 w-12 animate-spin text-[#b8743a]" />
-        <p className="mt-4 text-[#6b5645]">Loading orders...</p>
+        <Loader2 className="text-brand-1 h-12 w-12 animate-spin" />
+        <p className="text-muted-1 mt-4">Loading orders...</p>
       </div>
     );
   }
@@ -55,17 +55,17 @@ export default function OrdersPage() {
         <Card className="border border-black/5 bg-white/80">
           <CardContent className="py-16">
             <div className="flex flex-col items-center justify-center text-center">
-              <div className="rounded-full bg-[#f7efe7] p-6">
-                <Package className="h-12 w-12 text-[#b0896d]" />
+              <div className="bg-paper-1 rounded-full p-6">
+                <Package className="text-muted-3 h-12 w-12" />
               </div>
-              <h2 className="font-display mt-4 text-xl text-[#2d1c12]">
+              <h2 className="font-display text-ink-1 mt-4 text-xl">
                 No orders yet
               </h2>
-              <p className="mt-2 text-[#6b5645]">
+              <p className="text-muted-1 mt-2">
                 When you place your first order, it will appear here.
               </p>
               <Button
-                className="mt-6 rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
+                className="bg-brand-1 hover:bg-brand-2 mt-6 rounded-full"
                 asChild
               >
                 <Link href="/products">
@@ -84,7 +84,7 @@ export default function OrdersPage() {
     <FadeIn>
       <Card className="border border-black/5 bg-white/80">
         <CardHeader>
-          <CardTitle className="font-display flex items-center gap-2 text-xl text-[#2d1c12]">
+          <CardTitle className="font-display text-ink-1 flex items-center gap-2 text-xl">
             <Package className="h-5 w-5" />
             My Orders ({orders.length})
           </CardTitle>
@@ -98,21 +98,21 @@ export default function OrdersPage() {
                     {/* Order Info */}
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <p className="font-semibold text-[#b8743a]">
+                        <p className="text-brand-1 font-semibold">
                           #{order.orderNumber}
                         </p>
                         <Badge className={statusColors[order.status]}>
                           {order.status.replace("_", " ")}
                         </Badge>
                       </div>
-                      <p className="text-sm text-[#6b5645]">
+                      <p className="text-muted-1 text-sm">
                         {new Date(order.createdAt).toLocaleDateString("en-IN", {
                           year: "numeric",
                           month: "long",
                           day: "numeric",
                         })}
                       </p>
-                      <p className="text-sm text-[#6b5645]">
+                      <p className="text-muted-1 text-sm">
                         {order.items.length} item
                         {order.items.length > 1 ? "s" : ""}
                       </p>
@@ -121,10 +121,10 @@ export default function OrdersPage() {
                     {/* Order Total & Actions */}
                     <div className="flex items-center gap-4">
                       <div className="text-right">
-                        <p className="text-lg font-semibold text-[#2d1c12]">
+                        <p className="text-ink-1 text-lg font-semibold">
                           {formatPrice(Number(order.total))}
                         </p>
-                        <p className="text-xs text-[#9c826a]">
+                        <p className="text-muted-2 text-xs">
                           {order.paymentMethod === "cod"
                             ? "Cash on Delivery"
                             : "Paid Online"}
@@ -135,7 +135,7 @@ export default function OrdersPage() {
                           <Button
                             variant="outline"
                             size="sm"
-                            className="rounded-full border-black/10 text-[#b3474d] hover:text-[#9a3a40]"
+                            className="text-danger-1 hover:text-danger-2 rounded-full border-black/10"
                             disabled={cancelMutation.isPending}
                             onClick={() => {
                               const confirmed = window.confirm(
@@ -153,7 +153,7 @@ export default function OrdersPage() {
                           variant="outline"
                           size="sm"
                           asChild
-                          className="rounded-full border-black/10 text-[#2d1c12] hover:bg-white"
+                          className="text-ink-1 rounded-full border-black/10 hover:bg-white"
                         >
                           <Link href={`/order-confirmation/${order.id}`}>
                             <Eye className="mr-2 h-4 w-4" />
@@ -171,18 +171,18 @@ export default function OrdersPage() {
                       {order.items.slice(0, 3).map((item) => (
                         <div
                           key={item.id}
-                          className="flex items-center gap-2 rounded-full bg-[#f7efe7] px-3 py-1 text-xs text-[#5c4a3d]"
+                          className="bg-paper-1 text-ink-2 flex items-center gap-2 rounded-full px-3 py-1 text-xs"
                         >
                           <span className="font-medium">
                             {item.productName}
                           </span>
-                          <span className="text-[#9c826a]">
+                          <span className="text-muted-2">
                             x{Number(item.quantity)}
                           </span>
                         </div>
                       ))}
                       {order.items.length > 3 && (
-                        <div className="rounded-full bg-[#f7efe7] px-3 py-1 text-xs text-[#9c826a]">
+                        <div className="bg-paper-1 text-muted-2 rounded-full px-3 py-1 text-xs">
                           +{order.items.length - 3} more
                         </div>
                       )}

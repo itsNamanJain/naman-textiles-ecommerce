@@ -73,8 +73,8 @@ export function Header() {
     <>
       <header className="sticky top-0 z-50 w-full border-b border-black/5 bg-white/80 shadow-[0_8px_30px_rgba(15,15,15,0.04)] backdrop-blur">
         {/* Top Bar */}
-        <div className="hidden border-b border-black/5 bg-gradient-to-r from-[#fff8ee] via-white to-[#fff4e3] md:block">
-          <div className="container mx-auto flex items-center justify-between px-4 py-2 text-xs font-medium tracking-wide text-[#7a5c3a] uppercase">
+        <div className="from-paper-5 to-paper-6 hidden border-b border-black/5 bg-gradient-to-r via-white md:block">
+          <div className="text-muted-4 container mx-auto flex items-center justify-between px-4 py-2 text-xs font-medium tracking-wide uppercase">
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-2">
                 <Phone className="h-4 w-4" />
@@ -84,17 +84,17 @@ export function Header() {
                 href={STORE_INFO.address.googleMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 transition-colors hover:text-[#b8743a]"
+                className="hover:text-brand-1 flex items-center gap-2 transition-colors"
               >
                 <MapPin className="h-4 w-4" />
                 <span>{STORE_INFO.address.city}</span>
               </a>
             </div>
             <div className="flex items-center gap-4">
-              <Link href="/track-order" className="hover:text-[#b8743a]">
+              <Link href="/track-order" className="hover:text-brand-1">
                 Track Order
               </Link>
-              <Link href="/contact" className="hover:text-[#b8743a]">
+              <Link href="/contact" className="hover:text-brand-1">
                 Contact Us
               </Link>
             </div>
@@ -113,34 +113,34 @@ export function Header() {
               </SheetTrigger>
               <SheetContent side="left" className="w-80">
                 <SheetHeader>
-                  <SheetTitle className="font-display text-left text-xl text-[#2d1c12]">
+                  <SheetTitle className="font-display text-ink-1 text-left text-xl">
                     Naman Textiles
                   </SheetTitle>
                 </SheetHeader>
                 <nav className="mt-8 flex flex-col gap-4">
                   <Link
                     href="/"
-                    className="text-lg font-medium text-[#2d1c12] hover:text-[#b8743a]"
+                    className="text-ink-1 hover:text-brand-1 text-lg font-medium"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Home
                   </Link>
                   <Link
                     href="/products"
-                    className="text-lg font-medium text-[#2d1c12] hover:text-[#b8743a]"
+                    className="text-ink-1 hover:text-brand-1 text-lg font-medium"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     All Products
                   </Link>
                   <div className="border-t pt-4">
-                    <span className="mb-3 block text-xs font-semibold tracking-[0.2em] text-[#9c826a] uppercase">
+                    <span className="text-muted-2 mb-3 block text-xs font-semibold tracking-[0.2em] uppercase">
                       Categories
                     </span>
                     {displayCategories.map((category) => (
                       <Link
                         key={category.slug}
                         href={`/category/${category.slug}`}
-                        className="block py-2 text-sm text-[#2d1c12] hover:text-[#b8743a]"
+                        className="text-ink-1 hover:text-brand-1 block py-2 text-sm"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         {category.name}
@@ -150,13 +150,13 @@ export function Header() {
                   <div className="border-t pt-4">
                     {isAuthenticated ? (
                       <>
-                        <div className="py-2 text-sm font-medium text-gray-900">
+                        <div className="text-ink-1 py-2 text-sm font-medium">
                           {session?.user?.name || session?.user?.email}
                         </div>
                         {isAdmin && (
                           <Link
                             href="/admin"
-                            className="flex items-center gap-2 py-2 font-medium text-[#b8743a] hover:text-[#a4632f]"
+                            className="text-brand-1 hover:text-brand-2 flex items-center gap-2 py-2 font-medium"
                             onClick={() => setIsMobileMenuOpen(false)}
                           >
                             <Shield className="h-4 w-4" />
@@ -165,21 +165,21 @@ export function Header() {
                         )}
                         <Link
                           href="/account"
-                          className="block py-2 text-sm text-[#2d1c12] hover:text-[#b8743a]"
+                          className="text-ink-1 hover:text-brand-1 block py-2 text-sm"
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
                           My Account
                         </Link>
                         <Link
                           href="/account/orders"
-                          className="block py-2 text-sm text-[#2d1c12] hover:text-[#b8743a]"
+                          className="text-ink-1 hover:text-brand-1 block py-2 text-sm"
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
                           My Orders
                         </Link>
                         <Link
                           href="/account/wishlist"
-                          className="block py-2 text-sm text-[#2d1c12] hover:text-[#b8743a]"
+                          className="text-ink-1 hover:text-brand-1 block py-2 text-sm"
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
                           Wishlist
@@ -189,7 +189,7 @@ export function Header() {
                             setIsMobileMenuOpen(false);
                             signOut({ callbackUrl: "/" });
                           }}
-                          className="block w-full py-2 text-left text-[#b3474d] hover:text-[#9a3a40]"
+                          className="text-danger-1 hover:text-danger-2 block w-full py-2 text-left"
                         >
                           Sign Out
                         </button>
@@ -198,14 +198,14 @@ export function Header() {
                       <>
                         <Link
                           href="/auth/signin"
-                          className="block py-2 text-sm text-[#2d1c12] hover:text-[#b8743a]"
+                          className="text-ink-1 hover:text-brand-1 block py-2 text-sm"
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
                           Sign In
                         </Link>
                         <Link
                           href="/auth/signup"
-                          className="block py-2 text-sm text-[#2d1c12] hover:text-[#b8743a]"
+                          className="text-ink-1 hover:text-brand-1 block py-2 text-sm"
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
                           Create Account
@@ -221,7 +221,7 @@ export function Header() {
             <Link href="/" className="flex items-center gap-2">
               <motion.div
                 whileHover={{ scale: 1.05 }}
-                className="font-display text-xl font-semibold tracking-wide text-[#2d1c12] md:text-2xl"
+                className="font-display text-ink-1 text-xl font-semibold tracking-wide md:text-2xl"
               >
                 Naman Textiles
               </motion.div>
@@ -233,10 +233,10 @@ export function Header() {
                 onClick={() => setIsSearchOpen(true)}
                 className="relative w-full max-w-xl"
               >
-                <div className="flex w-full items-center rounded-full border border-black/10 bg-white/90 py-2.5 pr-4 pl-12 text-left text-sm text-gray-500 shadow-[0_10px_30px_rgba(15,15,15,0.05)] transition-all hover:border-black/20 hover:bg-white">
+                <div className="text-muted-2 flex w-full items-center rounded-full border border-black/10 bg-white/90 py-2.5 pr-4 pl-12 text-left text-sm shadow-[0_10px_30px_rgba(15,15,15,0.05)] transition-all hover:border-black/20 hover:bg-white">
                   Search fabrics, categories, styles...
                 </div>
-                <Search className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                <Search className="text-muted-3 absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2" />
               </button>
             </div>
 
@@ -262,7 +262,7 @@ export function Header() {
                   >
                     <Heart className="h-5 w-5" />
                     {wishlistCount && wishlistCount > 0 && (
-                      <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+                      <span className="bg-danger-4 absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full text-xs text-white">
                         {wishlistCount > 99 ? "99+" : wishlistCount}
                       </span>
                     )}
@@ -279,7 +279,7 @@ export function Header() {
               >
                 <ShoppingCart className="h-5 w-5" />
                 {cartItemCount > 0 && (
-                  <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#b8743a] text-xs text-white">
+                  <span className="bg-brand-1 absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full text-xs text-white">
                     {cartItemCount > 99 ? "99+" : cartItemCount}
                   </span>
                 )}
@@ -299,14 +299,14 @@ export function Header() {
                 <DropdownMenuContent align="end" className="w-48">
                   {isAuthenticated ? (
                     <>
-                      <div className="px-2 py-1.5 text-sm font-medium text-gray-900">
+                      <div className="text-ink-1 px-2 py-1.5 text-sm font-medium">
                         {session?.user?.name || session?.user?.email}
                       </div>
                       <DropdownMenuSeparator />
                       {isAdmin && (
                         <>
                           <DropdownMenuItem asChild>
-                            <Link href="/admin" className="text-[#b8743a]">
+                            <Link href="/admin" className="text-brand-1">
                               <Shield className="mr-2 h-4 w-4" />
                               Admin Dashboard
                             </Link>
@@ -326,7 +326,7 @@ export function Header() {
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
                         onClick={() => signOut({ callbackUrl: "/" })}
-                        className="text-red-600 focus:text-red-600"
+                        className="text-danger-4 focus:text-danger-4"
                       >
                         <LogOut className="mr-2 h-4 w-4" />
                         Sign Out
@@ -356,8 +356,8 @@ export function Header() {
                 <Link
                   href="/products"
                   className={cn(
-                    "rounded-full px-4 py-2 text-xs font-semibold tracking-wide text-gray-700 uppercase transition-colors",
-                    "hover:bg-[#f7efe7] hover:text-[#b8743a]"
+                    "text-muted-1 rounded-full px-4 py-2 text-xs font-semibold tracking-wide uppercase transition-colors",
+                    "hover:bg-paper-1 hover:text-brand-1"
                   )}
                 >
                   All Products
@@ -368,8 +368,8 @@ export function Header() {
                   <Link
                     href={`/category/${category.slug}`}
                     className={cn(
-                      "rounded-full px-4 py-2 text-xs font-semibold tracking-wide text-gray-700 uppercase transition-colors",
-                      "hover:bg-[#f7efe7] hover:text-[#b8743a]"
+                      "text-muted-1 rounded-full px-4 py-2 text-xs font-semibold tracking-wide uppercase transition-colors",
+                      "hover:bg-paper-1 hover:text-brand-1"
                     )}
                   >
                     {category.name}

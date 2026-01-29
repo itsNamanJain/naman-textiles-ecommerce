@@ -76,10 +76,10 @@ const adminNavItems = [
 
 function LoadingState() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#f6efe6]">
+    <div className="bg-surface-1 flex min-h-screen items-center justify-center">
       <div className="text-center">
-        <Loader2 className="mx-auto h-12 w-12 animate-spin text-[#b8743a]" />
-        <p className="mt-4 text-[#6b5645]">Loading admin panel...</p>
+        <Loader2 className="text-brand-1 mx-auto h-12 w-12 animate-spin" />
+        <p className="text-muted-1 mt-4">Loading admin panel...</p>
       </div>
     </div>
   );
@@ -87,17 +87,15 @@ function LoadingState() {
 
 function AccessDenied() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#f6efe6]">
+    <div className="bg-surface-1 flex min-h-screen items-center justify-center">
       <div className="text-center">
-        <Shield className="mx-auto h-16 w-16 text-[#b3474d]" />
-        <h1 className="font-display mt-4 text-2xl text-[#2d1c12]">
-          Access Denied
-        </h1>
-        <p className="mt-2 text-[#6b5645]">
+        <Shield className="text-danger-1 mx-auto h-16 w-16" />
+        <h1 className="font-display text-ink-1 mt-4 text-2xl">Access Denied</h1>
+        <p className="text-muted-1 mt-2">
           You don&apos;t have permission to access the admin panel.
         </p>
         <Button
-          className="mt-6 rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
+          className="bg-brand-1 hover:bg-brand-2 mt-6 rounded-full"
           asChild
         >
           <Link href="/">Go to Homepage</Link>
@@ -137,7 +135,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#f6efe6]">
+    <div className="bg-surface-1 flex h-screen overflow-hidden">
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div
@@ -149,18 +147,18 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
       {/* Sidebar - Fixed on desktop */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-[#1c120c] transition-transform duration-300 ease-in-out lg:translate-x-0",
+          "bg-ink-0 fixed inset-y-0 left-0 z-50 flex w-64 flex-col transition-transform duration-300 ease-in-out lg:translate-x-0",
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         {/* Logo */}
         <div className="flex h-16 shrink-0 items-center justify-between border-b border-white/10 px-4">
           <Link href="/admin" className="flex items-center gap-2">
-            <Store className="h-8 w-8 text-[#e2b377]" />
+            <Store className="text-sand-6 h-8 w-8" />
             <span className="font-display text-lg text-white">Naman Admin</span>
           </Link>
           <button
-            className="text-[#c4b1a2] hover:text-white lg:hidden"
+            className="text-warm-4 hover:text-white lg:hidden"
             onClick={() => setSidebarOpen(false)}
           >
             <X className="h-6 w-6" />
@@ -183,8 +181,8 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
                     className={cn(
                       "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                       isActive
-                        ? "bg-[#b8743a] text-white"
-                        : "text-[#d9c8b8] hover:bg-white/10 hover:text-white"
+                        ? "bg-brand-1 text-white"
+                        : "text-warm-5 hover:bg-white/10 hover:text-white"
                     )}
                   >
                     <item.icon className="h-5 w-5" />
@@ -199,7 +197,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
           <div className="mt-auto space-y-2 border-t border-white/10 pt-4">
             <Link
               href="/"
-              className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-[#d9c8b8] hover:bg-white/10 hover:text-white"
+              className="text-warm-5 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium hover:bg-white/10 hover:text-white"
             >
               <Store className="h-5 w-5" />
               View Store
@@ -207,7 +205,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
             </Link>
             <button
               onClick={handleSignOut}
-              className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-[#e08a8f] hover:bg-white/10 hover:text-[#f0b5b8]"
+              className="text-rose-1 hover:text-rose-2 flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium hover:bg-white/10"
             >
               <LogOut className="h-5 w-5" />
               Sign Out
@@ -221,7 +219,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
         {/* Top header - sticky within main content area */}
         <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-4 border-b border-black/5 bg-white/80 px-4 shadow-[0_8px_30px_rgba(15,15,15,0.04)] backdrop-blur">
           <button
-            className="text-[#6b5645] hover:text-[#2d1c12] lg:hidden"
+            className="text-muted-1 hover:text-ink-1 lg:hidden"
             onClick={() => setSidebarOpen(true)}
           >
             <Menu className="h-6 w-6" />
@@ -232,12 +230,12 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
           {/* User info */}
           <div className="flex items-center gap-3">
             <div className="text-right">
-              <p className="text-sm font-medium text-[#2d1c12]">
+              <p className="text-ink-1 text-sm font-medium">
                 {session?.user?.name}
               </p>
-              <p className="text-xs text-[#9c826a]">{session?.user?.email}</p>
+              <p className="text-muted-2 text-xs">{session?.user?.email}</p>
             </div>
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#f7efe7] text-[#b8743a]">
+            <div className="bg-paper-1 text-brand-1 flex h-10 w-10 items-center justify-center rounded-full">
               {session?.user?.name?.[0]?.toUpperCase() ?? "A"}
             </div>
           </div>

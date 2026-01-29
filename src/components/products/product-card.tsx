@@ -162,7 +162,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
       )}
     >
       {/* Image */}
-      <div className="relative aspect-square overflow-hidden bg-[#f5efe7]">
+      <div className="bg-paper-2 relative aspect-square overflow-hidden">
         <Link href={`/product/${product.slug}`}>
           {mainImage ? (
             <>
@@ -183,7 +183,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
             </>
           ) : (
             <div className="flex h-full items-center justify-center">
-              <ImageIcon className="h-10 w-10 text-gray-300" />
+              <ImageIcon className="text-muted-3 h-10 w-10" />
             </div>
           )}
         </Link>
@@ -191,17 +191,17 @@ export function ProductCard({ product, className }: ProductCardProps) {
         {/* Badges */}
         <div className="absolute top-1.5 left-1.5 flex flex-col gap-1">
           {discount && (
-            <Badge className="rounded bg-[#b3474d] px-1.5 py-0.5 text-[10px] font-semibold text-white">
+            <Badge className="bg-danger-1 rounded px-1.5 py-0.5 text-[10px] font-semibold text-white">
               -{discount}%
             </Badge>
           )}
           {product.isFeatured && (
-            <Badge className="rounded bg-[#b8743a] px-1.5 py-0.5 text-[10px] font-semibold text-white">
+            <Badge className="bg-brand-1 rounded px-1.5 py-0.5 text-[10px] font-semibold text-white">
               Featured
             </Badge>
           )}
           {isOutOfStock && (
-            <Badge className="rounded bg-[#2d1c12] px-1.5 py-0.5 text-[10px] font-semibold text-white">
+            <Badge className="bg-ink-1 rounded px-1.5 py-0.5 text-[10px] font-semibold text-white">
               Out of Stock
             </Badge>
           )}
@@ -211,9 +211,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
         <button
           className={cn(
             "absolute top-1.5 right-1.5 flex h-7 w-7 items-center justify-center rounded-full bg-white/90 shadow transition-all hover:scale-110",
-            isInWishlist
-              ? "text-[#b3474d]"
-              : "text-gray-400 hover:text-[#b3474d]"
+            isInWishlist ? "text-danger-1" : "text-muted-3 hover:text-danger-1"
           )}
           onClick={handleToggleWishlist}
           disabled={toggleWishlistMutation.isPending}
@@ -236,7 +234,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
             {isInCart ? (
               <div className="flex items-center justify-center gap-1">
                 <button
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-rose-500 shadow transition-all hover:bg-rose-50 active:scale-95"
+                  className="text-danger-4 hover:bg-danger-1 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow transition-all active:scale-95"
                   onClick={handleRemove}
                 >
                   <Trash2 className="h-4 w-4" />
@@ -246,16 +244,16 @@ export function ProductCard({ product, className }: ProductCardProps) {
                     className={cn(
                       "flex h-8 w-8 items-center justify-center transition-all active:scale-95",
                       canDecrement
-                        ? "text-gray-600 hover:bg-gray-100"
-                        : "cursor-not-allowed text-gray-300"
+                        ? "text-muted-1 hover:bg-paper-1"
+                        : "text-muted-3 cursor-not-allowed"
                     )}
                     onClick={handleDecrement}
                     disabled={!canDecrement}
                   >
                     <Minus className="h-3.5 w-3.5" strokeWidth={2.5} />
                   </button>
-                  <div className="flex h-8 min-w-[32px] items-center justify-center bg-amber-50 px-1">
-                    <span className="text-sm font-bold text-gray-900">
+                  <div className="bg-paper-1 flex h-8 min-w-[32px] items-center justify-center px-1">
+                    <span className="text-ink-1 text-sm font-bold">
                       {quantityInCart}
                     </span>
                   </div>
@@ -263,8 +261,8 @@ export function ProductCard({ product, className }: ProductCardProps) {
                     className={cn(
                       "flex h-8 w-8 items-center justify-center transition-all active:scale-95",
                       canIncrement
-                        ? "text-gray-600 hover:bg-gray-100"
-                        : "cursor-not-allowed text-gray-300"
+                        ? "text-muted-1 hover:bg-paper-1"
+                        : "text-muted-3 cursor-not-allowed"
                     )}
                     onClick={handleIncrement}
                     disabled={!canIncrement}
@@ -276,7 +274,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
             ) : (
               <div className="flex justify-center">
                 <Button
-                  className="h-8 rounded-full bg-[#b8743a] px-3 text-xs font-semibold shadow hover:bg-[#a4632f] active:scale-[0.98]"
+                  className="bg-brand-1 hover:bg-brand-2 h-8 rounded-full px-3 text-xs font-semibold shadow active:scale-[0.98]"
                   onClick={handleAddToCart}
                 >
                   <ShoppingCart className="mr-1.5 h-3.5 w-3.5" />
@@ -293,31 +291,31 @@ export function ProductCard({ product, className }: ProductCardProps) {
         {product.category && (
           <Link
             href={`/category/${product.category.slug}`}
-            className="text-[10px] font-semibold tracking-[0.2em] text-[#b0896d] uppercase hover:text-[#b8743a]"
+            className="text-muted-3 hover:text-brand-1 text-[10px] font-semibold tracking-[0.2em] uppercase"
           >
             {product.category.name}
           </Link>
         )}
         <Link href={`/product/${product.slug}`} className="mt-0.5">
-          <h3 className="line-clamp-2 text-sm leading-tight font-semibold text-[#2d1c12] hover:text-[#b8743a]">
+          <h3 className="text-ink-1 hover:text-brand-1 line-clamp-2 text-sm leading-tight font-semibold">
             {product.name}
           </h3>
         </Link>
         <div className="mt-auto flex items-baseline gap-1 pt-1.5">
-          <span className="text-sm font-semibold text-[#2d1c12]">
+          <span className="text-ink-1 text-sm font-semibold">
             {formatPrice(price)}
           </span>
-          <span className="text-[10px] text-[#9c826a]">
+          <span className="text-muted-2 text-[10px]">
             /{formatUnit(product.unit)}
           </span>
           {comparePrice && comparePrice > price && (
-            <span className="text-[10px] text-[#9c826a] line-through">
+            <span className="text-muted-2 text-[10px] line-through">
               {formatPrice(comparePrice)}
             </span>
           )}
         </div>
         {isInCart && (
-          <span className="mt-0.5 inline-flex items-center gap-1 text-[10px] font-semibold text-[#b8743a]">
+          <span className="text-brand-1 mt-0.5 inline-flex items-center gap-1 text-[10px] font-semibold">
             <ShoppingCart className="h-2.5 w-2.5" />
             {formatPrice(price * quantityInCart)} in cart
           </span>

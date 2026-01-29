@@ -178,16 +178,16 @@ export default function AddressesPage() {
         <CardHeader>
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <CardTitle className="font-display flex items-center gap-2 text-xl text-[#2d1c12]">
+              <CardTitle className="font-display text-ink-1 flex items-center gap-2 text-xl">
                 <MapPin className="h-5 w-5" />
                 Saved Addresses
               </CardTitle>
-              <CardDescription className="mt-1 text-[#6b5645]">
+              <CardDescription className="text-muted-1 mt-1">
                 Manage your shipping addresses
               </CardDescription>
             </div>
             <Button
-              className="rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
+              className="bg-brand-1 hover:bg-brand-2 rounded-full"
               onClick={openCreateDialog}
             >
               <Plus className="mr-2 h-4 w-4" />
@@ -198,17 +198,17 @@ export default function AddressesPage() {
         <CardContent>
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-[#b8743a]" />
+              <Loader2 className="text-brand-1 h-8 w-8 animate-spin" />
             </div>
           ) : addressList.length === 0 ? (
             <div className="py-16 text-center">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#f7efe7]">
-                <MapPin className="h-8 w-8 text-[#b0896d]" />
+              <div className="bg-paper-1 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full">
+                <MapPin className="text-muted-3 h-8 w-8" />
               </div>
-              <h3 className="font-display text-lg text-[#2d1c12]">
+              <h3 className="font-display text-ink-1 text-lg">
                 No addresses saved
               </h3>
-              <p className="mt-1 text-[#6b5645]">
+              <p className="text-muted-1 mt-1">
                 Add an address to make checkout faster
               </p>
             </div>
@@ -220,25 +220,25 @@ export default function AddressesPage() {
                     <div className="flex items-start justify-between gap-2">
                       <div>
                         <div className="flex items-center gap-2">
-                          <p className="font-medium text-[#2d1c12]">
+                          <p className="text-ink-1 font-medium">
                             {address.name}
                           </p>
                           {address.isDefault && (
-                            <span className="rounded-full bg-[#f7efe7] px-2 py-0.5 text-xs font-semibold text-[#8a6642]">
+                            <span className="bg-paper-1 text-brand-3 rounded-full px-2 py-0.5 text-xs font-semibold">
                               Default
                             </span>
                           )}
                         </div>
-                        <p className="mt-1 text-sm text-[#6b5645]">
+                        <p className="text-muted-1 mt-1 text-sm">
                           {address.addressLine1}
                           {address.addressLine2
                             ? `, ${address.addressLine2}`
                             : ""}
                         </p>
-                        <p className="text-sm text-[#6b5645]">
+                        <p className="text-muted-1 text-sm">
                           {address.city}, {address.state} - {address.pincode}
                         </p>
-                        <p className="mt-1 text-sm text-[#9c826a]">
+                        <p className="text-muted-2 mt-1 text-sm">
                           +91 {address.phone}
                         </p>
                       </div>
@@ -270,7 +270,7 @@ export default function AddressesPage() {
                             <Button
                               variant="outline"
                               size="icon"
-                              className="h-8 w-8 rounded-full border-black/10 text-[#b3474d] hover:text-[#9a3a40]"
+                              className="text-danger-1 hover:text-danger-2 h-8 w-8 rounded-full border-black/10"
                               title="Delete"
                             >
                               <Trash2 className="h-4 w-4" />
@@ -292,7 +292,7 @@ export default function AddressesPage() {
                                 onClick={() =>
                                   deleteMutation.mutate({ id: address.id })
                                 }
-                                className="bg-[#b3474d] hover:bg-[#9a3a40]"
+                                className="bg-danger-1 hover:bg-danger-2"
                               >
                                 Delete
                               </AlertDialogAction>
@@ -312,7 +312,7 @@ export default function AddressesPage() {
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle className="font-display text-xl text-[#2d1c12]">
+            <DialogTitle className="font-display text-ink-1 text-xl">
               {editingAddressId ? "Edit Address" : "Add Address"}
             </DialogTitle>
           </DialogHeader>
@@ -463,10 +463,10 @@ export default function AddressesPage() {
                 render={({ field }) => (
                   <FormItem className="flex items-center justify-between rounded-2xl border border-black/10 bg-white/80 p-4">
                     <div className="space-y-0.5">
-                      <FormLabel className="text-[#2d1c12]">
+                      <FormLabel className="text-ink-1">
                         Set as default
                       </FormLabel>
-                      <p className="text-sm text-[#6b5645]">
+                      <p className="text-muted-1 text-sm">
                         Use this address by default at checkout
                       </p>
                     </div>
@@ -485,13 +485,13 @@ export default function AddressesPage() {
                   type="button"
                   variant="outline"
                   onClick={() => setDialogOpen(false)}
-                  className="rounded-full border-black/10 bg-white/80 text-[#2d1c12] hover:bg-white"
+                  className="text-ink-1 rounded-full border-black/10 bg-white/80 hover:bg-white"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
-                  className="rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
+                  className="bg-brand-1 hover:bg-brand-2 rounded-full"
                   disabled={
                     createMutation.isPending || updateMutation.isPending
                   }

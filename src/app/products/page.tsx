@@ -47,23 +47,23 @@ export default async function ProductsPage({ searchParams }: Props) {
           <nav className="flex items-center gap-2 text-sm">
             <Link
               href="/"
-              className="flex items-center text-[#9c826a] hover:text-[#b8743a]"
+              className="text-muted-2 hover:text-brand-1 flex items-center"
             >
               <Home className="h-4 w-4" />
             </Link>
-            <ChevronRight className="h-4 w-4 text-gray-400" />
-            <span className="font-medium text-[#2d1c12]">All Products</span>
+            <ChevronRight className="text-muted-3 h-4 w-4" />
+            <span className="text-ink-1 font-medium">All Products</span>
           </nav>
         </div>
       </div>
 
       {/* Header */}
-      <div className="bg-[radial-gradient(circle_at_top,rgba(255,248,238,0.9),rgba(255,255,255,0.7)),linear-gradient(120deg,#fff5e6,#f4e7d8,#fff2dd)] py-10">
+      <div className="bg-page-wash py-10">
         <div className="animate-fade-in-up container mx-auto px-4">
-          <h1 className="font-display text-3xl text-[#2d1c12] md:text-4xl">
+          <h1 className="font-display text-ink-1 text-3xl md:text-4xl">
             {search ? `Search Results for "${search}"` : "All Products"}
           </h1>
-          <p className="mt-2 text-sm text-[#6b5645] md:text-base">
+          <p className="text-muted-1 mt-2 text-sm md:text-base">
             Explore our complete collection of premium fabrics
           </p>
         </div>

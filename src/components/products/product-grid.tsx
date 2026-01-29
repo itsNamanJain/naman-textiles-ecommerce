@@ -70,10 +70,8 @@ export function ProductGrid({
   if (isError) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
-        <p className="text-lg font-medium text-[#2d1c12]">
-          Something went wrong
-        </p>
-        <p className="mt-1 text-sm text-[#6b5645]">
+        <p className="text-ink-1 text-lg font-medium">Something went wrong</p>
+        <p className="text-muted-1 mt-1 text-sm">
           Failed to load products. Please try again later.
         </p>
       </div>
@@ -85,8 +83,8 @@ export function ProductGrid({
   if (products.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
-        <p className="text-lg font-medium text-[#2d1c12]">No products found</p>
-        <p className="mt-1 text-sm text-[#6b5645]">
+        <p className="text-ink-1 text-lg font-medium">No products found</p>
+        <p className="text-muted-1 mt-1 text-sm">
           Try adjusting your filters or search terms
         </p>
       </div>
@@ -106,10 +104,10 @@ export function ProductGrid({
       {/* Infinite scroll trigger */}
       <div ref={ref} className="flex justify-center py-8">
         {isFetchingNextPage && (
-          <Loader2 className="h-6 w-6 animate-spin text-[#b8743a]" />
+          <Loader2 className="text-brand-1 h-6 w-6 animate-spin" />
         )}
         {!hasNextPage && products.length > 0 && (
-          <p className="text-sm text-[#9c826a]">No more products to load</p>
+          <p className="text-muted-2 text-sm">No more products to load</p>
         )}
       </div>
     </>

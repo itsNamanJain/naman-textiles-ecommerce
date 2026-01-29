@@ -105,10 +105,8 @@ export default function SignUpPage() {
       <FadeIn className="w-full max-w-md">
         <Card className="border border-black/5 bg-white/85 shadow-[0_30px_80px_rgba(15,15,15,0.12)]">
           <CardHeader className="space-y-1 text-center">
-            <h1 className="font-display text-2xl text-[#2d1c12]">
-              Create Account
-            </h1>
-            <p className="text-sm text-[#6b5645]">
+            <h1 className="font-display text-ink-1 text-2xl">Create Account</h1>
+            <p className="text-muted-1 text-sm">
               Join Naman Textiles for exclusive deals and offers
             </p>
           </CardHeader>
@@ -117,7 +115,7 @@ export default function SignUpPage() {
             <Button
               type="button"
               variant="outline"
-              className="w-full rounded-full border-black/10 bg-white/80 text-[#2d1c12] hover:bg-white"
+              className="text-ink-1 w-full rounded-full border-black/10 bg-white/80 hover:bg-white"
               onClick={handleGoogleSignIn}
               disabled={isGoogleLoading}
             >
@@ -148,7 +146,7 @@ export default function SignUpPage() {
 
             <div className="relative">
               <Separator />
-              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-2 text-xs text-[#9c826a]">
+              <span className="text-muted-2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-2 text-xs">
                 or register with email
               </span>
             </div>
@@ -242,7 +240,7 @@ export default function SignUpPage() {
                           <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute top-1/2 right-3 -translate-y-1/2 text-[#9c826a] hover:text-[#6b5645]"
+                            className="text-muted-2 hover:text-muted-1 absolute top-1/2 right-3 -translate-y-1/2"
                           >
                             {showPassword ? (
                               <EyeOff className="h-4 w-4" />
@@ -277,7 +275,7 @@ export default function SignUpPage() {
                             onClick={() =>
                               setShowConfirmPassword(!showConfirmPassword)
                             }
-                            className="absolute top-1/2 right-3 -translate-y-1/2 text-[#9c826a] hover:text-[#6b5645]"
+                            className="text-muted-2 hover:text-muted-1 absolute top-1/2 right-3 -translate-y-1/2"
                           >
                             {showConfirmPassword ? (
                               <EyeOff className="h-4 w-4" />
@@ -294,7 +292,7 @@ export default function SignUpPage() {
 
                 <Button
                   type="submit"
-                  className="w-full rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
+                  className="bg-brand-1 hover:bg-brand-2 w-full rounded-full"
                   disabled={signUpMutation.isPending}
                 >
                   {signUpMutation.isPending ? (
@@ -309,23 +307,23 @@ export default function SignUpPage() {
               </form>
             </Form>
 
-            <p className="text-center text-sm text-[#6b5645]">
+            <p className="text-muted-1 text-center text-sm">
               Already have an account?{" "}
               <Link
                 href="/auth/signin"
-                className="font-medium text-[#b8743a] hover:underline"
+                className="text-brand-1 font-medium hover:underline"
               >
                 Sign in
               </Link>
             </p>
 
-            <p className="text-center text-xs text-[#9c826a]">
+            <p className="text-muted-2 text-center text-xs">
               By creating an account, you agree to our{" "}
-              <Link href="/terms" className="underline hover:text-[#b8743a]">
+              <Link href="/terms" className="hover:text-brand-1 underline">
                 Terms of Service
               </Link>{" "}
               and{" "}
-              <Link href="/privacy" className="underline hover:text-[#b8743a]">
+              <Link href="/privacy" className="hover:text-brand-1 underline">
                 Privacy Policy
               </Link>
             </p>

@@ -181,12 +181,15 @@ export default function AdminBannersPage() {
       <FadeIn>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Banners</h1>
-            <p className="mt-1 text-gray-500">
+            <h1 className="font-display text-ink-1 text-2xl">Banners</h1>
+            <p className="text-muted-1 mt-1">
               Create and schedule homepage hero banners
             </p>
           </div>
-          <Button onClick={openCreateDialog}>
+          <Button
+            onClick={openCreateDialog}
+            className="bg-ink-1 text-paper-1 hover:bg-ink-0 rounded-full"
+          >
             <Plus className="mr-2 h-4 w-4" />
             New Banner
           </Button>
@@ -194,13 +197,13 @@ export default function AdminBannersPage() {
       </FadeIn>
 
       <FadeIn delay={0.1}>
-        <Card>
+        <Card className="border border-black/5 bg-white/80">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="font-display text-ink-1 flex items-center gap-2 text-xl">
               <ImageIcon className="h-5 w-5" />
               All Banners
               {banners && (
-                <Badge variant="secondary" className="ml-2">
+                <Badge className="bg-paper-1 text-brand-3 ml-2">
                   {banners.length}
                 </Badge>
               )}
@@ -208,11 +211,11 @@ export default function AdminBannersPage() {
           </CardHeader>
           <CardContent>
             {isLoading ? (
-              <div className="flex items-center justify-center py-12 text-gray-500">
+              <div className="text-muted-2 flex items-center justify-center py-12">
                 Loading banners...
               </div>
             ) : !banners || banners.length === 0 ? (
-              <div className="py-12 text-center text-gray-500">
+              <div className="text-muted-2 py-12 text-center">
                 No banners found. Create your first banner.
               </div>
             ) : (
@@ -220,11 +223,11 @@ export default function AdminBannersPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Title</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Position</TableHead>
-                      <TableHead>Schedule</TableHead>
-                      <TableHead>Image</TableHead>
+                      <TableHead className="text-muted-2">Title</TableHead>
+                      <TableHead className="text-muted-2">Status</TableHead>
+                      <TableHead className="text-muted-2">Position</TableHead>
+                      <TableHead className="text-muted-2">Schedule</TableHead>
+                      <TableHead className="text-muted-2">Image</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -239,9 +242,11 @@ export default function AdminBannersPage() {
                         <TableRow key={banner.id}>
                           <TableCell>
                             <div className="space-y-1">
-                              <p className="font-medium">{banner.title}</p>
+                              <p className="text-ink-1 font-medium">
+                                {banner.title}
+                              </p>
                               {banner.subtitle && (
-                                <p className="text-xs text-gray-500">
+                                <p className="text-muted-2 text-xs">
                                   {banner.subtitle}
                                 </p>
                               )}
@@ -251,18 +256,18 @@ export default function AdminBannersPage() {
                             <Badge
                               className={
                                 banner.isActive
-                                  ? "bg-green-100 text-green-700"
-                                  : "bg-gray-100 text-gray-600"
+                                  ? "bg-success-2 text-success-1"
+                                  : "bg-gray-1 text-gray-2"
                               }
                             >
                               {banner.isActive ? "Active" : "Inactive"}
                             </Badge>
                           </TableCell>
                           <TableCell>{banner.position}</TableCell>
-                          <TableCell className="text-sm text-gray-600">
+                          <TableCell className="text-muted-2 text-sm">
                             {scheduleLabel}
                           </TableCell>
-                          <TableCell className="text-sm text-gray-500">
+                          <TableCell className="text-muted-2 text-sm">
                             {banner.image}
                           </TableCell>
                           <TableCell className="text-right">
@@ -270,6 +275,7 @@ export default function AdminBannersPage() {
                               <Button
                                 variant="outline"
                                 size="sm"
+                                className="hover:bg-paper-1 rounded-full border-black/10 bg-white/80"
                                 onClick={() => openEditDialog(banner.id)}
                               >
                                 <Pencil className="h-4 w-4" />
@@ -277,7 +283,7 @@ export default function AdminBannersPage() {
                               <Button
                                 variant="outline"
                                 size="sm"
-                                className="text-red-600 hover:text-red-700"
+                                className="text-danger-4 hover:bg-danger-1 hover:text-danger-5 rounded-full border-black/10"
                                 onClick={() => openDeleteDialog(banner.id)}
                               >
                                 <Trash2 className="h-4 w-4" />
@@ -296,9 +302,9 @@ export default function AdminBannersPage() {
       </FadeIn>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl border border-black/5 bg-white/90">
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="font-display text-ink-1">
               {editingBannerId ? "Edit Banner" : "Create Banner"}
             </DialogTitle>
             <DialogDescription>
@@ -427,12 +433,17 @@ export default function AdminBannersPage() {
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setIsDialogOpen(false)}
+              className="rounded-full border-black/10 bg-white/80"
+            >
               Cancel
             </Button>
             <Button
               onClick={handleSubmit}
               disabled={createMutation.isPending || updateMutation.isPending}
+              className="bg-ink-1 text-paper-1 hover:bg-ink-0 rounded-full"
             >
               {editingBannerId ? "Save Changes" : "Create Banner"}
             </Button>
@@ -441,7 +452,7 @@ export default function AdminBannersPage() {
       </Dialog>
 
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent>
+        <DialogContent className="border border-black/5 bg-white/95">
           <DialogHeader>
             <DialogTitle>Delete banner?</DialogTitle>
             <DialogDescription>This action cannot be undone.</DialogDescription>
@@ -450,6 +461,7 @@ export default function AdminBannersPage() {
             <Button
               variant="outline"
               onClick={() => setIsDeleteDialogOpen(false)}
+              className="rounded-full border-black/10 bg-white/80"
             >
               Cancel
             </Button>

@@ -49,8 +49,8 @@ export default function OrderConfirmationPage() {
       <div className="min-h-[calc(100vh-200px)] bg-transparent">
         <div className="container mx-auto px-4 py-12">
           <div className="flex flex-col items-center justify-center py-16">
-            <Loader2 className="h-12 w-12 animate-spin text-[#b8743a]" />
-            <p className="mt-4 text-[#6b5645]">Loading order details...</p>
+            <Loader2 className="text-brand-1 h-12 w-12 animate-spin" />
+            <p className="text-muted-1 mt-4">Loading order details...</p>
           </div>
         </div>
       </div>
@@ -62,15 +62,15 @@ export default function OrderConfirmationPage() {
       <div className="min-h-[calc(100vh-200px)] bg-transparent">
         <div className="container mx-auto px-4 py-12">
           <FadeIn className="flex flex-col items-center justify-center py-16">
-            <Package className="h-16 w-16 text-[#b0896d]" />
-            <h1 className="font-display mt-6 text-2xl text-[#2d1c12]">
+            <Package className="text-muted-3 h-16 w-16" />
+            <h1 className="font-display text-ink-1 mt-6 text-2xl">
               Order not found
             </h1>
-            <p className="mt-2 text-[#6b5645]">
+            <p className="text-muted-1 mt-2">
               We couldn&apos;t find the order you&apos;re looking for
             </p>
             <Button
-              className="mt-8 rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
+              className="bg-brand-1 hover:bg-brand-2 mt-8 rounded-full"
               size="lg"
               asChild
             >
@@ -101,14 +101,12 @@ export default function OrderConfirmationPage() {
           <nav className="flex items-center gap-2 text-sm">
             <Link
               href="/"
-              className="flex items-center text-[#9c826a] hover:text-[#b8743a]"
+              className="text-muted-2 hover:text-brand-1 flex items-center"
             >
               <Home className="h-4 w-4" />
             </Link>
             <ChevronRight className="h-4 w-4 text-gray-400" />
-            <span className="font-medium text-[#2d1c12]">
-              Order Confirmation
-            </span>
+            <span className="text-ink-1 font-medium">Order Confirmation</span>
           </nav>
         </div>
       </div>
@@ -116,13 +114,13 @@ export default function OrderConfirmationPage() {
       <div className="container mx-auto px-4 py-8">
         {/* Success Header */}
         <FadeIn className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-[#eaf4ea]">
-            <CheckCircle2 className="h-12 w-12 text-[#2f6b3b]" />
+          <div className="bg-success-2 mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full">
+            <CheckCircle2 className="text-success-1 h-12 w-12" />
           </div>
-          <h1 className="font-display text-3xl text-[#2d1c12]">
+          <h1 className="font-display text-ink-1 text-3xl">
             Thank you for your order!
           </h1>
-          <p className="mt-2 text-[#6b5645]">
+          <p className="text-muted-1 mt-2">
             Your order has been placed successfully
           </p>
         </FadeIn>
@@ -135,8 +133,8 @@ export default function OrderConfirmationPage() {
               <Card className="border border-black/5 bg-white/80">
                 <CardContent className="flex items-center justify-between py-6">
                   <div>
-                    <p className="text-sm text-[#6b5645]">Order Number</p>
-                    <p className="text-2xl font-semibold text-[#b8743a]">
+                    <p className="text-muted-1 text-sm">Order Number</p>
+                    <p className="text-brand-1 text-2xl font-semibold">
                       {order.orderNumber}
                     </p>
                   </div>
@@ -144,7 +142,7 @@ export default function OrderConfirmationPage() {
                     variant="outline"
                     size="sm"
                     onClick={copyOrderNumber}
-                    className="gap-2 rounded-full border-black/10 bg-white/80 text-[#2d1c12] hover:bg-white"
+                    className="text-ink-1 gap-2 rounded-full border-black/10 bg-white/80 hover:bg-white"
                   >
                     {copied ? (
                       <>
@@ -166,21 +164,21 @@ export default function OrderConfirmationPage() {
             <FadeIn delay={0.2}>
               <Card className="border border-black/5 bg-white/80">
                 <CardHeader>
-                  <CardTitle className="font-display flex items-center gap-2 text-xl text-[#2d1c12]">
+                  <CardTitle className="font-display text-ink-1 flex items-center gap-2 text-xl">
                     <Truck className="h-5 w-5" />
                     Order Status
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center gap-4">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#f7efe7]">
-                      <Package className="h-5 w-5 text-[#b8743a]" />
+                    <div className="bg-paper-1 flex h-10 w-10 items-center justify-center rounded-full">
+                      <Package className="text-brand-1 h-5 w-5" />
                     </div>
                     <div>
-                      <p className="font-medium text-[#2d1c12] capitalize">
+                      <p className="text-ink-1 font-medium capitalize">
                         {order.status.replace("_", " ")}
                       </p>
-                      <p className="text-sm text-[#6b5645]">
+                      <p className="text-muted-1 text-sm">
                         {order.status === "pending"
                           ? "Your order is being processed"
                           : order.status === "confirmed"
@@ -203,7 +201,7 @@ export default function OrderConfirmationPage() {
             <FadeIn delay={0.3}>
               <Card className="border border-black/5 bg-white/80">
                 <CardHeader>
-                  <CardTitle className="font-display flex items-center gap-2 text-xl text-[#2d1c12]">
+                  <CardTitle className="font-display text-ink-1 flex items-center gap-2 text-xl">
                     <ShoppingBag className="h-5 w-5" />
                     Order Items ({order.items.length})
                   </CardTitle>
@@ -216,16 +214,16 @@ export default function OrderConfirmationPage() {
                         className="flex items-center justify-between border-b border-black/5 pb-4 last:border-0 last:pb-0"
                       >
                         <div>
-                          <p className="font-medium text-[#2d1c12]">
+                          <p className="text-ink-1 font-medium">
                             {item.productName}
                           </p>
-                          <p className="text-sm text-[#6b5645]">
+                          <p className="text-muted-1 text-sm">
                             {Number(item.quantity)}{" "}
                             {formatUnit(item.unit, Number(item.quantity))} x{" "}
                             {formatPrice(Number(item.price))}
                           </p>
                         </div>
-                        <p className="font-medium text-[#2d1c12]">
+                        <p className="text-ink-1 font-medium">
                           {formatPrice(Number(item.total))}
                         </p>
                       </StaggerItem>
@@ -239,27 +237,27 @@ export default function OrderConfirmationPage() {
             <FadeIn delay={0.4}>
               <Card className="border border-black/5 bg-white/80">
                 <CardHeader>
-                  <CardTitle className="font-display flex items-center gap-2 text-xl text-[#2d1c12]">
+                  <CardTitle className="font-display text-ink-1 flex items-center gap-2 text-xl">
                     <MapPin className="h-5 w-5" />
                     Shipping Address
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    <p className="font-medium text-[#2d1c12]">
+                    <p className="text-ink-1 font-medium">
                       {shippingAddress.name}
                     </p>
-                    <p className="text-[#6b5645]">
+                    <p className="text-muted-1">
                       {shippingAddress.addressLine1}
                       {shippingAddress.addressLine2 && (
                         <>, {shippingAddress.addressLine2}</>
                       )}
                     </p>
-                    <p className="text-[#6b5645]">
+                    <p className="text-muted-1">
                       {shippingAddress.city}, {shippingAddress.state} -{" "}
                       {shippingAddress.pincode}
                     </p>
-                    <div className="flex items-center gap-2 pt-2 text-[#6b5645]">
+                    <div className="text-muted-1 flex items-center gap-2 pt-2">
                       <Phone className="h-4 w-4" />
                       <span>{shippingAddress.phone}</span>
                     </div>
@@ -274,13 +272,13 @@ export default function OrderConfirmationPage() {
             <FadeIn delay={0.5}>
               <Card className="sticky top-24 border border-black/5 bg-white/80">
                 <CardHeader>
-                  <CardTitle className="font-display text-xl text-[#2d1c12]">
+                  <CardTitle className="font-display text-ink-1 text-xl">
                     Payment Summary
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex justify-between text-sm">
-                    <span className="text-[#6b5645]">Subtotal</span>
+                    <span className="text-muted-1">Subtotal</span>
                     <span>{formatPrice(Number(order.subtotal))}</span>
                   </div>
                   {Number(order.discount) > 0 && (
@@ -290,15 +288,15 @@ export default function OrderConfirmationPage() {
                     </div>
                   )}
                   {order.couponCode && (
-                    <div className="flex justify-between text-sm text-[#6b5645]">
+                    <div className="text-muted-1 flex justify-between text-sm">
                       <span>Coupon</span>
-                      <span className="font-medium text-[#2d1c12]">
+                      <span className="text-ink-1 font-medium">
                         {order.couponCode}
                       </span>
                     </div>
                   )}
                   <div className="flex justify-between text-sm">
-                    <span className="text-[#6b5645]">Shipping</span>
+                    <span className="text-muted-1">Shipping</span>
                     <span>
                       {Number(order.shippingCost) === 0 ? (
                         <span className="text-emerald-600">FREE</span>
@@ -309,7 +307,7 @@ export default function OrderConfirmationPage() {
                   </div>
                   {Number(order.tax) > 0 && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-[#6b5645]">Tax</span>
+                      <span className="text-muted-1">Tax</span>
                       <span>{formatPrice(Number(order.tax))}</span>
                     </div>
                   )}
@@ -317,28 +315,28 @@ export default function OrderConfirmationPage() {
                   <Separator />
 
                   <div className="flex justify-between">
-                    <span className="text-lg font-semibold text-[#2d1c12]">
+                    <span className="text-ink-1 text-lg font-semibold">
                       Total
                     </span>
-                    <span className="text-lg font-semibold text-[#b8743a]">
+                    <span className="text-brand-1 text-lg font-semibold">
                       {formatPrice(Number(order.total))}
                     </span>
                   </div>
 
                   <div className="rounded-2xl border border-black/5 bg-white/80 p-4">
-                    <p className="text-sm text-[#6b5645]">
+                    <p className="text-muted-1 text-sm">
                       <span className="font-medium">Payment Method:</span>{" "}
                       {order.paymentMethod === "cod"
                         ? "Cash on Delivery"
                         : "Online Payment"}
                     </p>
-                    <p className="mt-1 text-sm text-[#6b5645]">
+                    <p className="text-muted-1 mt-1 text-sm">
                       <span className="font-medium">Payment Status:</span>{" "}
                       <span
                         className={
                           order.paymentStatus === "paid"
                             ? "text-emerald-600"
-                            : "text-[#b8743a]"
+                            : "text-brand-1"
                         }
                       >
                         {order.paymentStatus === "paid" ? "Paid" : "Pending"}
@@ -348,14 +346,14 @@ export default function OrderConfirmationPage() {
 
                   <div className="space-y-3 pt-4">
                     <Button
-                      className="w-full rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
+                      className="bg-brand-1 hover:bg-brand-2 w-full rounded-full"
                       asChild
                     >
                       <Link href="/account/orders">View All Orders</Link>
                     </Button>
                     <Button
                       variant="outline"
-                      className="w-full rounded-full border-black/10 bg-white/80 text-[#2d1c12] hover:bg-white"
+                      className="text-ink-1 w-full rounded-full border-black/10 bg-white/80 hover:bg-white"
                       asChild
                     >
                       <Link href="/products">Continue Shopping</Link>
@@ -363,13 +361,13 @@ export default function OrderConfirmationPage() {
                   </div>
 
                   {/* Contact Info */}
-                  <div className="pt-4 text-center text-sm text-[#6b5645]">
+                  <div className="text-muted-1 pt-4 text-center text-sm">
                     <p>Need help with your order?</p>
                     <div className="mt-2 flex items-center justify-center gap-2">
                       <Mail className="h-4 w-4" />
                       <a
                         href="mailto:support@namantextiles.com"
-                        className="text-[#b8743a] hover:underline"
+                        className="text-brand-1 hover:underline"
                       >
                         support@namantextiles.com
                       </a>

@@ -108,11 +108,11 @@ export default function ProfilePage() {
       <FadeIn>
         <Card className="border border-black/5 bg-white/80">
           <CardHeader>
-            <CardTitle className="font-display flex items-center gap-2 text-xl text-[#2d1c12]">
+            <CardTitle className="font-display text-ink-1 flex items-center gap-2 text-xl">
               <User className="h-5 w-5" />
               Profile Information
             </CardTitle>
-            <CardDescription className="text-[#6b5645]">
+            <CardDescription className="text-muted-1">
               Update your personal information
             </CardDescription>
           </CardHeader>
@@ -190,7 +190,7 @@ export default function ProfilePage() {
 
                 <Button
                   type="submit"
-                  className="rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
+                  className="bg-brand-1 hover:bg-brand-2 rounded-full"
                   disabled={updateProfile.isPending}
                 >
                   {updateProfile.isPending ? (
@@ -222,30 +222,30 @@ export default function ProfilePage() {
           <Card className="border border-black/5 bg-white/80">
             <CardContent className="pt-6">
               <div className="text-center">
-                <p className="text-3xl font-semibold text-[#b8743a]">
+                <p className="text-brand-1 text-3xl font-semibold">
                   {profile?.stats.totalOrders ?? 0}
                 </p>
-                <p className="mt-1 text-sm text-[#6b5645]">Total Orders</p>
+                <p className="text-muted-1 mt-1 text-sm">Total Orders</p>
               </div>
             </CardContent>
           </Card>
           <Card className="border border-black/5 bg-white/80">
             <CardContent className="pt-6">
               <div className="text-center">
-                <p className="text-3xl font-semibold text-[#b8743a]">
+                <p className="text-brand-1 text-3xl font-semibold">
                   {profile?.stats.wishlistItems ?? 0}
                 </p>
-                <p className="mt-1 text-sm text-[#6b5645]">Wishlist Items</p>
+                <p className="text-muted-1 mt-1 text-sm">Wishlist Items</p>
               </div>
             </CardContent>
           </Card>
           <Card className="border border-black/5 bg-white/80">
             <CardContent className="pt-6">
               <div className="text-center">
-                <p className="text-3xl font-semibold text-[#b8743a]">
+                <p className="text-brand-1 text-3xl font-semibold">
                   {profile?.stats.savedAddresses ?? 0}
                 </p>
-                <p className="mt-1 text-sm text-[#6b5645]">Saved Addresses</p>
+                <p className="text-muted-1 mt-1 text-sm">Saved Addresses</p>
               </div>
             </CardContent>
           </Card>

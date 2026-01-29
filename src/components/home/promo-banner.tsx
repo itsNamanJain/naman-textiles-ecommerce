@@ -11,7 +11,7 @@ export function PromoBanner() {
         <div className="grid gap-6 md:grid-cols-2">
           {/* Left Banner - New Arrivals */}
           <SlideInLeft>
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#2d1c12] via-[#4a2f1f] to-[#7a4b2b] p-8 text-white shadow-[0_30px_70px_rgba(29,18,12,0.35)] md:p-12">
+            <div className="from-ink-1 via-muted-7 to-muted-5 relative overflow-hidden rounded-3xl bg-gradient-to-r p-8 text-white shadow-[0_30px_70px_rgba(29,18,12,0.35)] md:p-12">
               <div className="relative z-10">
                 <span className="mb-2 inline-block rounded-full bg-white/20 px-4 py-1 text-xs tracking-[0.2em] uppercase">
                   New Arrivals
@@ -25,7 +25,7 @@ export function PromoBanner() {
                 <Button
                   asChild
                   variant="secondary"
-                  className="rounded-full bg-white text-[#2d1c12] hover:bg-white/90"
+                  className="text-ink-1 rounded-full bg-white hover:bg-white/90"
                 >
                   <Link href="/new-arrivals">Explore Now</Link>
                 </Button>
@@ -40,7 +40,7 @@ export function PromoBanner() {
 
           {/* Right Banner - Bulk Orders */}
           <SlideInRight>
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#b8743a] via-[#c9874c] to-[#e2b377] p-8 text-white shadow-[0_30px_70px_rgba(184,116,58,0.25)] md:p-12">
+            <div className="from-brand-1 via-sand-5 to-sand-6 relative overflow-hidden rounded-3xl bg-gradient-to-r p-8 text-white shadow-[0_30px_70px_rgba(184,116,58,0.25)] md:p-12">
               <div className="relative z-10">
                 <span className="mb-2 inline-block rounded-full bg-white/20 px-4 py-1 text-xs tracking-[0.2em] uppercase">
                   For Businesses
@@ -54,7 +54,7 @@ export function PromoBanner() {
                 <Button
                   asChild
                   variant="secondary"
-                  className="rounded-full bg-white text-[#7a4b2b] hover:bg-white/90"
+                  className="text-muted-5 rounded-full bg-white hover:bg-white/90"
                 >
                   <Link href="/bulk-orders">Get Quote</Link>
                 </Button>

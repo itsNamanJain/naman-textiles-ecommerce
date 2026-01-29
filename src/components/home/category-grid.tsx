@@ -17,10 +17,10 @@ interface CategoryGridProps {
 
 // Neutral palette for category cards
 const categoryTints = [
-  "from-[#fdf4e9] to-[#f6e6d2]",
-  "from-[#f9efe4] to-[#f1dfc7]",
-  "from-[#fdf6ee] to-[#f4e5cf]",
-  "from-[#f7efe7] to-[#ead8c3]",
+  "from-paper-15 to-paper-16",
+  "from-paper-17 to-paper-18",
+  "from-paper-10 to-paper-21",
+  "from-paper-1 to-paper-19",
 ];
 
 export function CategoryGrid({
@@ -36,18 +36,18 @@ export function CategoryGrid({
     <section className="py-12 md:py-16">
       <div className="container mx-auto px-4">
         <FadeInView className="mb-8 text-center md:mb-12">
-          <h2 className="font-display mb-2 text-2xl text-[#2d1c12] md:text-3xl lg:text-4xl">
+          <h2 className="font-display text-ink-1 mb-2 text-2xl md:text-3xl lg:text-4xl">
             {title}
           </h2>
-          <p className="text-sm text-[#6b5645] md:text-base">{subtitle}</p>
+          <p className="text-muted-1 text-sm md:text-base">{subtitle}</p>
         </FadeInView>
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-amber-600" />
+            <Loader2 className="text-brand-1 h-8 w-8 animate-spin" />
           </div>
         ) : displayCategories.length === 0 ? (
-          <div className="py-12 text-center text-gray-500">
+          <div className="text-muted-2 py-12 text-center">
             No categories found
           </div>
         ) : (
@@ -92,12 +92,12 @@ export function CategoryGrid({
 
                     {/* Content */}
                     <div className="relative flex h-full flex-col justify-end">
-                      <h3 className="text-lg font-semibold text-[#2d1c12] md:text-xl">
+                      <h3 className="text-ink-1 text-lg font-semibold md:text-xl">
                         {category.name}
                       </h3>
                       {category.productCount !== undefined &&
                         category.productCount > 0 && (
-                          <p className="text-sm text-[#7a5c3a]">
+                          <p className="text-muted-4 text-sm">
                             {category.productCount}{" "}
                             {category.productCount === 1
                               ? "Product"
@@ -108,9 +108,9 @@ export function CategoryGrid({
 
                     {/* Hover Arrow */}
                     <div className="absolute top-4 right-4 opacity-0 transition-opacity group-hover:opacity-100">
-                      <div className="rounded-full bg-white/70 p-2 text-[#2d1c12] shadow-sm">
+                      <div className="text-ink-1 rounded-full bg-white/70 p-2 shadow-sm">
                         <svg
-                          className="h-4 w-4 text-[#2d1c12]"
+                          className="text-ink-1 h-4 w-4"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"

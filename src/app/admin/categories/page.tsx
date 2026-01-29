@@ -166,8 +166,8 @@ export default function AdminCategoriesPage() {
       <FadeIn>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Categories</h1>
-            <p className="mt-1 text-gray-500">
+            <h1 className="font-display text-ink-1 text-2xl">Categories</h1>
+            <p className="text-muted-1 mt-1">
               Organize your products into categories
             </p>
           </div>
@@ -176,6 +176,7 @@ export default function AdminCategoriesPage() {
               variant="outline"
               onClick={() => refetch()}
               disabled={isLoading}
+              className="text-ink-1 rounded-full border-black/10 bg-white/80 hover:bg-white"
             >
               <RefreshCw
                 className={`mr-2 h-4 w-4 ${isLoading ? "animate-spin" : ""}`}
@@ -184,14 +185,14 @@ export default function AdminCategoriesPage() {
             </Button>
             <Dialog open={isDialogOpen} onOpenChange={handleOpenChange}>
               <DialogTrigger asChild>
-                <Button className="bg-amber-600 hover:bg-amber-700">
+                <Button className="bg-ink-1 text-paper-1 hover:bg-ink-0 rounded-full">
                   <Plus className="mr-2 h-4 w-4" />
                   Add Category
                 </Button>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="border border-black/5 bg-white/90">
                 <DialogHeader>
-                  <DialogTitle>
+                  <DialogTitle className="font-display text-ink-1">
                     {editingCategory ? "Edit Category" : "Add New Category"}
                   </DialogTitle>
                   <DialogDescription>
@@ -257,11 +258,12 @@ export default function AdminCategoriesPage() {
                   <Button
                     variant="outline"
                     onClick={() => handleOpenChange(false)}
+                    className="rounded-full border-black/10 bg-white/80"
                   >
                     Cancel
                   </Button>
                   <Button
-                    className="bg-amber-600 hover:bg-amber-700"
+                    className="bg-ink-1 text-paper-1 hover:bg-ink-0 rounded-full"
                     onClick={handleSubmit}
                     disabled={
                       createMutation.isPending || updateMutation.isPending
@@ -281,9 +283,9 @@ export default function AdminCategoriesPage() {
 
       {/* Categories Grid */}
       <FadeIn delay={0.1}>
-        <Card>
+        <Card className="border border-black/5 bg-white/80">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="font-display text-ink-1 flex items-center gap-2 text-xl">
               <FolderTree className="h-5 w-5" />
               Categories ({categories?.length ?? 0})
             </CardTitle>
@@ -291,19 +293,19 @@ export default function AdminCategoriesPage() {
           <CardContent>
             {isLoading ? (
               <div className="flex items-center justify-center py-12">
-                <Loader2 className="h-8 w-8 animate-spin text-amber-600" />
+                <Loader2 className="text-brand-1 h-8 w-8 animate-spin" />
               </div>
             ) : !categories || categories.length === 0 ? (
-              <div className="py-12 text-center text-gray-500">
+              <div className="text-muted-2 py-12 text-center">
                 No categories found. Create your first category!
               </div>
             ) : (
               <StaggerContainer className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {categories.map((category) => (
                   <StaggerItem key={category.id}>
-                    <div className="rounded-lg border p-4 transition-shadow hover:shadow-md">
+                    <div className="rounded-2xl border border-black/10 bg-white/90 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
                       {/* Category Image */}
-                      <div className="relative mb-3 aspect-video overflow-hidden rounded-lg bg-gray-100">
+                      <div className="bg-paper-2 relative mb-3 aspect-video overflow-hidden rounded-2xl">
                         {category.image ? (
                           <Image
                             src={category.image}
@@ -314,14 +316,14 @@ export default function AdminCategoriesPage() {
                           />
                         ) : (
                           <div className="flex h-full items-center justify-center">
-                            <ImageIcon className="h-12 w-12 text-gray-300" />
+                            <ImageIcon className="text-muted-3 h-12 w-12" />
                           </div>
                         )}
                         {!category.isActive && (
                           <div className="absolute inset-0 flex items-center justify-center bg-black/50">
                             <Badge
                               variant="secondary"
-                              className="bg-red-100 text-red-800"
+                              className="bg-danger-2 text-danger-4"
                             >
                               Inactive
                             </Badge>
@@ -333,20 +335,22 @@ export default function AdminCategoriesPage() {
                       <div className="space-y-2">
                         <div className="flex items-start justify-between">
                           <div>
-                            <h3 className="font-medium">{category.name}</h3>
-                            <p className="text-sm text-gray-500">
+                            <h3 className="text-ink-1 font-medium">
+                              {category.name}
+                            </h3>
+                            <p className="text-muted-2 text-sm">
                               /{category.slug}
                             </p>
                           </div>
                           {category.isActive ? (
-                            <ToggleRight className="h-5 w-5 text-green-600" />
+                            <ToggleRight className="text-success-1 h-5 w-5" />
                           ) : (
-                            <ToggleLeft className="h-5 w-5 text-gray-400" />
+                            <ToggleLeft className="text-muted-3 h-5 w-5" />
                           )}
                         </div>
 
                         {category.description && (
-                          <p className="line-clamp-2 text-sm text-gray-600">
+                          <p className="text-muted-2 line-clamp-2 text-sm">
                             {category.description}
                           </p>
                         )}
@@ -356,7 +360,7 @@ export default function AdminCategoriesPage() {
                           <Button
                             variant="outline"
                             size="sm"
-                            className="flex-1"
+                            className="hover:bg-paper-1 flex-1 rounded-full border-black/10 bg-white/80"
                             onClick={() => handleEdit(category)}
                           >
                             <Edit className="mr-1 h-4 w-4" />
@@ -367,13 +371,13 @@ export default function AdminCategoriesPage() {
                               <Button
                                 variant="outline"
                                 size="sm"
-                                className="text-red-600 hover:bg-red-50 hover:text-red-700"
+                                className="text-danger-4 hover:bg-danger-1 hover:text-danger-4 rounded-full border-black/10"
                                 disabled={deleteMutation.isPending}
                               >
                                 <Trash2 className="h-4 w-4" />
                               </Button>
                             </AlertDialogTrigger>
-                            <AlertDialogContent>
+                            <AlertDialogContent className="border border-black/5 bg-white/95">
                               <AlertDialogHeader>
                                 <AlertDialogTitle>
                                   Delete Category
@@ -388,7 +392,7 @@ export default function AdminCategoriesPage() {
                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                                 <AlertDialogAction
                                   onClick={() => handleDelete(category.id)}
-                                  className="bg-red-600 hover:bg-red-700"
+                                  className="bg-danger-4 hover:bg-danger-5 text-white"
                                 >
                                   Delete
                                 </AlertDialogAction>

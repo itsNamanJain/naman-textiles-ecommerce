@@ -135,8 +135,8 @@ function LoadingSpinner() {
     <div className="min-h-[calc(100vh-200px)] bg-transparent">
       <div className="container mx-auto px-4 py-12">
         <div className="flex flex-col items-center justify-center py-16">
-          <Loader2 className="h-12 w-12 animate-spin text-[#b8743a]" />
-          <p className="mt-4 text-[#6b5645]">Loading checkout...</p>
+          <Loader2 className="text-brand-1 h-12 w-12 animate-spin" />
+          <p className="text-muted-1 mt-4">Loading checkout...</p>
         </div>
       </div>
     </div>
@@ -432,15 +432,15 @@ function CheckoutContent() {
       <div className="min-h-[calc(100vh-200px)] bg-transparent">
         <div className="container mx-auto px-4 py-12">
           <FadeIn className="flex flex-col items-center justify-center py-16">
-            <Lock className="h-16 w-16 text-[#b0896d]" />
-            <h1 className="font-display mt-6 text-2xl text-[#2d1c12]">
+            <Lock className="text-muted-3 h-16 w-16" />
+            <h1 className="font-display text-ink-1 mt-6 text-2xl">
               Sign in to checkout
             </h1>
-            <p className="mt-2 text-[#6b5645]">
+            <p className="text-muted-1 mt-2">
               Please sign in to complete your purchase
             </p>
             <Button
-              className="mt-8 rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
+              className="bg-brand-1 hover:bg-brand-2 mt-8 rounded-full"
               size="lg"
               asChild
             >
@@ -457,15 +457,15 @@ function CheckoutContent() {
       <div className="min-h-[calc(100vh-200px)] bg-transparent">
         <div className="container mx-auto px-4 py-12">
           <FadeIn className="flex flex-col items-center justify-center py-16">
-            <ShoppingCart className="h-16 w-16 text-[#b0896d]" />
-            <h1 className="font-display mt-6 text-2xl text-[#2d1c12]">
+            <ShoppingCart className="text-muted-3 h-16 w-16" />
+            <h1 className="font-display text-ink-1 mt-6 text-2xl">
               Your cart is empty
             </h1>
-            <p className="mt-2 text-[#6b5645]">
+            <p className="text-muted-1 mt-2">
               Add some products to your cart before checkout
             </p>
             <Button
-              className="mt-8 rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
+              className="bg-brand-1 hover:bg-brand-2 mt-8 rounded-full"
               size="lg"
               asChild
             >
@@ -490,22 +490,22 @@ function CheckoutContent() {
       >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="font-display text-xl text-[#2d1c12]">
+            <DialogTitle className="font-display text-ink-1 text-xl">
               Order placed
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <p className="text-sm text-[#6b5645]">
+            <p className="text-muted-1 text-sm">
               We&apos;ve verified your total on the server.
             </p>
             {serverTotals && (
               <div className="space-y-2 rounded-2xl border border-black/5 bg-white/80 p-4 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-[#6b5645]">Subtotal</span>
+                  <span className="text-muted-1">Subtotal</span>
                   <span>{formatPrice(serverTotals.subtotal)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-[#6b5645]">Shipping</span>
+                  <span className="text-muted-1">Shipping</span>
                   <span>
                     {serverTotals.shippingCost === 0
                       ? "FREE"
@@ -518,9 +518,9 @@ function CheckoutContent() {
                     <span>-{formatPrice(serverTotals.discount)}</span>
                   </div>
                 )}
-                <div className="flex justify-between border-t pt-2 font-semibold text-[#2d1c12]">
+                <div className="text-ink-1 flex justify-between border-t pt-2 font-semibold">
                   <span>Total</span>
-                  <span className="text-[#b8743a]">
+                  <span className="text-brand-1">
                     {formatPrice(serverTotals.total)}
                   </span>
                 </div>
@@ -528,7 +528,7 @@ function CheckoutContent() {
             )}
             <div className="flex gap-3">
               <Button
-                className="flex-1 rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
+                className="bg-brand-1 hover:bg-brand-2 flex-1 rounded-full"
                 onClick={() =>
                   confirmationOrderId &&
                   router.push(`/order-confirmation/${confirmationOrderId}`)
@@ -538,7 +538,7 @@ function CheckoutContent() {
               </Button>
               <Button
                 variant="outline"
-                className="flex-1 rounded-full border-black/10 bg-white/80 text-[#2d1c12] hover:bg-white"
+                className="text-ink-1 flex-1 rounded-full border-black/10 bg-white/80 hover:bg-white"
                 onClick={() => {
                   setConfirmationOrderId(null);
                   setServerTotals(null);
@@ -557,25 +557,23 @@ function CheckoutContent() {
           <nav className="flex items-center gap-2 text-sm">
             <Link
               href="/"
-              className="flex items-center text-[#9c826a] hover:text-[#b8743a]"
+              className="text-muted-2 hover:text-brand-1 flex items-center"
             >
               <Home className="h-4 w-4" />
             </Link>
             <ChevronRight className="h-4 w-4 text-gray-400" />
-            <Link href="/cart" className="text-[#9c826a] hover:text-[#b8743a]">
+            <Link href="/cart" className="text-muted-2 hover:text-brand-1">
               Cart
             </Link>
             <ChevronRight className="h-4 w-4 text-gray-400" />
-            <span className="font-medium text-[#2d1c12]">Checkout</span>
+            <span className="text-ink-1 font-medium">Checkout</span>
           </nav>
         </div>
       </div>
 
       <div className="container mx-auto px-4 py-8">
         <FadeIn>
-          <h1 className="font-display mb-8 text-3xl text-[#2d1c12]">
-            Checkout
-          </h1>
+          <h1 className="font-display text-ink-1 mb-8 text-3xl">Checkout</h1>
         </FadeIn>
 
         <Form {...form}>
@@ -587,7 +585,7 @@ function CheckoutContent() {
                 {savedAddresses && savedAddresses.length > 0 && (
                   <Card className="border border-black/5 bg-white/80">
                     <CardHeader>
-                      <CardTitle className="font-display flex items-center gap-2 text-xl text-[#2d1c12]">
+                      <CardTitle className="font-display text-ink-1 flex items-center gap-2 text-xl">
                         <MapPin className="h-5 w-5" />
                         Select Delivery Address
                       </CardTitle>
@@ -598,52 +596,52 @@ function CheckoutContent() {
                           <div
                             key={address.id}
                             onClick={() => handleSelectAddress(address.id)}
-                            className={`relative cursor-pointer rounded-2xl border-2 p-4 transition-all hover:border-[#b8743a] ${
+                            className={`hover:border-brand-1 relative cursor-pointer rounded-2xl border-2 p-4 transition-all ${
                               selectedAddressId === address.id && !isNewAddress
-                                ? "border-[#b8743a] bg-[#f7efe7]"
+                                ? "border-brand-1 bg-paper-1"
                                 : "border-black/10"
                             }`}
                           >
                             {selectedAddressId === address.id &&
                               !isNewAddress && (
                                 <div className="absolute top-2 right-2">
-                                  <Check className="h-5 w-5 text-[#b8743a]" />
+                                  <Check className="text-brand-1 h-5 w-5" />
                                 </div>
                               )}
                             <div className="flex items-center gap-2">
-                              <p className="font-medium text-[#2d1c12]">
+                              <p className="text-ink-1 font-medium">
                                 {address.name}
                               </p>
                               {address.isDefault && (
-                                <span className="rounded-full bg-[#f7efe7] px-2 py-0.5 text-xs font-semibold text-[#8a6642]">
+                                <span className="bg-paper-1 text-brand-3 rounded-full px-2 py-0.5 text-xs font-semibold">
                                   Default
                                 </span>
                               )}
                             </div>
-                            <p className="mt-1 text-sm text-[#6b5645]">
+                            <p className="text-muted-1 mt-1 text-sm">
                               {address.addressLine1}
                               {address.addressLine2 &&
                                 `, ${address.addressLine2}`}
                             </p>
-                            <p className="text-sm text-[#6b5645]">
+                            <p className="text-muted-1 text-sm">
                               {address.city}, {address.state} -{" "}
                               {address.pincode}
                             </p>
-                            <p className="mt-1 text-sm text-[#9c826a]">
+                            <p className="text-muted-2 mt-1 text-sm">
                               +91 {address.phone}
                             </p>
                           </div>
                         ))}
                         <div
                           onClick={() => handleSelectAddress("new")}
-                          className={`flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed p-4 transition-all hover:border-[#b8743a] ${
+                          className={`hover:border-brand-1 flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed p-4 transition-all ${
                             isNewAddress
-                              ? "border-[#b8743a] bg-[#f7efe7]"
+                              ? "border-brand-1 bg-paper-1"
                               : "border-black/20"
                           }`}
                         >
-                          <Plus className="h-8 w-8 text-[#9c826a]" />
-                          <span className="mt-2 text-sm font-medium text-[#6b5645]">
+                          <Plus className="text-muted-2 h-8 w-8" />
+                          <span className="text-muted-1 mt-2 text-sm font-medium">
                             Add New Address
                           </span>
                         </div>
@@ -655,7 +653,7 @@ function CheckoutContent() {
                 {/* Shipping Address Form */}
                 <Card className="border border-black/5 bg-white/80">
                   <CardHeader>
-                    <CardTitle className="font-display flex items-center gap-2 text-xl text-[#2d1c12]">
+                    <CardTitle className="font-display text-ink-1 flex items-center gap-2 text-xl">
                       <Truck className="h-5 w-5" />
                       {savedAddresses &&
                       savedAddresses.length > 0 &&
@@ -667,7 +665,7 @@ function CheckoutContent() {
                   <CardContent className="space-y-4">
                     {isLoadingAddresses ? (
                       <div className="flex items-center justify-center py-8">
-                        <Loader2 className="h-6 w-6 animate-spin text-[#b8743a]" />
+                        <Loader2 className="text-brand-1 h-6 w-6 animate-spin" />
                       </div>
                     ) : (
                       <>
@@ -866,10 +864,10 @@ function CheckoutContent() {
                                   />
                                 </FormControl>
                                 <div className="flex-1">
-                                  <FormLabel className="text-base font-medium text-[#2d1c12]">
+                                  <FormLabel className="text-ink-1 text-base font-medium">
                                     Save this address
                                   </FormLabel>
-                                  <p className="text-sm text-[#6b5645]">
+                                  <p className="text-muted-1 text-sm">
                                     Save to your address book for faster
                                     checkout
                                   </p>
@@ -887,7 +885,7 @@ function CheckoutContent() {
                 {(codEnabled || onlinePaymentEnabled) && (
                   <Card className="border border-black/5 bg-white/80">
                     <CardHeader>
-                      <CardTitle className="font-display flex items-center gap-2 text-xl text-[#2d1c12]">
+                      <CardTitle className="font-display text-ink-1 flex items-center gap-2 text-xl">
                         <CreditCard className="h-5 w-5" />
                         Payment Method
                       </CardTitle>
@@ -911,10 +909,10 @@ function CheckoutContent() {
                                       htmlFor="cod"
                                       className="flex-1 cursor-pointer"
                                     >
-                                      <div className="font-medium text-[#2d1c12]">
+                                      <div className="text-ink-1 font-medium">
                                         Cash on Delivery
                                       </div>
-                                      <div className="text-sm text-[#6b5645]">
+                                      <div className="text-muted-1 text-sm">
                                         Pay when you receive your order
                                       </div>
                                     </Label>
@@ -930,10 +928,10 @@ function CheckoutContent() {
                                       htmlFor="online"
                                       className="flex-1 cursor-pointer"
                                     >
-                                      <div className="font-medium text-[#2d1c12]">
+                                      <div className="text-ink-1 font-medium">
                                         Online Payment
                                       </div>
-                                      <div className="text-sm text-[#6b5645]">
+                                      <div className="text-muted-1 text-sm">
                                         UPI, Cards, Net Banking
                                       </div>
                                     </Label>
@@ -952,7 +950,7 @@ function CheckoutContent() {
                 {/* Order Notes */}
                 <Card className="border border-black/5 bg-white/80">
                   <CardHeader>
-                    <CardTitle className="font-display text-xl text-[#2d1c12]">
+                    <CardTitle className="font-display text-ink-1 text-xl">
                       Order Notes (Optional)
                     </CardTitle>
                   </CardHeader>
@@ -964,7 +962,7 @@ function CheckoutContent() {
                         <FormItem>
                           <FormControl>
                             <textarea
-                              className="w-full rounded-2xl border border-black/10 bg-white/80 p-3 text-sm focus:border-[#b8743a] focus:ring-1 focus:ring-[#b8743a] focus:outline-none"
+                              className="focus:border-brand-1 focus:ring-brand-1 w-full rounded-2xl border border-black/10 bg-white/80 p-3 text-sm focus:ring-1 focus:outline-none"
                               rows={3}
                               placeholder="Any special instructions for your order..."
                               {...field}
@@ -983,7 +981,7 @@ function CheckoutContent() {
                 <FadeIn delay={0.2}>
                   <Card className="sticky top-24 border border-black/5 bg-white/80">
                     <CardHeader>
-                      <CardTitle className="font-display text-xl text-[#2d1c12]">
+                      <CardTitle className="font-display text-ink-1 text-xl">
                         Order Summary
                       </CardTitle>
                     </CardHeader>
@@ -992,7 +990,7 @@ function CheckoutContent() {
                       <div className="max-h-64 space-y-3 overflow-y-auto">
                         {items.map((item) => (
                           <div key={item.productId} className="flex gap-3">
-                            <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl border border-black/5 bg-[#f5efe7]">
+                            <div className="bg-paper-2 relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl border border-black/5">
                               {item.image ? (
                                 <Image
                                   src={item.image}
@@ -1003,20 +1001,20 @@ function CheckoutContent() {
                                 />
                               ) : (
                                 <div className="flex h-full items-center justify-center">
-                                  <ShoppingCart className="h-6 w-6 text-[#b0896d]" />
+                                  <ShoppingCart className="text-muted-3 h-6 w-6" />
                                 </div>
                               )}
                             </div>
                             <div className="flex-1">
-                              <p className="line-clamp-1 text-sm font-medium text-[#2d1c12]">
+                              <p className="text-ink-1 line-clamp-1 text-sm font-medium">
                                 {item.name}
                               </p>
-                              <p className="text-xs text-[#9c826a]">
+                              <p className="text-muted-2 text-xs">
                                 {formatQuantity(item.quantity, item.unit)}{" "}
                                 {formatUnit(item.unit, item.quantity)} x{" "}
                                 {formatPrice(item.price)}
                               </p>
-                              <p className="text-sm font-medium text-[#2d1c12]">
+                              <p className="text-ink-1 text-sm font-medium">
                                 {formatPrice(item.price * item.quantity)}
                               </p>
                             </div>
@@ -1029,7 +1027,7 @@ function CheckoutContent() {
                       {/* Coupon Code */}
                       <div className="space-y-3">
                         {appliedCoupon ? (
-                          <div className="flex items-center justify-between rounded-2xl bg-[#eaf4ea] p-3">
+                          <div className="bg-success-2 flex items-center justify-between rounded-2xl p-3">
                             <div className="flex items-center gap-2">
                               <Tag className="h-4 w-4 text-emerald-700" />
                               <div>
@@ -1056,7 +1054,7 @@ function CheckoutContent() {
                         ) : (
                           <div className="flex gap-2">
                             <div className="relative flex-1">
-                              <Tag className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[#9c826a]" />
+                              <Tag className="text-muted-2 absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                               <Input
                                 placeholder="Enter coupon code"
                                 value={couponCode}
@@ -1074,7 +1072,7 @@ function CheckoutContent() {
                               disabled={
                                 isValidatingCoupon || !couponCode.trim()
                               }
-                              className="rounded-full border-black/10 bg-white/80 text-[#2d1c12] hover:bg-white"
+                              className="text-ink-1 rounded-full border-black/10 bg-white/80 hover:bg-white"
                             >
                               {isValidatingCoupon ? (
                                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -1091,11 +1089,11 @@ function CheckoutContent() {
                       {/* Totals */}
                       <div className="space-y-2">
                         <div className="flex justify-between text-sm">
-                          <span className="text-[#6b5645]">Subtotal</span>
+                          <span className="text-muted-1">Subtotal</span>
                           <span>{formatPrice(subtotal)}</span>
                         </div>
                         <div className="flex justify-between text-sm">
-                          <span className="text-[#6b5645]">Shipping</span>
+                          <span className="text-muted-1">Shipping</span>
                           <span>
                             {shipping === 0 ? (
                               <span className="text-emerald-600">FREE</span>
@@ -1117,17 +1115,17 @@ function CheckoutContent() {
                       <Separator />
 
                       <div className="flex justify-between">
-                        <span className="text-lg font-semibold text-[#2d1c12]">
+                        <span className="text-ink-1 text-lg font-semibold">
                           Total
                         </span>
-                        <span className="text-lg font-semibold text-[#b8743a]">
+                        <span className="text-brand-1 text-lg font-semibold">
                           {formatPrice(total)}
                         </span>
                       </div>
 
                       <Button
                         type="submit"
-                        className="w-full rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
+                        className="bg-brand-1 hover:bg-brand-2 w-full rounded-full"
                         size="lg"
                         disabled={isSubmitting}
                       >
@@ -1144,7 +1142,7 @@ function CheckoutContent() {
                         )}
                       </Button>
 
-                      <p className="text-center text-xs text-[#9c826a]">
+                      <p className="text-muted-2 text-center text-xs">
                         By placing this order, you agree to our Terms &
                         Conditions
                       </p>
