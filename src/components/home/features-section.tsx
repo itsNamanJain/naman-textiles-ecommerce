@@ -26,7 +26,7 @@ export function FeaturesSection() {
     },
     {
       icon: Headphones,
-      title: "24/7 Support",
+      title: "Support",
       description: "Dedicated customer support",
     },
   ];
