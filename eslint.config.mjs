@@ -1,21 +1,12 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+import nextConfig from "eslint-config-next/core-web-vitals";
 import tseslint from "typescript-eslint";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
 
 /** @type {import('eslint').Linter.Config[]} */
 export default tseslint.config(
   {
     ignores: [".next/**", "node_modules/**", "dist/**"],
   },
-  ...compat.extends("next/core-web-vitals"),
+  ...nextConfig,
   ...tseslint.configs.recommended,
   {
     rules: {
@@ -30,6 +21,7 @@ export default tseslint.config(
         "warn",
         { argsIgnorePattern: "^_" },
       ],
+      "react-hooks/set-state-in-effect": "off",
     },
   }
 );

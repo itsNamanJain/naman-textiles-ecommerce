@@ -9,12 +9,9 @@ import {
   Home,
   ChevronRight,
   MessageCircle,
-  Send,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { STORE_INFO } from "@/lib/constants";
 
@@ -74,7 +71,7 @@ export default function ContactPage() {
             </p>
           </div>
 
-          <div className="mt-12 grid gap-8 lg:grid-cols-3">
+          <div className="mt-12 grid gap-8 lg:grid-cols-2">
             {/* Contact Info Cards */}
             <div className="animate-fade-in-up animation-delay-100 space-y-4">
               <Card className="card-hover">
@@ -152,60 +149,9 @@ export default function ContactPage() {
               </Card>
             </div>
 
-            {/* Contact Form */}
-            <div className="animate-fade-in-up animation-delay-200 lg:col-span-2">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <MessageCircle className="h-5 w-5" />
-                    Send us a Message
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <form className="space-y-6">
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div className="space-y-2">
-                        <Label htmlFor="name">Full Name</Label>
-                        <Input id="name" placeholder="Your name" />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input
-                          id="email"
-                          type="email"
-                          placeholder="your@email.com"
-                        />
-                      </div>
-                    </div>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div className="space-y-2">
-                        <Label htmlFor="phone">Phone Number</Label>
-                        <Input id="phone" placeholder="+91 98765 43210" />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="subject">Subject</Label>
-                        <Input id="subject" placeholder="How can we help?" />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="message">Message</Label>
-                      <textarea
-                        id="message"
-                        rows={5}
-                        className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-amber-500 focus:ring-1 focus:ring-amber-500 focus:outline-none"
-                        placeholder="Tell us more about your inquiry..."
-                      />
-                    </div>
-                    <Button className="w-full bg-amber-600 hover:bg-amber-700 sm:w-auto">
-                      <Send className="mr-2 h-4 w-4" />
-                      Send Message
-                    </Button>
-                  </form>
-                </CardContent>
-              </Card>
-
-              {/* Google Map */}
-              <Card className="mt-6 overflow-hidden">
+            {/* Google Map */}
+            <div className="animate-fade-in-up animation-delay-200">
+              <Card className="overflow-hidden">
                 <CardContent className="p-0">
                   <div className="relative h-72 w-full">
                     <iframe

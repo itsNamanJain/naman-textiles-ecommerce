@@ -2,7 +2,6 @@ import { createStore } from "@xstate/store";
 
 export type CartItem = {
   productId: string;
-  variantId?: string;
   name: string;
   slug: string;
   image?: string;
@@ -60,7 +59,7 @@ export const cartStore = createStore({
     // Add item to cart
     addItem: (context, event: { item: Omit<CartItem, "quantity">; quantity: number }) => {
       const existingIndex = context.items.findIndex(
-        (i) => i.productId === event.item.productId && i.variantId === event.item.variantId
+        (i) => i.productId === event.item.productId
       );
 
       let newItems: CartItem[];
@@ -89,9 +88,9 @@ export const cartStore = createStore({
     },
 
     // Update item quantity
-    updateQuantity: (context, event: { productId: string; variantId?: string; quantity: number }) => {
+    updateQuantity: (context, event: { productId: string; quantity: number }) => {
       const newItems = context.items.map((item) => {
-        if (item.productId === event.productId && item.variantId === event.variantId) {
+        if (item.productId === event.productId) {
           // Validate quantity against constraints
           const minQty = item.minOrderQuantity;
           const maxQty = Math.min(item.maxOrderQuantity ?? Infinity, item.stockQuantity);
@@ -106,9 +105,9 @@ export const cartStore = createStore({
     },
 
     // Increment item quantity by step
-    incrementQuantity: (context, event: { productId: string; variantId?: string }) => {
+    incrementQuantity: (context, event: { productId: string }) => {
       const newItems = context.items.map((item) => {
-        if (item.productId === event.productId && item.variantId === event.variantId) {
+        if (item.productId === event.productId) {
           const newQuantity = item.quantity + item.quantityStep;
           const maxQty = Math.min(item.maxOrderQuantity ?? Infinity, item.stockQuantity);
           return { ...item, quantity: Math.min(newQuantity, maxQty) };
@@ -121,10 +120,10 @@ export const cartStore = createStore({
     },
 
     // Decrement item quantity by step
-    decrementQuantity: (context, event: { productId: string; variantId?: string }) => {
+    decrementQuantity: (context, event: { productId: string }) => {
       const newItems = context.items
         .map((item) => {
-          if (item.productId === event.productId && item.variantId === event.variantId) {
+          if (item.productId === event.productId) {
             const newQuantity = item.quantity - item.quantityStep;
             // Remove item if quantity goes below minimum
             if (newQuantity < item.minOrderQuantity) {
@@ -141,9 +140,9 @@ export const cartStore = createStore({
     },
 
     // Remove item from cart
-    removeItem: (context, event: { productId: string; variantId?: string }) => {
+    removeItem: (context, event: { productId: string }) => {
       const newItems = context.items.filter(
-        (item) => !(item.productId === event.productId && item.variantId === event.variantId)
+        (item) => item.productId !== event.productId
       );
 
       saveCartToStorage(newItems);

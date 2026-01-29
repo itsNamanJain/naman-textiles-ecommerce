@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -29,6 +29,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -158,6 +164,15 @@ function CheckoutContent() {
   const router = useRouter();
   const { status } = useSession();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [confirmationOrderId, setConfirmationOrderId] = useState<string | null>(
+    null
+  );
+  const [serverTotals, setServerTotals] = useState<{
+    subtotal: number;
+    shippingCost: number;
+    discount: number;
+    total: number;
+  } | null>(null);
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(
     null
   );
@@ -220,6 +235,19 @@ function CheckoutContent() {
     },
   });
 
+  const fillFormWithAddress = useCallback(
+    (address: NonNullable<typeof savedAddresses>[0]) => {
+      form.setValue("name", address.name);
+      form.setValue("phone", address.phone);
+      form.setValue("addressLine1", address.addressLine1);
+      form.setValue("addressLine2", address.addressLine2 ?? "");
+      form.setValue("city", address.city);
+      form.setValue("state", address.state);
+      form.setValue("pincode", address.pincode);
+    },
+    [form]
+  );
+
   // Set default payment method based on what's enabled
   useEffect(() => {
     if (codEnabled) {
@@ -243,19 +271,7 @@ function CheckoutContent() {
     } else if (savedAddresses && savedAddresses.length === 0) {
       setIsNewAddress(true);
     }
-  }, [savedAddresses]);
-
-  const fillFormWithAddress = (
-    address: NonNullable<typeof savedAddresses>[0]
-  ) => {
-    form.setValue("name", address.name);
-    form.setValue("phone", address.phone);
-    form.setValue("addressLine1", address.addressLine1);
-    form.setValue("addressLine2", address.addressLine2 ?? "");
-    form.setValue("city", address.city);
-    form.setValue("state", address.state);
-    form.setValue("pincode", address.pincode);
-  };
+  }, [fillFormWithAddress, savedAddresses, selectedAddressId]);
 
   const handleSelectAddress = (addressId: string) => {
     if (addressId === "new") {
@@ -326,19 +342,19 @@ function CheckoutContent() {
     toast.info("Coupon removed");
   };
 
-  const incrementCouponUsageMutation = api.coupon.incrementUsage.useMutation();
-
   const createOrderMutation = api.order.create.useMutation({
     onSuccess: async (data) => {
-      // Increment coupon usage if one was applied
-      if (appliedCoupon) {
-        await incrementCouponUsageMutation.mutateAsync({
-          id: appliedCoupon.couponId,
+      cartStore.send({ type: "clearCart" });
+      if (data.totals && typeof data.totals.total === "number") {
+        setServerTotals({
+          subtotal: data.totals.subtotal,
+          shippingCost: data.totals.shippingCost,
+          discount: data.totals.discount,
+          total: data.totals.total,
         });
       }
-      cartStore.send({ type: "clearCart" });
-      toast.success("Order placed successfully!");
-      router.push(`/order-confirmation/${data.orderId}`);
+      setConfirmationOrderId(data.orderId);
+      setIsSubmitting(false);
     },
     onError: (error) => {
       toast.error(error.message || "Failed to place order");
@@ -386,9 +402,7 @@ function CheckoutContent() {
     createOrderMutation.mutate({
       items: items.map((item) => ({
         productId: item.productId,
-        variantId: item.variantId,
         productName: item.name,
-        price: item.price,
         quantity: item.quantity,
         unit: item.unit,
       })),
@@ -404,7 +418,6 @@ function CheckoutContent() {
       paymentMethod: data.paymentMethod,
       customerNote: data.customerNote,
       couponCode: appliedCoupon?.code,
-      discount: appliedCoupon?.discount,
     });
   };
 
@@ -466,6 +479,76 @@ function CheckoutContent() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Dialog
+        open={!!confirmationOrderId}
+        onOpenChange={(open) => {
+          if (!open) {
+            setConfirmationOrderId(null);
+            setServerTotals(null);
+          }
+        }}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Order placed</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-gray-600">
+              We&apos;ve verified your total on the server.
+            </p>
+            {serverTotals && (
+              <div className="space-y-2 rounded-lg border bg-gray-50 p-4 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Subtotal</span>
+                  <span>{formatPrice(serverTotals.subtotal)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Shipping</span>
+                  <span>
+                    {serverTotals.shippingCost === 0
+                      ? "FREE"
+                      : formatPrice(serverTotals.shippingCost)}
+                  </span>
+                </div>
+                {serverTotals.discount > 0 && (
+                  <div className="flex justify-between text-green-600">
+                    <span>Discount</span>
+                    <span>-{formatPrice(serverTotals.discount)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between border-t pt-2 font-semibold">
+                  <span>Total</span>
+                  <span className="text-amber-600">
+                    {formatPrice(serverTotals.total)}
+                  </span>
+                </div>
+              </div>
+            )}
+            <div className="flex gap-3">
+              <Button
+                className="flex-1 bg-amber-600 hover:bg-amber-700"
+                onClick={() =>
+                  confirmationOrderId &&
+                  router.push(`/order-confirmation/${confirmationOrderId}`)
+                }
+              >
+                View Order
+              </Button>
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => {
+                  setConfirmationOrderId(null);
+                  setServerTotals(null);
+                  router.push("/products");
+                }}
+              >
+                Continue Shopping
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
       {/* Breadcrumb */}
       <div className="border-b bg-white">
         <div className="container mx-auto px-4 py-3">
@@ -894,7 +977,7 @@ function CheckoutContent() {
                       <div className="max-h-64 space-y-3 overflow-y-auto">
                         {items.map((item) => (
                           <div
-                            key={`${item.productId}-${item.variantId ?? ""}`}
+                            key={item.productId}
                             className="flex gap-3"
                           >
                             <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded bg-gray-100">

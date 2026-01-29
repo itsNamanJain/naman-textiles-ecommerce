@@ -214,11 +214,6 @@ export default function OrderConfirmationPage() {
                       >
                         <div>
                           <p className="font-medium">{item.productName}</p>
-                          {item.variantName && (
-                            <p className="text-sm text-gray-500">
-                              {item.variantName}
-                            </p>
-                          )}
                           <p className="text-sm text-gray-500">
                             {Number(item.quantity)} {formatUnit(item.unit, Number(item.quantity))} x{" "}
                             {formatPrice(Number(item.price))}
@@ -282,6 +277,12 @@ export default function OrderConfirmationPage() {
                     <div className="flex justify-between text-sm text-green-600">
                       <span>Discount</span>
                       <span>-{formatPrice(Number(order.discount))}</span>
+                    </div>
+                  )}
+                  {order.couponCode && (
+                    <div className="flex justify-between text-sm text-gray-600">
+                      <span>Coupon</span>
+                      <span className="font-medium">{order.couponCode}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-sm">

@@ -168,7 +168,6 @@ export const productRouter = createTRPCRouter({
           images: {
             orderBy: [asc(productImages.position)],
           },
-          variants: true,
         },
       });
     }),
@@ -184,7 +183,6 @@ export const productRouter = createTRPCRouter({
           images: {
             orderBy: [asc(productImages.position)],
           },
-          variants: true,
         },
       });
     }),

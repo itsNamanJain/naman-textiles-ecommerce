@@ -228,13 +228,23 @@ export const adminRouter = createTRPCRouter({
       z.object({
         limit: z.number().min(1).max(50).default(10),
         cursor: z.string().nullish(),
-        status: z.string().optional(),
+        status: z
+          .enum([
+            "pending",
+            "confirmed",
+            "processing",
+            "shipped",
+            "delivered",
+            "cancelled",
+            "refunded",
+          ])
+          .optional(),
       })
     )
     .query(async ({ ctx, input }) => {
       const { limit, status } = input;
 
-      const whereClause = status ? eq(orders.status, status as any) : undefined;
+      const whereClause = status ? eq(orders.status, status) : undefined;
 
       const allOrders = await ctx.db.query.orders.findMany({
         where: whereClause,
@@ -710,7 +720,6 @@ export const adminRouter = createTRPCRouter({
         with: {
           category: true,
           images: true,
-          variants: true,
         },
       });
 

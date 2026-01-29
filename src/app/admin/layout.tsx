@@ -19,6 +19,7 @@ import {
   Loader2,
   Shield,
   Tag,
+  Star,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -54,6 +55,11 @@ const adminNavItems = [
     href: "/admin/coupons",
     label: "Coupons",
     icon: Tag,
+  },
+  {
+    href: "/admin/reviews",
+    label: "Reviews",
+    icon: Star,
   },
   {
     href: "/admin/settings",

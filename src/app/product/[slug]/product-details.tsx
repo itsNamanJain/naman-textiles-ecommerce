@@ -18,6 +18,7 @@ import {
   RotateCcw,
   ImageIcon,
   Trash2,
+  Star,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -86,6 +87,26 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     { productId: product.id },
     { enabled: isAuthenticated, retry: false }
   );
+
+  const { data: reviews, isLoading: isLoadingReviews } =
+    api.review.getByProduct.useQuery({ productId: product.id });
+
+  const [rating, setRating] = useState(5);
+  const [title, setTitle] = useState("");
+  const [comment, setComment] = useState("");
+
+  const createReviewMutation = api.review.create.useMutation({
+    onSuccess: () => {
+      toast.success("Review submitted for approval");
+      setTitle("");
+      setComment("");
+      setRating(5);
+      utils.review.getByProduct.invalidate({ productId: product.id });
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to submit review");
+    },
+  });
 
   const toggleWishlistMutation = api.wishlist.toggle.useMutation({
     onSuccess: (data) => {
@@ -171,6 +192,19 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       await navigator.clipboard.writeText(window.location.href);
       toast.success("Link copied to clipboard");
     }
+  };
+
+  const handleSubmitReview = () => {
+    if (!isAuthenticated) {
+      toast.error("Please sign in to leave a review");
+      return;
+    }
+    createReviewMutation.mutate({
+      productId: product.id,
+      rating,
+      title: title.trim() ? title.trim() : undefined,
+      comment: comment.trim(),
+    });
   };
 
   const discount = product.comparePrice
@@ -499,6 +533,107 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 </p>
               </div>
             )}
+
+            {/* Reviews */}
+            <div className="space-y-4 border-t pt-6">
+              <h3 className="font-semibold text-gray-900">Reviews</h3>
+              {isLoadingReviews ? (
+                <p className="text-sm text-gray-500">Loading reviews...</p>
+              ) : !reviews || reviews.length === 0 ? (
+                <p className="text-sm text-gray-500">
+                  No reviews yet. Be the first to review this product.
+                </p>
+              ) : (
+                <div className="space-y-4">
+                  {reviews.map((review) => (
+                    <div key={review.id} className="rounded-lg border p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <p className="font-medium text-gray-900">
+                            {review.user?.name ?? "Customer"}
+                          </p>
+                          {review.isVerified && (
+                            <span className="rounded bg-amber-100 px-2 py-0.5 text-xs text-amber-700">
+                              Verified
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-1 text-amber-500">
+                          {Array.from({ length: review.rating }).map((_, i) => (
+                            <Star key={i} className="h-4 w-4" />
+                          ))}
+                        </div>
+                      </div>
+                      {review.title && (
+                        <p className="mt-2 font-medium text-gray-900">
+                          {review.title}
+                        </p>
+                      )}
+                      <p className="mt-1 text-sm text-gray-600">
+                        {review.comment}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div className="rounded-lg border p-4">
+                <h4 className="font-medium text-gray-900">Write a review</h4>
+                <div className="mt-3 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-600">Rating:</span>
+                    <div className="flex items-center gap-1">
+                      {Array.from({ length: 5 }).map((_, i) => {
+                        const value = i + 1;
+                        return (
+                          <button
+                            key={value}
+                            type="button"
+                            onClick={() => setRating(value)}
+                            className={
+                              value <= rating ? "text-amber-500" : "text-gray-300"
+                            }
+                            aria-label={`Rate ${value} stars`}
+                          >
+                            <Star className="h-4 w-4" />
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <input
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                    placeholder="Title (optional)"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                  />
+                  <textarea
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                    rows={4}
+                    placeholder="Share your experience..."
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                  />
+                  <div className="flex items-center gap-2">
+                    <Button
+                      type="button"
+                      className="bg-amber-600 hover:bg-amber-700"
+                      onClick={handleSubmitReview}
+                      disabled={
+                        createReviewMutation.isPending || comment.trim().length < 10
+                      }
+                    >
+                      {createReviewMutation.isPending ? "Submitting..." : "Submit Review"}
+                    </Button>
+                    {!isAuthenticated && (
+                      <span className="text-sm text-gray-500">
+                        Sign in to submit
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
           </FadeIn>
         </div>
       </div>

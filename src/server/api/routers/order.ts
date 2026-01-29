@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { eq, desc, and, sql, inArray } from "drizzle-orm";
+import { eq, desc, and, sql, inArray, gte, lte } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 
 import {
@@ -7,8 +7,9 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
-import { orders, orderItems, products } from "@/server/db/schema";
+import { orders, orderItems, products, coupons } from "@/server/db/schema";
 import { generateOrderNumber } from "@/lib/utils";
+import { DEFAULT_SETTINGS } from "@/lib/constants";
 
 const shippingAddressSchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -22,11 +23,9 @@ const shippingAddressSchema = z.object({
 
 const orderItemSchema = z.object({
   productId: z.string(),
-  variantId: z.string().optional(),
-  productName: z.string(),
+  productName: z.string().optional(),
   productSku: z.string().optional(),
-  variantName: z.string().optional(),
-  price: z.number(),
+  price: z.number().optional(),
   quantity: z.number(),
   unit: z.string(),
 });
@@ -41,11 +40,26 @@ export const orderRouter = createTRPCRouter({
         paymentMethod: z.enum(["cod", "online"]).default("cod"),
         customerNote: z.string().optional(),
         couponCode: z.string().optional(),
-        discount: z.number().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
+
+      // Load store settings (fallback to defaults)
+      const allSettings = await ctx.db.query.settings.findMany();
+      const settingsMap: Record<string, string> = {};
+      allSettings.forEach((setting) => {
+        settingsMap[setting.key] = setting.value;
+      });
+      const freeShippingThreshold = Number(
+        settingsMap.shippingFreeThreshold ?? DEFAULT_SETTINGS.shippingFreeThreshold
+      );
+      const shippingRate = Number(
+        settingsMap.shippingBaseRate ?? DEFAULT_SETTINGS.shippingBaseRate
+      );
+      const minOrderAmount = Number(
+        settingsMap.orderMinAmount ?? DEFAULT_SETTINGS.orderMinAmount
+      );
 
       // Get product IDs from items
       const productIds = input.items.map((item) => item.productId);
@@ -57,6 +71,13 @@ export const orderRouter = createTRPCRouter({
           id: true,
           name: true,
           stockQuantity: true,
+          price: true,
+          sku: true,
+          unit: true,
+          minOrderQuantity: true,
+          maxOrderQuantity: true,
+          trackQuantity: true,
+          allowBackorder: true,
         },
       });
 
@@ -64,23 +85,86 @@ export const orderRouter = createTRPCRouter({
       const stockMap = new Map(
         productStock.map((p) => [
           p.id,
-          { name: p.name, stock: Number(p.stockQuantity) },
+          {
+            name: p.name,
+            stock: Number(p.stockQuantity),
+            price: Number(p.price),
+            sku: p.sku ?? null,
+            unit: p.unit,
+            minOrderQuantity: Number(p.minOrderQuantity),
+            maxOrderQuantity: p.maxOrderQuantity ? Number(p.maxOrderQuantity) : null,
+            trackQuantity: p.trackQuantity,
+            allowBackorder: p.allowBackorder,
+          },
         ])
       );
 
       // Check stock availability for all items
       const outOfStockItems: string[] = [];
-      for (const item of input.items) {
+      const invalidItems: string[] = [];
+      const normalizedItems = input.items.map((item) => {
         const productInfo = stockMap.get(item.productId);
         if (!productInfo) {
-          outOfStockItems.push(item.productName);
-          continue;
+          invalidItems.push(item.productId);
+          return null;
         }
-        if (productInfo.stock < item.quantity) {
-          outOfStockItems.push(
-            `${item.productName} (requested: ${item.quantity}, available: ${productInfo.stock})`
+
+        const quantity = item.quantity;
+        if (quantity <= 0) {
+          invalidItems.push(productInfo.name);
+          return null;
+        }
+
+        if (quantity < productInfo.minOrderQuantity) {
+          invalidItems.push(
+            `${productInfo.name} (min: ${productInfo.minOrderQuantity})`
           );
+          return null;
         }
+
+        if (
+          productInfo.maxOrderQuantity !== null &&
+          quantity > productInfo.maxOrderQuantity
+        ) {
+          invalidItems.push(
+            `${productInfo.name} (max: ${productInfo.maxOrderQuantity})`
+          );
+          return null;
+        }
+
+        const unitPrice = productInfo.price;
+        const stock = productInfo.stock;
+
+        if (productInfo.trackQuantity && !productInfo.allowBackorder) {
+          if (stock < quantity) {
+            outOfStockItems.push(
+              `${productInfo.name} (requested: ${quantity}, available: ${stock})`
+            );
+          }
+        }
+
+        return {
+          productId: item.productId,
+          productName: productInfo.name,
+          productSku: productInfo.sku,
+          unitPrice,
+          quantity,
+          unit: productInfo.unit,
+          trackQuantity: productInfo.trackQuantity,
+        };
+      });
+
+      if (invalidItems.length > 0) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: `Invalid items: ${invalidItems.join(", ")}`,
+        });
+      }
+
+      for (const item of input.items) {
+        // Keep existing loop for legacy behavior safety (now validated in normalizedItems)
+        const productInfo = stockMap.get(item.productId);
+        if (!productInfo) continue;
       }
 
       if (outOfStockItems.length > 0) {
@@ -91,12 +175,77 @@ export const orderRouter = createTRPCRouter({
       }
 
       // Calculate totals
-      const subtotal = input.items.reduce(
-        (sum, item) => sum + item.price * item.quantity,
+      const validItems = normalizedItems.filter(Boolean) as NonNullable<
+        typeof normalizedItems[number]
+      >[];
+      const subtotal = validItems.reduce(
+        (sum, item) => sum + item.unitPrice * item.quantity,
         0
       );
-      const shippingCost = subtotal > 999 ? 0 : 99;
-      const discount = input.discount ?? 0;
+      if (subtotal < minOrderAmount) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: `Minimum order amount is ₹${minOrderAmount}`,
+        });
+      }
+
+      const shippingCost = subtotal >= freeShippingThreshold ? 0 : shippingRate;
+
+      let discount = 0;
+      let appliedCouponCode: string | null = null;
+      if (input.couponCode) {
+        const normalizedCode = input.couponCode.toUpperCase().replace(/\s/g, "");
+        const now = new Date();
+        const coupon = await ctx.db.query.coupons.findFirst({
+          where: and(
+            eq(coupons.code, normalizedCode),
+            eq(coupons.isActive, true),
+            lte(coupons.startDate, now),
+            gte(coupons.endDate, now)
+          ),
+        });
+
+        if (!coupon) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Invalid or expired coupon code",
+          });
+        }
+
+        if (coupon.usageLimit && coupon.usageCount >= coupon.usageLimit) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "This coupon has reached its usage limit",
+          });
+        }
+
+        const minPurchase = Number(coupon.minPurchase ?? 0);
+        if (subtotal < minPurchase) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: `Minimum purchase of ₹${minPurchase} required for this coupon`,
+          });
+        }
+
+        const discountValue = Number(coupon.discountValue);
+        if (coupon.discountType === "percentage") {
+          discount = (subtotal * discountValue) / 100;
+          const maxDiscount = Number(coupon.maxDiscount ?? 0);
+          if (maxDiscount > 0 && discount > maxDiscount) {
+            discount = maxDiscount;
+          }
+        } else {
+          discount = discountValue;
+        }
+
+        if (discount > subtotal) {
+          discount = subtotal;
+        }
+
+        discount = Math.round(discount * 100) / 100;
+        appliedCouponCode = coupon.code;
+      }
+
       const total = subtotal + shippingCost - discount;
 
       // Create order with embedded shipping address
@@ -111,8 +260,9 @@ export const orderRouter = createTRPCRouter({
           subtotal: subtotal.toString(),
           shippingCost: shippingCost.toString(),
           discount: discount.toString(),
+          couponDiscount: discount.toString(),
           total: total.toString(),
-          couponCode: input.couponCode ?? null,
+          couponCode: appliedCouponCode,
           // Embedded shipping address
           shippingName: input.shippingAddress.name,
           shippingPhone: input.shippingAddress.phone,
@@ -133,35 +283,50 @@ export const orderRouter = createTRPCRouter({
       }
 
       // Create order items and deduct stock
-      for (const item of input.items) {
+      for (const item of validItems) {
         const orderItemData = {
           orderId: order.id,
           productId: item.productId,
-          variantId: item.variantId ?? null,
           productName: item.productName,
           productSku: item.productSku ?? null,
-          variantName: item.variantName ?? null,
-          price: item.price.toFixed(2),
+          price: item.unitPrice.toFixed(2),
           quantity: item.quantity.toFixed(2),
           unit: item.unit,
-          total: (item.price * item.quantity).toFixed(2),
+          total: (item.unitPrice * item.quantity).toFixed(2),
         };
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         await ctx.db.insert(orderItems).values(orderItemData as any);
 
         // Deduct stock from product
-        const currentStock = stockMap.get(item.productId)?.stock ?? 0;
-        const newStock = Math.max(0, currentStock - item.quantity);
+        if (item.trackQuantity) {
+          const currentStock = stockMap.get(item.productId)?.stock ?? 0;
+          const newStock = Math.max(0, currentStock - item.quantity);
+          await ctx.db
+            .update(products)
+            .set({ stockQuantity: newStock.toString() })
+            .where(eq(products.id, item.productId));
+
+        }
+      }
+
+      if (appliedCouponCode) {
         await ctx.db
-          .update(products)
-          .set({ stockQuantity: newStock.toString() })
-          .where(eq(products.id, item.productId));
+          .update(coupons)
+          .set({ usageCount: sql`${coupons.usageCount} + 1` })
+          .where(eq(coupons.code, appliedCouponCode));
       }
 
       return {
         success: true,
         orderId: order.id,
         orderNumber: order.orderNumber,
+        totals: {
+          subtotal,
+          shippingCost,
+          discount,
+          total,
+        },
+        couponCode: appliedCouponCode,
       };
     }),
 

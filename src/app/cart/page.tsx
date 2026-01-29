@@ -67,16 +67,16 @@ export default function CartPage() {
   const shipping = subtotal >= freeShippingThreshold ? 0 : shippingRate;
   const total = subtotal + shipping;
 
-  const handleIncrement = (productId: string, variantId?: string) => {
-    cartStore.send({ type: "incrementQuantity", productId, variantId });
+  const handleIncrement = (productId: string) => {
+    cartStore.send({ type: "incrementQuantity", productId });
   };
 
-  const handleDecrement = (productId: string, variantId?: string) => {
-    cartStore.send({ type: "decrementQuantity", productId, variantId });
+  const handleDecrement = (productId: string) => {
+    cartStore.send({ type: "decrementQuantity", productId });
   };
 
-  const handleRemove = (productId: string, variantId?: string) => {
-    cartStore.send({ type: "removeItem", productId, variantId });
+  const handleRemove = (productId: string) => {
+    cartStore.send({ type: "removeItem", productId });
   };
 
   if (items.length === 0) {
@@ -143,7 +143,7 @@ export default function CartPage() {
                 <StaggerContainer className="divide-y">
                   {items.map((item) => (
                     <StaggerItem
-                      key={`${item.productId}-${item.variantId ?? ""}`}
+                      key={item.productId}
                       className="flex gap-4 p-4 md:p-6"
                     >
                       {/* Product Image */}
@@ -185,9 +185,7 @@ export default function CartPage() {
                             variant="ghost"
                             size="icon"
                             className="h-8 w-8 text-gray-400 hover:text-red-500"
-                            onClick={() =>
-                              handleRemove(item.productId, item.variantId)
-                            }
+                            onClick={() => handleRemove(item.productId)}
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
@@ -201,12 +199,7 @@ export default function CartPage() {
                                 variant="ghost"
                                 size="icon"
                                 className="h-8 w-8 rounded-r-none sm:h-9 sm:w-9"
-                                onClick={() =>
-                                  handleDecrement(
-                                    item.productId,
-                                    item.variantId
-                                  )
-                                }
+                                onClick={() => handleDecrement(item.productId)}
                               >
                                 <Minus className="h-3 w-3 sm:h-4 sm:w-4" />
                               </Button>
@@ -217,12 +210,7 @@ export default function CartPage() {
                                 variant="ghost"
                                 size="icon"
                                 className="h-8 w-8 rounded-l-none sm:h-9 sm:w-9"
-                                onClick={() =>
-                                  handleIncrement(
-                                    item.productId,
-                                    item.variantId
-                                  )
-                                }
+                                onClick={() => handleIncrement(item.productId)}
                               >
                                 <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
                               </Button>
@@ -232,9 +220,7 @@ export default function CartPage() {
                               variant="ghost"
                               size="icon"
                               className="h-8 w-8 text-red-500 hover:bg-red-50 hover:text-red-600 sm:hidden"
-                              onClick={() =>
-                                handleRemove(item.productId, item.variantId)
-                              }
+                              onClick={() => handleRemove(item.productId)}
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
@@ -242,9 +228,7 @@ export default function CartPage() {
                               variant="ghost"
                               size="sm"
                               className="hidden text-red-500 hover:bg-red-50 hover:text-red-600 sm:inline-flex"
-                              onClick={() =>
-                                handleRemove(item.productId, item.variantId)
-                              }
+                              onClick={() => handleRemove(item.productId)}
                             >
                               <Trash2 className="mr-1 h-4 w-4" />
                               Remove
