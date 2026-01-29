@@ -1,6 +1,12 @@
 "use client";
 
-import { useState, useEffect, useRef, type ChangeEvent } from "react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  type ChangeEvent,
+} from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -124,32 +130,32 @@ export function ProductForm({
   });
 
   // Helper to populate form from product data
-  const populateFormFromProduct = (
-    product: ProductData,
-    isDuplicate = false
-  ) => {
-    reset({
-      // For duplicate: empty name/slug so user must enter new ones
-      name: isDuplicate ? `${product.name} (Copy)` : product.name,
-      slug: isDuplicate ? "" : product.slug,
-      description: product.description ?? "",
-      price: Number(product.price),
-      comparePrice: product.comparePrice
-        ? Number(product.comparePrice)
-        : undefined,
-      sellingMode: product.sellingMode,
-      minOrderQuantity: Number(product.minOrderQuantity),
-      categoryId: product.categoryId,
-      isActive: isDuplicate ? true : product.isActive,
-      isFeatured: isDuplicate ? false : product.isFeatured,
-    });
-    setImages(
-      product.images?.map((img) => ({
-        url: img.url,
-        alt: img.alt ?? undefined,
-      })) ?? []
-    );
-  };
+  const populateFormFromProduct = useCallback(
+    (product: ProductData, isDuplicate = false) => {
+      reset({
+        // For duplicate: empty name/slug so user must enter new ones
+        name: isDuplicate ? `${product.name} (Copy)` : product.name,
+        slug: isDuplicate ? "" : product.slug,
+        description: product.description ?? "",
+        price: Number(product.price),
+        comparePrice: product.comparePrice
+          ? Number(product.comparePrice)
+          : undefined,
+        sellingMode: product.sellingMode,
+        minOrderQuantity: Number(product.minOrderQuantity),
+        categoryId: product.categoryId,
+        isActive: isDuplicate ? true : product.isActive,
+        isFeatured: isDuplicate ? false : product.isFeatured,
+      });
+      setImages(
+        product.images?.map((img) => ({
+          url: img.url,
+          alt: img.alt ?? undefined,
+        })) ?? []
+      );
+    },
+    [reset]
+  );
 
   // Reset form when editProduct/duplicateProduct changes
   useEffect(() => {
@@ -173,7 +179,7 @@ export function ProductForm({
       });
       setImages([]);
     }
-  }, [editProduct, duplicateProduct, reset]);
+  }, [editProduct, duplicateProduct, populateFormFromProduct, reset]);
 
   const onSubmit = (data: ProductFormData) => {
     // For optional number fields:
@@ -226,7 +232,7 @@ export function ProductForm({
         return await createImageBitmap(file);
       }
       return await new Promise<HTMLImageElement>((resolve, reject) => {
-        const img = new Image();
+        const img = document.createElement("img");
         const url = URL.createObjectURL(file);
         img.onload = () => {
           URL.revokeObjectURL(url);
