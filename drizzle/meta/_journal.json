@@ -43,6 +43,13 @@
       "when": 1769702708481,
       "tag": "0005_slow_callisto",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1769703185488,
+      "tag": "0006_heavy_steve_rogers",
+      "breakpoints": true
     }
   ]
 }

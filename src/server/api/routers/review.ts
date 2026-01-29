@@ -13,7 +13,6 @@ import {
 const reviewSchema = z.object({
   productId: z.string(),
   rating: z.number().min(1).max(5),
-  title: z.string().max(255).optional(),
   comment: z.string().min(10).max(2000),
 });
 
@@ -75,7 +74,6 @@ export const reviewRouter = createTRPCRouter({
           userId,
           productId: input.productId,
           rating: input.rating,
-          title: input.title ?? null,
           comment: input.comment,
           isVerified,
           isApproved: false,

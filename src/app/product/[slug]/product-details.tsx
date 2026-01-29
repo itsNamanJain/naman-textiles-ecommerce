@@ -25,6 +25,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { FadeIn } from "@/components/ui/motion";
 import { formatPrice, cn } from "@/lib/utils";
+import { DEFAULT_SETTINGS } from "@/lib/constants";
 import {
   MAX_METER_ORDER_QUANTITY,
   MAX_PIECE_ORDER_QUANTITY,
@@ -83,15 +84,15 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     api.review.getByProduct.useQuery({ productId: product.id });
 
   const [rating, setRating] = useState(5);
-  const [title, setTitle] = useState("");
+  const [hoverRating, setHoverRating] = useState<number | null>(null);
   const [comment, setComment] = useState("");
 
   const createReviewMutation = api.review.create.useMutation({
     onSuccess: () => {
       toast.success("Review submitted for approval");
-      setTitle("");
       setComment("");
       setRating(5);
+      setHoverRating(null);
       utils.review.getByProduct.invalidate({ productId: product.id });
     },
     onError: (error) => {
@@ -190,7 +191,6 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     createReviewMutation.mutate({
       productId: product.id,
       rating,
-      title: title.trim() ? title.trim() : undefined,
       comment: comment.trim(),
     });
   };
@@ -437,12 +437,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             </div>
 
             {/* Features */}
-            <div className="grid grid-cols-2 gap-2 rounded-2xl border border-black/5 bg-white/80 p-3">
-              <div className="flex flex-col items-center text-center">
-                <Truck className="text-brand-1 mb-1 h-5 w-5" />
-                <span className="text-xs font-medium">Free Delivery</span>
-                <span className="text-muted-2 text-[10px]">Above ₹999</span>
-              </div>
+            <div className="rounded-2xl border border-black/5 bg-white/80 p-3">
               <div className="flex flex-col items-center text-center">
                 <Shield className="text-brand-1 mb-1 h-5 w-5" />
                 <span className="text-xs font-medium">Quality Assured</span>
@@ -489,15 +484,10 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                         </div>
                         <div className="text-brand-1 flex items-center gap-1">
                           {Array.from({ length: review.rating }).map((_, i) => (
-                            <Star key={i} className="h-4 w-4" />
+                            <Star key={i} className="h-4 w-4 fill-current" />
                           ))}
                         </div>
                       </div>
-                      {review.title && (
-                        <p className="text-ink-1 mt-2 font-medium">
-                          {review.title}
-                        </p>
-                      )}
                       <p className="text-muted-1 mt-1 text-sm">
                         {review.comment}
                       </p>
@@ -514,28 +504,35 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                     <div className="flex items-center gap-1">
                       {Array.from({ length: 5 }).map((_, i) => {
                         const value = i + 1;
+                        const displayRating = hoverRating ?? rating;
                         return (
                           <button
                             key={value}
                             type="button"
                             onClick={() => setRating(value)}
+                            onMouseEnter={() => setHoverRating(value)}
+                            onMouseLeave={() => setHoverRating(null)}
+                            onFocus={() => setHoverRating(value)}
+                            onBlur={() => setHoverRating(null)}
                             className={
-                              value <= rating ? "text-brand-1" : "text-muted-3"
+                              value <= displayRating
+                                ? "text-brand-1"
+                                : "text-muted-3"
                             }
                             aria-label={`Rate ${value} stars`}
+                            aria-pressed={value <= rating}
                           >
-                            <Star className="h-4 w-4" />
+                            <Star
+                              className={cn(
+                                "h-4 w-4",
+                                value <= displayRating && "fill-current"
+                              )}
+                            />
                           </button>
                         );
                       })}
                     </div>
                   </div>
-                  <input
-                    className="w-full rounded-2xl border border-black/10 bg-white/80 px-3 py-2 text-sm"
-                    placeholder="Title (optional)"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                  />
                   <textarea
                     className="w-full rounded-2xl border border-black/10 bg-white/80 px-3 py-2 text-sm"
                     rows={4}

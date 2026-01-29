@@ -131,18 +131,21 @@ export default function AdminReviewsPage() {
                               </Badge>
                             )}
                           </div>
-                          <div className="text-brand-3 flex items-center gap-1">
-                            {Array.from({ length: review.rating }).map(
-                              (_, i) => (
-                                <Star key={i} className="h-4 w-4" />
-                              )
-                            )}
+                          <div className="text-brand-3 flex items-center gap-2">
+                            <div className="flex items-center gap-1">
+                              {Array.from({
+                                length: Number(review.rating ?? 0),
+                              }).map((_, i) => (
+                                <Star
+                                  key={i}
+                                  className="h-4 w-4 fill-current"
+                                />
+                              ))}
+                            </div>
+                            <span className="text-muted-2 text-xs">
+                              {Number(review.rating ?? 0)}/5
+                            </span>
                           </div>
-                          {review.title && (
-                            <p className="text-ink-1 font-medium">
-                              {review.title}
-                            </p>
-                          )}
                           <p className="text-muted-2 text-sm">
                             {review.comment}
                           </p>

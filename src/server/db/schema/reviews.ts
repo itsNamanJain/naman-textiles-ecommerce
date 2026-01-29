@@ -24,7 +24,6 @@ export const reviews = createTable(
       .notNull()
       .references(() => products.id, { onDelete: "cascade" }),
     rating: integer("rating").notNull(), // 1-5
-    title: varchar("title", { length: 255 }),
     comment: text("comment"),
     isVerified: boolean("is_verified").default(false).notNull(), // Verified purchase
     isApproved: boolean("is_approved").default(false).notNull(),
