@@ -1,9 +1,7 @@
 import { z } from "zod";
-import { eq, and, desc } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import { addresses } from "@/server/db/schema";
 
 const addressSchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -21,10 +19,13 @@ export const addressRouter = createTRPCRouter({
   getAll: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.user.id;
 
-    const userAddresses = await ctx.db.query.addresses.findMany({
-      where: eq(addresses.userId, userId),
-      orderBy: [desc(addresses.isDefault), desc(addresses.createdAt)],
-    });
+    const userAddresses = await ctx.db
+      .selectFrom("address")
+      .selectAll()
+      .where("userId", "=", userId)
+      .orderBy("isDefault", "desc")
+      .orderBy("createdAt", "desc")
+      .execute();
 
     return userAddresses;
   }),
@@ -35,9 +36,12 @@ export const addressRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
 
-      const address = await ctx.db.query.addresses.findFirst({
-        where: and(eq(addresses.id, input.id), eq(addresses.userId, userId)),
-      });
+      const address = await ctx.db
+        .selectFrom("address")
+        .selectAll()
+        .where("id", "=", input.id)
+        .where("userId", "=", userId)
+        .executeTakeFirst();
 
       if (!address) {
         throw new TRPCError({
@@ -58,21 +62,23 @@ export const addressRouter = createTRPCRouter({
       // If this is set as default, unset all other defaults
       if (input.isDefault) {
         await ctx.db
-          .update(addresses)
+          .updateTable("address")
           .set({ isDefault: false })
-          .where(eq(addresses.userId, userId));
+          .where("userId", "=", userId)
+          .execute();
       }
 
       // Check if user has any addresses, if not make this the default
-      const existingAddresses = await ctx.db.query.addresses.findMany({
-        where: eq(addresses.userId, userId),
-        columns: { id: true },
-      });
+      const existingAddresses = await ctx.db
+        .selectFrom("address")
+        .select(["id"])
+        .where("userId", "=", userId)
+        .execute();
 
       const isDefault = existingAddresses.length === 0 ? true : input.isDefault;
 
-      const [newAddress] = await ctx.db
-        .insert(addresses)
+      const newAddress = await ctx.db
+        .insertInto("address")
         .values({
           userId,
           name: input.name,
@@ -84,7 +90,8 @@ export const addressRouter = createTRPCRouter({
           pincode: input.pincode,
           isDefault,
         })
-        .returning();
+        .returningAll()
+        .executeTakeFirst();
 
       return newAddress;
     }),
@@ -101,9 +108,12 @@ export const addressRouter = createTRPCRouter({
       const userId = ctx.session.user.id;
 
       // Verify the address belongs to this user
-      const existingAddress = await ctx.db.query.addresses.findFirst({
-        where: and(eq(addresses.id, input.id), eq(addresses.userId, userId)),
-      });
+      const existingAddress = await ctx.db
+        .selectFrom("address")
+        .selectAll()
+        .where("id", "=", input.id)
+        .where("userId", "=", userId)
+        .executeTakeFirst();
 
       if (!existingAddress) {
         throw new TRPCError({
@@ -115,13 +125,14 @@ export const addressRouter = createTRPCRouter({
       // If setting as default, unset all other defaults first
       if (input.data.isDefault) {
         await ctx.db
-          .update(addresses)
+          .updateTable("address")
           .set({ isDefault: false })
-          .where(eq(addresses.userId, userId));
+          .where("userId", "=", userId)
+          .execute();
       }
 
-      const [updatedAddress] = await ctx.db
-        .update(addresses)
+      const updatedAddress = await ctx.db
+        .updateTable("address")
         .set({
           name: input.data.name,
           phone: input.data.phone,
@@ -132,8 +143,9 @@ export const addressRouter = createTRPCRouter({
           pincode: input.data.pincode,
           isDefault: input.data.isDefault,
         })
-        .where(eq(addresses.id, input.id))
-        .returning();
+        .where("id", "=", input.id)
+        .returningAll()
+        .executeTakeFirst();
 
       return updatedAddress;
     }),
@@ -145,9 +157,12 @@ export const addressRouter = createTRPCRouter({
       const userId = ctx.session.user.id;
 
       // Verify the address belongs to this user
-      const existingAddress = await ctx.db.query.addresses.findFirst({
-        where: and(eq(addresses.id, input.id), eq(addresses.userId, userId)),
-      });
+      const existingAddress = await ctx.db
+        .selectFrom("address")
+        .selectAll()
+        .where("id", "=", input.id)
+        .where("userId", "=", userId)
+        .executeTakeFirst();
 
       if (!existingAddress) {
         throw new TRPCError({
@@ -156,21 +171,24 @@ export const addressRouter = createTRPCRouter({
         });
       }
 
-      await ctx.db.delete(addresses).where(eq(addresses.id, input.id));
+      await ctx.db.deleteFrom("address").where("id", "=", input.id).execute();
 
       // If deleted address was default, set another as default
       if (existingAddress.isDefault) {
-        const remainingAddresses = await ctx.db.query.addresses.findMany({
-          where: eq(addresses.userId, userId),
-          orderBy: [desc(addresses.createdAt)],
-          limit: 1,
-        });
+        const remainingAddresses = await ctx.db
+          .selectFrom("address")
+          .selectAll()
+          .where("userId", "=", userId)
+          .orderBy("createdAt", "desc")
+          .limit(1)
+          .execute();
 
         if (remainingAddresses.length > 0 && remainingAddresses[0]) {
           await ctx.db
-            .update(addresses)
+            .updateTable("address")
             .set({ isDefault: true })
-            .where(eq(addresses.id, remainingAddresses[0].id));
+            .where("id", "=", remainingAddresses[0].id)
+            .execute();
         }
       }
 
@@ -184,9 +202,12 @@ export const addressRouter = createTRPCRouter({
       const userId = ctx.session.user.id;
 
       // Verify the address belongs to this user
-      const existingAddress = await ctx.db.query.addresses.findFirst({
-        where: and(eq(addresses.id, input.id), eq(addresses.userId, userId)),
-      });
+      const existingAddress = await ctx.db
+        .selectFrom("address")
+        .selectAll()
+        .where("id", "=", input.id)
+        .where("userId", "=", userId)
+        .executeTakeFirst();
 
       if (!existingAddress) {
         throw new TRPCError({
@@ -197,15 +218,17 @@ export const addressRouter = createTRPCRouter({
 
       // Unset all other defaults
       await ctx.db
-        .update(addresses)
+        .updateTable("address")
         .set({ isDefault: false })
-        .where(eq(addresses.userId, userId));
+        .where("userId", "=", userId)
+        .execute();
 
       // Set this one as default
       await ctx.db
-        .update(addresses)
+        .updateTable("address")
         .set({ isDefault: true })
-        .where(eq(addresses.id, input.id));
+        .where("id", "=", input.id)
+        .execute();
 
       return { success: true };
     }),

@@ -3,7 +3,7 @@ import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
-import { db } from "@/server/db";
+import { drizzleDb } from "@/server/db";
 import {
   accounts,
   sessions,
@@ -20,7 +20,7 @@ const credentialsSchema = z.object({
 });
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  adapter: DrizzleAdapter(db, {
+  adapter: DrizzleAdapter(drizzleDb, {
     usersTable: users,
     accountsTable: accounts,
     sessionsTable: sessions,
@@ -54,7 +54,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         const { email, password } = parsed.data;
 
-        const user = await db.query.users.findFirst({
+        const user = await drizzleDb.query.users.findFirst({
           where: eq(users.email, email),
         });
 
@@ -85,7 +85,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
       // Refresh user data when session is updated or on each request
       if (trigger === "update" || (token.id && !token.name)) {
-        const dbUser = await db.query.users.findFirst({
+        const dbUser = await drizzleDb.query.users.findFirst({
           where: eq(users.id, token.id as string),
           columns: { name: true, role: true, image: true },
         });

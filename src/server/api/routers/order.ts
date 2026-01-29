@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { eq, desc, and, sql, inArray, gte, lte } from "drizzle-orm";
+import { sql } from "kysely";
+import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/postgres";
 import { TRPCError } from "@trpc/server";
 
 import {
@@ -7,7 +8,6 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
-import { orders, orderItems, products, coupons } from "@/server/db/schema";
 import { generateOrderNumber } from "@/lib/utils";
 import { DEFAULT_SETTINGS } from "@/lib/constants";
 
@@ -46,7 +46,10 @@ export const orderRouter = createTRPCRouter({
       const userId = ctx.session.user.id;
 
       // Load store settings (fallback to defaults)
-      const allSettings = await ctx.db.query.settings.findMany();
+      const allSettings = await ctx.db
+        .selectFrom("setting")
+        .select(["key", "value"])
+        .execute();
       const settingsMap: Record<string, string> = {};
       allSettings.forEach((setting) => {
         settingsMap[setting.key] = setting.value;
@@ -65,21 +68,22 @@ export const orderRouter = createTRPCRouter({
       const productIds = input.items.map((item) => item.productId);
 
       // Fetch current stock for all products
-      const productStock = await ctx.db.query.products.findMany({
-        where: inArray(products.id, productIds),
-        columns: {
-          id: true,
-          name: true,
-          stockQuantity: true,
-          price: true,
-          sku: true,
-          unit: true,
-          minOrderQuantity: true,
-          maxOrderQuantity: true,
-          trackQuantity: true,
-          allowBackorder: true,
-        },
-      });
+      const productStock = await ctx.db
+        .selectFrom("product")
+        .select([
+          "id",
+          "name",
+          "stockQuantity",
+          "price",
+          "sku",
+          "unit",
+          "minOrderQuantity",
+          "maxOrderQuantity",
+          "trackQuantity",
+          "allowBackorder",
+        ])
+        .where("id", "in", productIds)
+        .execute();
 
       // Create a map for quick lookup
       const stockMap = new Map(
@@ -92,7 +96,9 @@ export const orderRouter = createTRPCRouter({
             sku: p.sku ?? null,
             unit: p.unit,
             minOrderQuantity: Number(p.minOrderQuantity),
-            maxOrderQuantity: p.maxOrderQuantity ? Number(p.maxOrderQuantity) : null,
+            maxOrderQuantity: p.maxOrderQuantity
+              ? Number(p.maxOrderQuantity)
+              : null,
             trackQuantity: p.trackQuantity,
             allowBackorder: p.allowBackorder,
           },
@@ -161,12 +167,6 @@ export const orderRouter = createTRPCRouter({
         });
       }
 
-      for (const item of input.items) {
-        // Keep existing loop for legacy behavior safety (now validated in normalizedItems)
-        const productInfo = stockMap.get(item.productId);
-        if (!productInfo) continue;
-      }
-
       if (outOfStockItems.length > 0) {
         throw new TRPCError({
           code: "BAD_REQUEST",
@@ -196,14 +196,14 @@ export const orderRouter = createTRPCRouter({
       if (input.couponCode) {
         const normalizedCode = input.couponCode.toUpperCase().replace(/\s/g, "");
         const now = new Date();
-        const coupon = await ctx.db.query.coupons.findFirst({
-          where: and(
-            eq(coupons.code, normalizedCode),
-            eq(coupons.isActive, true),
-            lte(coupons.startDate, now),
-            gte(coupons.endDate, now)
-          ),
-        });
+        const coupon = await ctx.db
+          .selectFrom("coupon")
+          .selectAll()
+          .where("code", "=", normalizedCode)
+          .where("isActive", "=", true)
+          .where("startDate", "<=", now)
+          .where("endDate", ">=", now)
+          .executeTakeFirst();
 
         if (!coupon) {
           throw new TRPCError({
@@ -249,8 +249,8 @@ export const orderRouter = createTRPCRouter({
       const total = subtotal + shippingCost - discount;
 
       // Create order with embedded shipping address
-      const [order] = await ctx.db
-        .insert(orders)
+      const order = await ctx.db
+        .insertInto("order")
         .values({
           orderNumber: generateOrderNumber(),
           userId: userId,
@@ -263,7 +263,6 @@ export const orderRouter = createTRPCRouter({
           couponDiscount: discount.toString(),
           total: total.toString(),
           couponCode: appliedCouponCode,
-          // Embedded shipping address
           shippingName: input.shippingAddress.name,
           shippingPhone: input.shippingAddress.phone,
           shippingAddressLine1: input.shippingAddress.addressLine1,
@@ -273,7 +272,8 @@ export const orderRouter = createTRPCRouter({
           shippingPincode: input.shippingAddress.pincode,
           customerNote: input.customerNote ?? null,
         })
-        .returning();
+        .returningAll()
+        .executeTakeFirst();
 
       if (!order) {
         throw new TRPCError({
@@ -284,36 +284,37 @@ export const orderRouter = createTRPCRouter({
 
       // Create order items and deduct stock
       for (const item of validItems) {
-        const orderItemData = {
-          orderId: order.id,
-          productId: item.productId,
-          productName: item.productName,
-          productSku: item.productSku ?? null,
-          price: item.unitPrice.toFixed(2),
-          quantity: item.quantity.toFixed(2),
-          unit: item.unit,
-          total: (item.unitPrice * item.quantity).toFixed(2),
-        };
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        await ctx.db.insert(orderItems).values(orderItemData as any);
+        await ctx.db
+          .insertInto("orderItem")
+          .values({
+            orderId: order.id,
+            productId: item.productId,
+            productName: item.productName,
+            productSku: item.productSku ?? null,
+            price: item.unitPrice.toFixed(2),
+            quantity: item.quantity.toFixed(2),
+            unit: item.unit,
+            total: (item.unitPrice * item.quantity).toFixed(2),
+          })
+          .execute();
 
-        // Deduct stock from product
         if (item.trackQuantity) {
           const currentStock = stockMap.get(item.productId)?.stock ?? 0;
           const newStock = Math.max(0, currentStock - item.quantity);
           await ctx.db
-            .update(products)
+            .updateTable("product")
             .set({ stockQuantity: newStock.toString() })
-            .where(eq(products.id, item.productId));
-
+            .where("id", "=", item.productId)
+            .execute();
         }
       }
 
       if (appliedCouponCode) {
         await ctx.db
-          .update(coupons)
-          .set({ usageCount: sql`${coupons.usageCount} + 1` })
-          .where(eq(coupons.code, appliedCouponCode));
+          .updateTable("coupon")
+          .set({ usageCount: sql`"usage_count" + 1` })
+          .where("code", "=", appliedCouponCode)
+          .execute();
       }
 
       return {
@@ -337,21 +338,30 @@ export const orderRouter = createTRPCRouter({
       const userId = ctx.session.user.id;
       const isAdmin = ctx.session.user.role === "admin";
 
-      const order = await ctx.db.query.orders.findFirst({
-        where: isAdmin
-          ? eq(orders.id, input.id)
-          : and(eq(orders.id, input.id), eq(orders.userId, userId)),
-        with: {
-          items: true,
-          user: {
-            columns: {
-              id: true,
-              name: true,
-              email: true,
-            },
-          },
-        },
-      });
+      let query = ctx.db
+        .selectFrom("order")
+        .selectAll("order")
+        .select((eb) => [
+          jsonArrayFrom(
+            eb
+              .selectFrom("orderItem")
+              .selectAll()
+              .whereRef("orderItem.orderId", "=", "order.id")
+          ).as("items"),
+          jsonObjectFrom(
+            eb
+              .selectFrom("user")
+              .select(["id", "name", "email"])
+              .whereRef("user.id", "=", "order.userId")
+          ).as("user"),
+        ])
+        .where("order.id", "=", input.id);
+
+      if (!isAdmin) {
+        query = query.where("order.userId", "=", userId);
+      }
+
+      const order = await query.executeTakeFirst();
 
       if (!order) {
         throw new TRPCError({
@@ -367,31 +377,31 @@ export const orderRouter = createTRPCRouter({
   getByOrderNumber: publicProcedure
     .input(z.object({ orderNumber: z.string() }))
     .query(async ({ ctx, input }) => {
-      const order = await ctx.db.query.orders.findFirst({
-        where: eq(orders.orderNumber, input.orderNumber),
-        columns: {
-          id: true,
-          orderNumber: true,
-          status: true,
-          paymentStatus: true,
-          total: true,
-          shippingCity: true,
-          shippingState: true,
-          trackingNumber: true,
-          shippedAt: true,
-          deliveredAt: true,
-          createdAt: true,
-        },
-        with: {
-          items: {
-            columns: {
-              productName: true,
-              quantity: true,
-              total: true,
-            },
-          },
-        },
-      });
+      const order = await ctx.db
+        .selectFrom("order")
+        .select([
+          "id",
+          "orderNumber",
+          "status",
+          "paymentStatus",
+          "total",
+          "shippingCity",
+          "shippingState",
+          "trackingNumber",
+          "shippedAt",
+          "deliveredAt",
+          "createdAt",
+        ])
+        .select((eb) => [
+          jsonArrayFrom(
+            eb
+              .selectFrom("orderItem")
+              .select(["productName", "quantity", "total"])
+              .whereRef("orderItem.orderId", "=", "order.id")
+          ).as("items"),
+        ])
+        .where("orderNumber", "=", input.orderNumber)
+        .executeTakeFirst();
 
       if (!order) {
         throw new TRPCError({
@@ -412,17 +422,28 @@ export const orderRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      const { limit } = input;
+      const { limit, cursor } = input;
       const userId = ctx.session.user.id;
 
-      const userOrders = await ctx.db.query.orders.findMany({
-        where: eq(orders.userId, userId),
-        orderBy: [desc(orders.createdAt)],
-        limit: limit + 1,
-        with: {
-          items: true,
-        },
-      });
+      let query = ctx.db
+        .selectFrom("order")
+        .selectAll("order")
+        .select((eb) => [
+          jsonArrayFrom(
+            eb
+              .selectFrom("orderItem")
+              .selectAll()
+              .whereRef("orderItem.orderId", "=", "order.id")
+          ).as("items"),
+        ])
+        .where("order.userId", "=", userId)
+        .orderBy("order.createdAt", "desc");
+
+      if (cursor) {
+        query = query.where("order.id", ">", cursor);
+      }
+
+      const userOrders = await query.limit(limit + 1).execute();
 
       let nextCursor: string | undefined;
       if (userOrders.length > limit) {
@@ -442,12 +463,20 @@ export const orderRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
 
-      const order = await ctx.db.query.orders.findFirst({
-        where: and(eq(orders.id, input.orderId), eq(orders.userId, userId)),
-        with: {
-          items: true,
-        },
-      });
+      const order = await ctx.db
+        .selectFrom("order")
+        .selectAll("order")
+        .select((eb) => [
+          jsonArrayFrom(
+            eb
+              .selectFrom("orderItem")
+              .selectAll()
+              .whereRef("orderItem.orderId", "=", "order.id")
+          ).as("items"),
+        ])
+        .where("order.id", "=", input.orderId)
+        .where("order.userId", "=", userId)
+        .executeTakeFirst();
 
       if (!order) {
         throw new TRPCError({
@@ -464,26 +493,29 @@ export const orderRouter = createTRPCRouter({
       }
 
       // Restore stock for each item
-      for (const item of order.items) {
-        const product = await ctx.db.query.products.findFirst({
-          where: eq(products.id, item.productId),
-          columns: { stockQuantity: true },
-        });
+      for (const item of order.items ?? []) {
+        const product = await ctx.db
+          .selectFrom("product")
+          .select(["stockQuantity"])
+          .where("id", "=", item.productId)
+          .executeTakeFirst();
 
         if (product) {
           const currentStock = Number(product.stockQuantity);
           const restoredStock = currentStock + Number(item.quantity);
           await ctx.db
-            .update(products)
+            .updateTable("product")
             .set({ stockQuantity: restoredStock.toString() })
-            .where(eq(products.id, item.productId));
+            .where("id", "=", item.productId)
+            .execute();
         }
       }
 
       await ctx.db
-        .update(orders)
+        .updateTable("order")
         .set({ status: "cancelled" })
-        .where(eq(orders.id, input.orderId));
+        .where("id", "=", input.orderId)
+        .execute();
 
       return { success: true };
     }),
@@ -493,10 +525,11 @@ export const orderRouter = createTRPCRouter({
     const userId = ctx.session.user.id;
 
     const result = await ctx.db
-      .select({ count: sql<number>`count(*)` })
-      .from(orders)
-      .where(eq(orders.userId, userId));
+      .selectFrom("order")
+      .select(sql<number>`count(*)`.as("count"))
+      .where("userId", "=", userId)
+      .executeTakeFirst();
 
-    return result[0]?.count ?? 0;
+    return result?.count ?? 0;
   }),
 });

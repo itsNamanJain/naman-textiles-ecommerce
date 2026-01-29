@@ -1,14 +1,8 @@
 import { z } from "zod";
-import { eq, and, asc } from "drizzle-orm";
+import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/postgres";
 import { TRPCError } from "@trpc/server";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import {
-  wishlists,
-  wishlistItems,
-  products,
-  productImages,
-} from "@/server/db/schema";
 
 export const wishlistRouter = createTRPCRouter({
   // Get user's wishlist
@@ -16,34 +10,55 @@ export const wishlistRouter = createTRPCRouter({
     const userId = ctx.session.user.id;
 
     // Get or create wishlist
-    let wishlist = await ctx.db.query.wishlists.findFirst({
-      where: eq(wishlists.userId, userId),
-    });
+    let wishlist = await ctx.db
+      .selectFrom("wishlist")
+      .selectAll()
+      .where("userId", "=", userId)
+      .executeTakeFirst();
 
     if (!wishlist) {
-      const [newWishlist] = await ctx.db
-        .insert(wishlists)
+      const newWishlist = await ctx.db
+        .insertInto("wishlist")
         .values({ userId })
-        .returning();
+        .returningAll()
+        .executeTakeFirst();
       wishlist = newWishlist;
     }
 
     // Get wishlist items with products
-    const items = await ctx.db.query.wishlistItems.findMany({
-      where: eq(wishlistItems.wishlistId, wishlist!.id),
-      with: {
-        product: {
-          with: {
-            category: true,
-            images: {
-              orderBy: [asc(productImages.position)],
-              limit: 1,
-            },
-          },
-        },
-      },
-      orderBy: [wishlistItems.createdAt],
-    });
+    const items = await ctx.db
+      .selectFrom("wishlistItem")
+      .select([
+        "wishlistItem.id",
+        "wishlistItem.wishlistId",
+        "wishlistItem.productId",
+        "wishlistItem.createdAt",
+        jsonObjectFrom(
+          ctx.db
+            .selectFrom("product")
+            .selectAll()
+            .select((eb) => [
+              jsonObjectFrom(
+                eb
+                  .selectFrom("category")
+                  .selectAll()
+                  .whereRef("category.id", "=", "product.categoryId")
+              ).as("category"),
+              jsonArrayFrom(
+                eb
+                  .selectFrom("productImage")
+                  .selectAll()
+                  .whereRef("productImage.productId", "=", "product.id")
+                  .orderBy("position", "asc")
+                  .limit(1)
+              ).as("images"),
+            ])
+            .whereRef("product.id", "=", "wishlistItem.productId")
+        ).as("product"),
+      ])
+      .where("wishlistItem.wishlistId", "=", wishlist!.id)
+      .orderBy("wishlistItem.createdAt", "asc")
+      .execute();
 
     // Filter out items where product is inactive
     const activeItems = items.filter((item) => item.product?.isActive);
@@ -62,9 +77,11 @@ export const wishlistRouter = createTRPCRouter({
       const userId = ctx.session.user.id;
 
       // Check if product exists
-      const product = await ctx.db.query.products.findFirst({
-        where: eq(products.id, input.productId),
-      });
+      const product = await ctx.db
+        .selectFrom("product")
+        .select(["id"])
+        .where("id", "=", input.productId)
+        .executeTakeFirst();
 
       if (!product) {
         throw new TRPCError({
@@ -74,32 +91,35 @@ export const wishlistRouter = createTRPCRouter({
       }
 
       // Get or create wishlist
-      let wishlist = await ctx.db.query.wishlists.findFirst({
-        where: eq(wishlists.userId, userId),
-      });
+      let wishlist = await ctx.db
+        .selectFrom("wishlist")
+        .selectAll()
+        .where("userId", "=", userId)
+        .executeTakeFirst();
 
       if (!wishlist) {
-        const [newWishlist] = await ctx.db
-          .insert(wishlists)
+        const newWishlist = await ctx.db
+          .insertInto("wishlist")
           .values({ userId })
-          .returning();
+          .returningAll()
+          .executeTakeFirst();
         wishlist = newWishlist;
       }
 
       // Check if item already in wishlist
-      const existingItem = await ctx.db.query.wishlistItems.findFirst({
-        where: and(
-          eq(wishlistItems.wishlistId, wishlist!.id),
-          eq(wishlistItems.productId, input.productId)
-        ),
-      });
+      const existingItem = await ctx.db
+        .selectFrom("wishlistItem")
+        .select(["id"])
+        .where("wishlistId", "=", wishlist!.id)
+        .where("productId", "=", input.productId)
+        .executeTakeFirst();
 
       if (existingItem) {
         return { success: true, message: "Item already in wishlist" };
       }
 
       // Add to wishlist
-      await ctx.db.insert(wishlistItems).values({
+      await ctx.db.insertInto("wishlistItem").values({
         wishlistId: wishlist!.id,
         productId: input.productId,
       });
@@ -113,9 +133,11 @@ export const wishlistRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
 
-      const wishlist = await ctx.db.query.wishlists.findFirst({
-        where: eq(wishlists.userId, userId),
-      });
+      const wishlist = await ctx.db
+        .selectFrom("wishlist")
+        .selectAll()
+        .where("userId", "=", userId)
+        .executeTakeFirst();
 
       if (!wishlist) {
         throw new TRPCError({
@@ -125,13 +147,10 @@ export const wishlistRouter = createTRPCRouter({
       }
 
       await ctx.db
-        .delete(wishlistItems)
-        .where(
-          and(
-            eq(wishlistItems.wishlistId, wishlist.id),
-            eq(wishlistItems.productId, input.productId)
-          )
-        );
+        .deleteFrom("wishlistItem")
+        .where("wishlistId", "=", wishlist.id)
+        .where("productId", "=", input.productId)
+        .execute();
 
       return { success: true, message: "Removed from wishlist" };
     }),
@@ -143,9 +162,11 @@ export const wishlistRouter = createTRPCRouter({
       const userId = ctx.session.user.id;
 
       // Check if product exists
-      const product = await ctx.db.query.products.findFirst({
-        where: eq(products.id, input.productId),
-      });
+      const product = await ctx.db
+        .selectFrom("product")
+        .select(["id"])
+        .where("id", "=", input.productId)
+        .executeTakeFirst();
 
       if (!product) {
         throw new TRPCError({
@@ -155,31 +176,35 @@ export const wishlistRouter = createTRPCRouter({
       }
 
       // Get or create wishlist
-      let wishlist = await ctx.db.query.wishlists.findFirst({
-        where: eq(wishlists.userId, userId),
-      });
+      let wishlist = await ctx.db
+        .selectFrom("wishlist")
+        .selectAll()
+        .where("userId", "=", userId)
+        .executeTakeFirst();
 
       if (!wishlist) {
-        const [newWishlist] = await ctx.db
-          .insert(wishlists)
+        const newWishlist = await ctx.db
+          .insertInto("wishlist")
           .values({ userId })
-          .returning();
+          .returningAll()
+          .executeTakeFirst();
         wishlist = newWishlist;
       }
 
       // Check if item exists in wishlist
-      const existingItem = await ctx.db.query.wishlistItems.findFirst({
-        where: and(
-          eq(wishlistItems.wishlistId, wishlist!.id),
-          eq(wishlistItems.productId, input.productId)
-        ),
-      });
+      const existingItem = await ctx.db
+        .selectFrom("wishlistItem")
+        .select(["id"])
+        .where("wishlistId", "=", wishlist!.id)
+        .where("productId", "=", input.productId)
+        .executeTakeFirst();
 
       if (existingItem) {
         // Remove from wishlist
         await ctx.db
-          .delete(wishlistItems)
-          .where(eq(wishlistItems.id, existingItem.id));
+          .deleteFrom("wishlistItem")
+          .where("id", "=", existingItem.id)
+          .execute();
         return {
           success: true,
           isInWishlist: false,
@@ -187,7 +212,7 @@ export const wishlistRouter = createTRPCRouter({
         };
       } else {
         // Add to wishlist
-        await ctx.db.insert(wishlistItems).values({
+        await ctx.db.insertInto("wishlistItem").values({
           wishlistId: wishlist!.id,
           productId: input.productId,
         });
@@ -205,20 +230,22 @@ export const wishlistRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
 
-      const wishlist = await ctx.db.query.wishlists.findFirst({
-        where: eq(wishlists.userId, userId),
-      });
+      const wishlist = await ctx.db
+        .selectFrom("wishlist")
+        .selectAll()
+        .where("userId", "=", userId)
+        .executeTakeFirst();
 
       if (!wishlist) {
         return false;
       }
 
-      const item = await ctx.db.query.wishlistItems.findFirst({
-        where: and(
-          eq(wishlistItems.wishlistId, wishlist.id),
-          eq(wishlistItems.productId, input.productId)
-        ),
-      });
+      const item = await ctx.db
+        .selectFrom("wishlistItem")
+        .select(["id"])
+        .where("wishlistId", "=", wishlist.id)
+        .where("productId", "=", input.productId)
+        .executeTakeFirst();
 
       return !!item;
     }),
@@ -227,46 +254,45 @@ export const wishlistRouter = createTRPCRouter({
   getProductIds: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.user.id;
 
-    const wishlist = await ctx.db.query.wishlists.findFirst({
-      where: eq(wishlists.userId, userId),
-      with: {
-        items: {
-          columns: {
-            productId: true,
-          },
-        },
-      },
-    });
+    const rows = await ctx.db
+      .selectFrom("wishlist")
+      .innerJoin("wishlistItem", "wishlistItem.wishlistId", "wishlist.id")
+      .select(["wishlistItem.productId"])
+      .where("wishlist.userId", "=", userId)
+      .execute();
 
-    return wishlist?.items.map((item) => item.productId) ?? [];
+    return rows.map((item) => item.productId);
   }),
 
   // Get wishlist count
   count: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.user.id;
 
-    const wishlist = await ctx.db.query.wishlists.findFirst({
-      where: eq(wishlists.userId, userId),
-      with: {
-        items: true,
-      },
-    });
+    const result = await ctx.db
+      .selectFrom("wishlist")
+      .innerJoin("wishlistItem", "wishlistItem.wishlistId", "wishlist.id")
+      .select((eb) => eb.fn.countAll().as("count"))
+      .where("wishlist.userId", "=", userId)
+      .executeTakeFirst();
 
-    return wishlist?.items.length ?? 0;
+    return Number(result?.count ?? 0);
   }),
 
   // Clear wishlist
   clear: protectedProcedure.mutation(async ({ ctx }) => {
     const userId = ctx.session.user.id;
 
-    const wishlist = await ctx.db.query.wishlists.findFirst({
-      where: eq(wishlists.userId, userId),
-    });
+    const wishlist = await ctx.db
+      .selectFrom("wishlist")
+      .selectAll()
+      .where("userId", "=", userId)
+      .executeTakeFirst();
 
     if (wishlist) {
       await ctx.db
-        .delete(wishlistItems)
-        .where(eq(wishlistItems.wishlistId, wishlist.id));
+        .deleteFrom("wishlistItem")
+        .where("wishlistId", "=", wishlist.id)
+        .execute();
     }
 
     return { success: true };

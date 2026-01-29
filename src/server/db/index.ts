@@ -1,4 +1,5 @@
 import { drizzle } from "drizzle-orm/postgres-js";
+import { CamelCasePlugin, Kysely, PostgresDialect } from "kysely";
 import postgres from "postgres";
 
 import { env } from "@/env";
@@ -20,4 +21,13 @@ const dbUrl = env.DATABASE_URL.includes("sslmode=")
 const conn = globalForDb.conn ?? postgres(dbUrl);
 if (env.NODE_ENV !== "production") globalForDb.conn = conn;
 
-export const db = drizzle(conn, { schema });
+export const drizzleDb = drizzle(conn, { schema });
+
+export type Database = Record<string, unknown>;
+
+export const kyselyDb = new Kysely<Database>({
+  dialect: new PostgresDialect({
+    postgres: conn,
+  }),
+  plugins: [new CamelCasePlugin()],
+});

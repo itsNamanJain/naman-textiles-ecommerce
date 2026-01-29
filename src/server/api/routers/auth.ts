@@ -1,14 +1,13 @@
 import { z } from "zod";
 import { hash } from "bcryptjs";
 import { TRPCError } from "@trpc/server";
-import { eq, count } from "drizzle-orm";
+import { sql } from "kysely";
 
 import {
   createTRPCRouter,
   publicProcedure,
   protectedProcedure,
 } from "@/server/api/trpc";
-import { users, addresses, orders, wishlists } from "@/server/db/schema";
 
 export const authRouter = createTRPCRouter({
   signUp: publicProcedure
@@ -22,9 +21,11 @@ export const authRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       // Check if user already exists
-      const existingUser = await ctx.db.query.users.findFirst({
-        where: eq(users.email, input.email.toLowerCase()),
-      });
+      const existingUser = await ctx.db
+        .selectFrom("user")
+        .select(["id"])
+        .where("email", "=", input.email.toLowerCase())
+        .executeTakeFirst();
 
       if (existingUser) {
         throw new TRPCError({
@@ -37,8 +38,8 @@ export const authRouter = createTRPCRouter({
       const hashedPassword = await hash(input.password, 12);
 
       // Create user
-      const [newUser] = await ctx.db
-        .insert(users)
+      const newUser = await ctx.db
+        .insertInto("user")
         .values({
           name: input.name,
           email: input.email.toLowerCase(),
@@ -46,11 +47,8 @@ export const authRouter = createTRPCRouter({
           phone: input.phone ?? null,
           role: "customer",
         })
-        .returning({
-          id: users.id,
-          name: users.name,
-          email: users.email,
-        });
+        .returning(["id", "name", "email"])
+        .executeTakeFirst();
 
       return {
         success: true,
@@ -63,9 +61,11 @@ export const authRouter = createTRPCRouter({
     const userId = ctx.session.user.id;
 
     // Get user data
-    const user = await ctx.db.query.users.findFirst({
-      where: eq(users.id, userId),
-    });
+    const user = await ctx.db
+      .selectFrom("user")
+      .selectAll()
+      .where("id", "=", userId)
+      .executeTakeFirst();
 
     if (!user) {
       throw new TRPCError({
@@ -75,24 +75,26 @@ export const authRouter = createTRPCRouter({
     }
 
     // Get stats
-    const [orderCount] = await ctx.db
-      .select({ count: count() })
-      .from(orders)
-      .where(eq(orders.userId, userId));
+    const orderCount = await ctx.db
+      .selectFrom("order")
+      .select(sql<number>`count(*)`.as("count"))
+      .where("userId", "=", userId)
+      .executeTakeFirst();
 
-    const [addressCount] = await ctx.db
-      .select({ count: count() })
-      .from(addresses)
-      .where(eq(addresses.userId, userId));
+    const addressCount = await ctx.db
+      .selectFrom("address")
+      .select(sql<number>`count(*)`.as("count"))
+      .where("userId", "=", userId)
+      .executeTakeFirst();
 
     // Get wishlist count - use the wishlist router's approach
-    const wishlist = await ctx.db.query.wishlists.findFirst({
-      where: eq(wishlists.userId, userId),
-      with: {
-        items: true,
-      },
-    });
-    const wishlistCount = wishlist?.items?.length ?? 0;
+    const wishlistCountResult = await ctx.db
+      .selectFrom("wishlist")
+      .innerJoin("wishlistItem", "wishlistItem.wishlistId", "wishlist.id")
+      .select(sql<number>`count(*)`.as("count"))
+      .where("wishlist.userId", "=", userId)
+      .executeTakeFirst();
+    const wishlistCount = wishlistCountResult?.count ?? 0;
 
     return {
       id: user.id,
@@ -120,12 +122,13 @@ export const authRouter = createTRPCRouter({
       const userId = ctx.session.user.id;
 
       await ctx.db
-        .update(users)
+        .updateTable("user")
         .set({
           name: input.name,
           phone: input.phone ?? null,
         })
-        .where(eq(users.id, userId));
+        .where("id", "=", userId)
+        .execute();
 
       return { success: true };
     }),

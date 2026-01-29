@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { eq, and, desc, asc, ilike, or, sql, gte, lte } from "drizzle-orm";
+import { sql } from "kysely";
+import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/postgres";
 
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
-import { products, categories, productImages } from "@/server/db/schema";
 
 export const productRouter = createTRPCRouter({
   // Get all products with pagination and filters
@@ -37,95 +37,104 @@ export const productRouter = createTRPCRouter({
         newArrivals,
       } = input;
 
-      // Build where conditions
-      const conditions = [eq(products.isActive, true)];
+      let query = ctx.db
+        .selectFrom("product")
+        .selectAll("product")
+        .select((eb) => [
+          jsonObjectFrom(
+            eb
+              .selectFrom("category")
+              .selectAll()
+              .whereRef("category.id", "=", "product.categoryId")
+          ).as("category"),
+          jsonArrayFrom(
+            eb
+              .selectFrom("productImage")
+              .selectAll()
+              .whereRef("productImage.productId", "=", "product.id")
+              .orderBy("position", "asc")
+              .limit(2)
+          ).as("images"),
+        ])
+        .where("product.isActive", "=", true);
 
       // Filter by category
       if (categorySlug) {
-        const category = await ctx.db.query.categories.findFirst({
-          where: eq(categories.slug, categorySlug),
-        });
+        const category = await ctx.db
+          .selectFrom("category")
+          .select(["id"])
+          .where("slug", "=", categorySlug)
+          .executeTakeFirst();
         if (category) {
-          conditions.push(eq(products.categoryId, category.id));
+          query = query.where("product.categoryId", "=", category.id);
         }
       }
 
       // Search filter
       if (search) {
-        conditions.push(
-          or(
-            ilike(products.name, `%${search}%`),
-            ilike(products.description, `%${search}%`),
-            ilike(products.fabricType, `%${search}%`),
-            ilike(products.material, `%${search}%`),
-            ilike(products.color, `%${search}%`)
-          ) ?? sql`true`
+        query = query.where((eb) =>
+          eb.or([
+            eb("product.name", "ilike", `%${search}%`),
+            eb("product.description", "ilike", `%${search}%`),
+            eb("product.fabricType", "ilike", `%${search}%`),
+            eb("product.material", "ilike", `%${search}%`),
+            eb("product.color", "ilike", `%${search}%`),
+          ])
         );
       }
 
       // Price filters
       if (minPrice !== undefined) {
-        conditions.push(gte(products.price, minPrice.toString()));
+        query = query.where("product.price", ">=", minPrice);
       }
       if (maxPrice !== undefined) {
-        conditions.push(lte(products.price, maxPrice.toString()));
+        query = query.where("product.price", "<=", maxPrice);
       }
 
       // Selling mode filter
       if (sellingMode) {
-        conditions.push(eq(products.sellingMode, sellingMode));
+        query = query.where("product.sellingMode", "=", sellingMode);
       }
 
       // Featured filter
       if (featured !== undefined) {
-        conditions.push(eq(products.isFeatured, featured));
+        query = query.where("product.isFeatured", "=", featured);
       }
 
       // New Arrivals filter - products added in last 30 days, excludes featured products
       if (newArrivals) {
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-        conditions.push(gte(products.createdAt, thirtyDaysAgo));
-        conditions.push(eq(products.isFeatured, false)); // Exclude featured products
+        query = query
+          .where("product.createdAt", ">=", thirtyDaysAgo)
+          .where("product.isFeatured", "=", false);
       }
 
       // Cursor for pagination
       if (cursor) {
-        conditions.push(sql`${products.id} > ${cursor}`);
+        query = query.where("product.id", ">", cursor);
       }
 
       // Determine sort order
-      let orderBy;
       switch (sortBy) {
         case "oldest":
-          orderBy = asc(products.createdAt);
+          query = query.orderBy("product.createdAt", "asc");
           break;
         case "price-asc":
-          orderBy = asc(products.price);
+          query = query.orderBy("product.price", "asc");
           break;
         case "price-desc":
-          orderBy = desc(products.price);
+          query = query.orderBy("product.price", "desc");
           break;
         case "name":
-          orderBy = asc(products.name);
+          query = query.orderBy("product.name", "asc");
           break;
         case "newest":
         default:
-          orderBy = desc(products.createdAt);
+          query = query.orderBy("product.createdAt", "desc");
       }
 
-      const items = await ctx.db.query.products.findMany({
-        where: and(...conditions),
-        orderBy: [orderBy],
-        limit: limit + 1,
-        with: {
-          category: true,
-          images: {
-            orderBy: [asc(productImages.position)],
-            limit: 2,
-          },
-        },
-      });
+      const items = await query.limit(limit + 1).execute();
 
       let nextCursor: string | undefined;
       if (items.length > limit) {
@@ -143,48 +152,83 @@ export const productRouter = createTRPCRouter({
   getFeatured: publicProcedure
     .input(z.object({ limit: z.number().min(1).max(20).default(8) }))
     .query(async ({ ctx, input }) => {
-      return ctx.db.query.products.findMany({
-        where: and(eq(products.isActive, true), eq(products.isFeatured, true)),
-        limit: input.limit,
-        orderBy: [desc(products.createdAt)],
-        with: {
-          category: true,
-          images: {
-            orderBy: [asc(productImages.position)],
-            limit: 2,
-          },
-        },
-      });
+      return ctx.db
+        .selectFrom("product")
+        .selectAll("product")
+        .select((eb) => [
+          jsonObjectFrom(
+            eb
+              .selectFrom("category")
+              .selectAll()
+              .whereRef("category.id", "=", "product.categoryId")
+          ).as("category"),
+          jsonArrayFrom(
+            eb
+              .selectFrom("productImage")
+              .selectAll()
+              .whereRef("productImage.productId", "=", "product.id")
+              .orderBy("position", "asc")
+              .limit(2)
+          ).as("images"),
+        ])
+        .where("product.isActive", "=", true)
+        .where("product.isFeatured", "=", true)
+        .orderBy("product.createdAt", "desc")
+        .limit(input.limit)
+        .execute();
     }),
 
   // Get product by slug
   getBySlug: publicProcedure
     .input(z.object({ slug: z.string() }))
     .query(async ({ ctx, input }) => {
-      return ctx.db.query.products.findFirst({
-        where: and(eq(products.slug, input.slug), eq(products.isActive, true)),
-        with: {
-          category: true,
-          images: {
-            orderBy: [asc(productImages.position)],
-          },
-        },
-      });
+      return ctx.db
+        .selectFrom("product")
+        .selectAll("product")
+        .select((eb) => [
+          jsonObjectFrom(
+            eb
+              .selectFrom("category")
+              .selectAll()
+              .whereRef("category.id", "=", "product.categoryId")
+          ).as("category"),
+          jsonArrayFrom(
+            eb
+              .selectFrom("productImage")
+              .selectAll()
+              .whereRef("productImage.productId", "=", "product.id")
+              .orderBy("position", "asc")
+          ).as("images"),
+        ])
+        .where("product.slug", "=", input.slug)
+        .where("product.isActive", "=", true)
+        .executeTakeFirst();
     }),
 
   // Get product by ID
   getById: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      return ctx.db.query.products.findFirst({
-        where: eq(products.id, input.id),
-        with: {
-          category: true,
-          images: {
-            orderBy: [asc(productImages.position)],
-          },
-        },
-      });
+      return ctx.db
+        .selectFrom("product")
+        .selectAll("product")
+        .select((eb) => [
+          jsonObjectFrom(
+            eb
+              .selectFrom("category")
+              .selectAll()
+              .whereRef("category.id", "=", "product.categoryId")
+          ).as("category"),
+          jsonArrayFrom(
+            eb
+              .selectFrom("productImage")
+              .selectAll()
+              .whereRef("productImage.productId", "=", "product.id")
+              .orderBy("position", "asc")
+          ).as("images"),
+        ])
+        .where("product.id", "=", input.id)
+        .executeTakeFirst();
     }),
 
   // Get related products (same category)
@@ -197,22 +241,31 @@ export const productRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      return ctx.db.query.products.findMany({
-        where: and(
-          eq(products.categoryId, input.categoryId),
-          eq(products.isActive, true),
-          sql`${products.id} != ${input.productId}`
-        ),
-        limit: input.limit,
-        orderBy: [desc(products.createdAt)],
-        with: {
-          category: true,
-          images: {
-            orderBy: [asc(productImages.position)],
-            limit: 1,
-          },
-        },
-      });
+      return ctx.db
+        .selectFrom("product")
+        .selectAll("product")
+        .select((eb) => [
+          jsonObjectFrom(
+            eb
+              .selectFrom("category")
+              .selectAll()
+              .whereRef("category.id", "=", "product.categoryId")
+          ).as("category"),
+          jsonArrayFrom(
+            eb
+              .selectFrom("productImage")
+              .selectAll()
+              .whereRef("productImage.productId", "=", "product.id")
+              .orderBy("position", "asc")
+              .limit(1)
+          ).as("images"),
+        ])
+        .where("product.categoryId", "=", input.categoryId)
+        .where("product.isActive", "=", true)
+        .where("product.id", "!=", input.productId)
+        .orderBy("product.createdAt", "desc")
+        .limit(input.limit)
+        .execute();
     }),
 
   // Search products
@@ -224,28 +277,39 @@ export const productRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      return ctx.db.query.products.findMany({
-        where: and(
-          eq(products.isActive, true),
-          or(
-            ilike(products.name, `%${input.query}%`),
-            ilike(products.description, `%${input.query}%`),
-            ilike(products.fabricType, `%${input.query}%`),
-            ilike(products.material, `%${input.query}%`),
-            ilike(products.color, `%${input.query}%`),
-            ilike(products.sku, `%${input.query}%`)
-          )
-        ),
-        limit: input.limit,
-        orderBy: [desc(products.createdAt)],
-        with: {
-          category: true,
-          images: {
-            orderBy: [asc(productImages.position)],
-            limit: 1,
-          },
-        },
-      });
+      return ctx.db
+        .selectFrom("product")
+        .selectAll("product")
+        .select((eb) => [
+          jsonObjectFrom(
+            eb
+              .selectFrom("category")
+              .selectAll()
+              .whereRef("category.id", "=", "product.categoryId")
+          ).as("category"),
+          jsonArrayFrom(
+            eb
+              .selectFrom("productImage")
+              .selectAll()
+              .whereRef("productImage.productId", "=", "product.id")
+              .orderBy("position", "asc")
+              .limit(1)
+          ).as("images"),
+        ])
+        .where("product.isActive", "=", true)
+        .where((eb) =>
+          eb.or([
+            eb("product.name", "ilike", `%${input.query}%`),
+            eb("product.description", "ilike", `%${input.query}%`),
+            eb("product.fabricType", "ilike", `%${input.query}%`),
+            eb("product.material", "ilike", `%${input.query}%`),
+            eb("product.color", "ilike", `%${input.query}%`),
+            eb("product.sku", "ilike", `%${input.query}%`),
+          ])
+        )
+        .orderBy("product.createdAt", "desc")
+        .limit(input.limit)
+        .execute();
     }),
 
   // Get products count
@@ -256,22 +320,23 @@ export const productRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      const conditions = [eq(products.isActive, true)];
+      let query = ctx.db
+        .selectFrom("product")
+        .select(sql<number>`count(*)`.as("count"))
+        .where("product.isActive", "=", true);
 
       if (input.categorySlug) {
-        const category = await ctx.db.query.categories.findFirst({
-          where: eq(categories.slug, input.categorySlug),
-        });
+        const category = await ctx.db
+          .selectFrom("category")
+          .select(["id"])
+          .where("slug", "=", input.categorySlug)
+          .executeTakeFirst();
         if (category) {
-          conditions.push(eq(products.categoryId, category.id));
+          query = query.where("product.categoryId", "=", category.id);
         }
       }
 
-      const result = await ctx.db
-        .select({ count: sql<number>`count(*)` })
-        .from(products)
-        .where(and(...conditions));
-
-      return result[0]?.count ?? 0;
+      const result = await query.executeTakeFirst();
+      return result?.count ?? 0;
     }),
 });

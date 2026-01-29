@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { and, desc, eq } from "drizzle-orm";
+import { sql } from "kysely";
+import { jsonObjectFrom } from "kysely/helpers/postgres";
 import { TRPCError } from "@trpc/server";
 
 import {
@@ -8,7 +9,6 @@ import {
   protectedProcedure,
   adminProcedure,
 } from "@/server/api/trpc";
-import { reviews, orders } from "@/server/db/schema";
 
 const reviewSchema = z.object({
   productId: z.string(),
@@ -22,22 +22,21 @@ export const reviewRouter = createTRPCRouter({
   getByProduct: publicProcedure
     .input(z.object({ productId: z.string() }))
     .query(async ({ ctx, input }) => {
-      return ctx.db.query.reviews.findMany({
-        where: and(
-          eq(reviews.productId, input.productId),
-          eq(reviews.isApproved, true)
-        ),
-        orderBy: [desc(reviews.createdAt)],
-        with: {
-          user: {
-            columns: {
-              id: true,
-              name: true,
-              image: true,
-            },
-          },
-        },
-      });
+      return ctx.db
+        .selectFrom("review")
+        .selectAll("review")
+        .select((eb) => [
+          jsonObjectFrom(
+            eb
+              .selectFrom("user")
+              .select(["id", "name", "image"])
+              .whereRef("user.id", "=", "review.userId")
+          ).as("user"),
+        ])
+        .where("review.productId", "=", input.productId)
+        .where("review.isApproved", "=", true)
+        .orderBy("review.createdAt", "desc")
+        .execute();
     }),
 
   // Create a review (requires auth, defaults to unapproved)
@@ -45,12 +44,13 @@ export const reviewRouter = createTRPCRouter({
     .input(reviewSchema)
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
-      const existing = await ctx.db.query.reviews.findFirst({
-        where: and(
-          eq(reviews.productId, input.productId),
-          eq(reviews.userId, userId)
-        ),
-      });
+
+      const existing = await ctx.db
+        .selectFrom("review")
+        .select(["id"])
+        .where("productId", "=", input.productId)
+        .where("userId", "=", userId)
+        .executeTakeFirst();
 
       if (existing) {
         throw new TRPCError({
@@ -60,22 +60,17 @@ export const reviewRouter = createTRPCRouter({
       }
 
       // Check if user purchased the product
-      const userOrders = await ctx.db.query.orders.findMany({
-        where: eq(orders.userId, userId),
-        with: {
-          items: {
-            columns: {
-              productId: true,
-            },
-          },
-        },
-      });
-      const isVerified = userOrders.some((order) =>
-        order.items.some((item) => item.productId === input.productId)
-      );
+      const purchaseCheck = await ctx.db
+        .selectFrom("order")
+        .innerJoin("orderItem", "orderItem.orderId", "order.id")
+        .select(sql<number>`count(*)`.as("count"))
+        .where("order.userId", "=", userId)
+        .where("orderItem.productId", "=", input.productId)
+        .executeTakeFirst();
+      const isVerified = Number(purchaseCheck?.count ?? 0) > 0;
 
-      const [created] = await ctx.db
-        .insert(reviews)
+      const created = await ctx.db
+        .insertInto("review")
         .values({
           userId,
           productId: input.productId,
@@ -85,7 +80,8 @@ export const reviewRouter = createTRPCRouter({
           isVerified,
           isApproved: false,
         })
-        .returning();
+        .returningAll()
+        .executeTakeFirst();
 
       return created;
     }),
@@ -98,22 +94,26 @@ export const reviewRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      let whereClause;
+      let query = ctx.db
+        .selectFrom("review")
+        .selectAll("review")
+        .select((eb) => [
+          jsonObjectFrom(
+            eb
+              .selectFrom("user")
+              .select(["id", "name", "email"])
+              .whereRef("user.id", "=", "review.userId")
+          ).as("user"),
+        ])
+        .orderBy("review.createdAt", "desc");
+
       if (input.status === "pending") {
-        whereClause = eq(reviews.isApproved, false);
+        query = query.where("review.isApproved", "=", false);
       } else if (input.status === "approved") {
-        whereClause = eq(reviews.isApproved, true);
+        query = query.where("review.isApproved", "=", true);
       }
 
-      return ctx.db.query.reviews.findMany({
-        where: whereClause,
-        orderBy: [desc(reviews.createdAt)],
-        with: {
-          user: {
-            columns: { id: true, name: true, email: true },
-          },
-        },
-      });
+      return query.execute();
     }),
 
   // Admin: approve or reject review
@@ -125,11 +125,12 @@ export const reviewRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const [updated] = await ctx.db
-        .update(reviews)
+      const updated = await ctx.db
+        .updateTable("review")
         .set({ isApproved: input.isApproved })
-        .where(eq(reviews.id, input.id))
-        .returning();
+        .where("id", "=", input.id)
+        .returningAll()
+        .executeTakeFirst();
 
       if (!updated) {
         throw new TRPCError({
@@ -145,7 +146,7 @@ export const reviewRouter = createTRPCRouter({
   delete: adminProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      await ctx.db.delete(reviews).where(eq(reviews.id, input.id));
+      await ctx.db.deleteFrom("review").where("id", "=", input.id).execute();
       return { success: true };
     }),
 });

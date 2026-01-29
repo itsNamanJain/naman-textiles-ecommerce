@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { eq } from "drizzle-orm";
-import { db } from "@/server/db";
+import { drizzleDb } from "@/server/db";
 import {
   categories,
   products,
@@ -286,13 +286,13 @@ async function seed() {
     const hashedPassword = await hash("admin123", 12);
 
     // Check if admin exists
-    const existingAdmin = await db.query.users.findFirst({
+    const existingAdmin = await drizzleDb.query.users.findFirst({
       where: eq(users.email, "admin@namantextiles.com"),
     });
 
     if (existingAdmin) {
       // Update password if admin exists
-      await db
+      await drizzleDb
         .update(users)
         .set({ password: hashedPassword, role: "admin" })
         .where(eq(users.email, "admin@namantextiles.com"));
@@ -300,7 +300,7 @@ async function seed() {
         "✅ Admin user updated (admin@namantextiles.com / admin123)\n"
       );
     } else {
-      await db.insert(users).values({
+      await drizzleDb.insert(users).values({
         name: "Admin User",
         email: "admin@namantextiles.com",
         password: hashedPassword,
@@ -316,7 +316,7 @@ async function seed() {
     console.log("Creating categories...");
     const insertedCategories = await Promise.all(
       sampleCategories.map(async (category) => {
-        const [inserted] = await db
+        const [inserted] = await drizzleDb
           .insert(categories)
           .values(category)
           .onConflictDoNothing()
@@ -330,7 +330,7 @@ async function seed() {
 
     // Get category ID mapping
     const categoryMap = new Map<string, string>();
-    const allCategories = await db.query.categories.findMany();
+    const allCategories = await drizzleDb.query.categories.findMany();
     allCategories.forEach((cat) => {
       categoryMap.set(cat.slug, cat.id);
     });
@@ -346,7 +346,7 @@ async function seed() {
 
       const { images, categorySlug, ...productData } = product;
 
-      const [insertedProduct] = await db
+      const [insertedProduct] = await drizzleDb
         .insert(products)
         .values({
           ...productData,
@@ -359,7 +359,7 @@ async function seed() {
         // Insert product images
         await Promise.all(
           images.map((url, index) =>
-            db
+            drizzleDb
               .insert(productImages)
               .values({
                 productId: insertedProduct.id,
@@ -411,7 +411,7 @@ async function seed() {
     ];
 
     for (const banner of sampleBanners) {
-      await db.insert(banners).values(banner).onConflictDoNothing();
+      await drizzleDb.insert(banners).values(banner).onConflictDoNothing();
       console.log(`  ✅ ${banner.title}`);
     }
 

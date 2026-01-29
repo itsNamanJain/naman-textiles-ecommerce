@@ -1,12 +1,9 @@
 import { z } from "zod";
-import { eq, desc, sql, and, count, inArray, like, or, gte, lt } from "drizzle-orm";
+import { sql } from "kysely";
+import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/postgres";
 import { TRPCError } from "@trpc/server";
 
-import {
-  createTRPCRouter,
-  adminProcedure,
-} from "@/server/api/trpc";
-import { orders, orderItems, products, users, categories, productImages, settings } from "@/server/db/schema";
+import { createTRPCRouter, adminProcedure } from "@/server/api/trpc";
 
 // Helper function to calculate growth percentage
 function calculateGrowth(current: number, previous: number): number {
@@ -23,128 +20,115 @@ export const adminRouter = createTRPCRouter({
     const now = new Date();
     const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
     const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-    const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59);
 
     // Total revenue (all time)
     const revenueResult = await ctx.db
-      .select({ total: sql<string>`COALESCE(SUM(${orders.total}), 0)` })
-      .from(orders)
-      .where(eq(orders.paymentStatus, "paid"));
-    const totalRevenue = Number(revenueResult[0]?.total ?? 0);
+      .selectFrom("order")
+      .select(sql<number>`COALESCE(SUM("order"."total"), 0)`.as("total"))
+      .where("order.paymentStatus", "=", "paid")
+      .executeTakeFirst();
+    const totalRevenue = Number(revenueResult?.total ?? 0);
 
     // Current month revenue
     const currentMonthRevenueResult = await ctx.db
-      .select({ total: sql<string>`COALESCE(SUM(${orders.total}), 0)` })
-      .from(orders)
-      .where(
-        and(
-          eq(orders.paymentStatus, "paid"),
-          gte(orders.createdAt, currentMonthStart)
-        )
-      );
-    const currentMonthRevenue = Number(currentMonthRevenueResult[0]?.total ?? 0);
+      .selectFrom("order")
+      .select(sql<number>`COALESCE(SUM("order"."total"), 0)`.as("total"))
+      .where("order.paymentStatus", "=", "paid")
+      .where("order.createdAt", ">=", currentMonthStart)
+      .executeTakeFirst();
+    const currentMonthRevenue = Number(currentMonthRevenueResult?.total ?? 0);
 
     // Last month revenue
     const lastMonthRevenueResult = await ctx.db
-      .select({ total: sql<string>`COALESCE(SUM(${orders.total}), 0)` })
-      .from(orders)
-      .where(
-        and(
-          eq(orders.paymentStatus, "paid"),
-          gte(orders.createdAt, lastMonthStart),
-          lt(orders.createdAt, currentMonthStart)
-        )
-      );
-    const lastMonthRevenue = Number(lastMonthRevenueResult[0]?.total ?? 0);
+      .selectFrom("order")
+      .select(sql<number>`COALESCE(SUM("order"."total"), 0)`.as("total"))
+      .where("order.paymentStatus", "=", "paid")
+      .where("order.createdAt", ">=", lastMonthStart)
+      .where("order.createdAt", "<", currentMonthStart)
+      .executeTakeFirst();
+    const lastMonthRevenue = Number(lastMonthRevenueResult?.total ?? 0);
 
     // Total orders (all time)
     const ordersResult = await ctx.db
-      .select({ count: count() })
-      .from(orders);
-    const totalOrders = ordersResult[0]?.count ?? 0;
+      .selectFrom("order")
+      .select(sql<number>`count(*)`.as("count"))
+      .executeTakeFirst();
+    const totalOrders = Number(ordersResult?.count ?? 0);
 
     // Current month orders
     const currentMonthOrdersResult = await ctx.db
-      .select({ count: count() })
-      .from(orders)
-      .where(gte(orders.createdAt, currentMonthStart));
-    const currentMonthOrders = currentMonthOrdersResult[0]?.count ?? 0;
+      .selectFrom("order")
+      .select(sql<number>`count(*)`.as("count"))
+      .where("order.createdAt", ">=", currentMonthStart)
+      .executeTakeFirst();
+    const currentMonthOrders = Number(currentMonthOrdersResult?.count ?? 0);
 
     // Last month orders
     const lastMonthOrdersResult = await ctx.db
-      .select({ count: count() })
-      .from(orders)
-      .where(
-        and(
-          gte(orders.createdAt, lastMonthStart),
-          lt(orders.createdAt, currentMonthStart)
-        )
-      );
-    const lastMonthOrders = lastMonthOrdersResult[0]?.count ?? 0;
+      .selectFrom("order")
+      .select(sql<number>`count(*)`.as("count"))
+      .where("order.createdAt", ">=", lastMonthStart)
+      .where("order.createdAt", "<", currentMonthStart)
+      .executeTakeFirst();
+    const lastMonthOrders = Number(lastMonthOrdersResult?.count ?? 0);
 
     // Total products
     const productsResult = await ctx.db
-      .select({ count: count() })
-      .from(products)
-      .where(eq(products.isActive, true));
-    const totalProducts = productsResult[0]?.count ?? 0;
+      .selectFrom("product")
+      .select(sql<number>`count(*)`.as("count"))
+      .where("product.isActive", "=", true)
+      .executeTakeFirst();
+    const totalProducts = Number(productsResult?.count ?? 0);
 
     // Low stock count
     const lowStockResult = await ctx.db
-      .select({ count: count() })
-      .from(products)
+      .selectFrom("product")
+      .select(sql<number>`count(*)`.as("count"))
+      .where("product.isActive", "=", true)
       .where(
-        and(
-          eq(products.isActive, true),
-          sql`${products.stockQuantity}::numeric <= ${products.lowStockThreshold}::numeric`
-        )
-      );
-    const lowStockCount = lowStockResult[0]?.count ?? 0;
+        sql`"product"."stockQuantity"::numeric <= "product"."lowStockThreshold"::numeric`
+      )
+      .executeTakeFirst();
+    const lowStockCount = Number(lowStockResult?.count ?? 0);
 
     // Total customers (all time)
     const customersResult = await ctx.db
-      .select({ count: count() })
-      .from(users)
-      .where(eq(users.role, "customer"));
-    const totalCustomers = customersResult[0]?.count ?? 0;
+      .selectFrom("user")
+      .select(sql<number>`count(*)`.as("count"))
+      .where("user.role", "=", "customer")
+      .executeTakeFirst();
+    const totalCustomers = Number(customersResult?.count ?? 0);
 
     // Current month new customers
     const currentMonthCustomersResult = await ctx.db
-      .select({ count: count() })
-      .from(users)
-      .where(
-        and(
-          eq(users.role, "customer"),
-          gte(users.createdAt, currentMonthStart)
-        )
-      );
-    const currentMonthCustomers = currentMonthCustomersResult[0]?.count ?? 0;
+      .selectFrom("user")
+      .select(sql<number>`count(*)`.as("count"))
+      .where("user.role", "=", "customer")
+      .where("user.createdAt", ">=", currentMonthStart)
+      .executeTakeFirst();
+    const currentMonthCustomers = Number(currentMonthCustomersResult?.count ?? 0);
 
     // Last month new customers
     const lastMonthCustomersResult = await ctx.db
-      .select({ count: count() })
-      .from(users)
-      .where(
-        and(
-          eq(users.role, "customer"),
-          gte(users.createdAt, lastMonthStart),
-          lt(users.createdAt, currentMonthStart)
-        )
-      );
-    const lastMonthCustomers = lastMonthCustomersResult[0]?.count ?? 0;
+      .selectFrom("user")
+      .select(sql<number>`count(*)`.as("count"))
+      .where("user.role", "=", "customer")
+      .where("user.createdAt", ">=", lastMonthStart)
+      .where("user.createdAt", "<", currentMonthStart)
+      .executeTakeFirst();
+    const lastMonthCustomers = Number(lastMonthCustomersResult?.count ?? 0);
 
     // Orders by status
     const statusResult = await ctx.db
-      .select({
-        status: orders.status,
-        count: count(),
-      })
-      .from(orders)
-      .groupBy(orders.status);
+      .selectFrom("order")
+      .select(["status"])
+      .select(sql<number>`count(*)`.as("count"))
+      .groupBy("status")
+      .execute();
 
     const ordersByStatus: Record<string, number> = {};
     statusResult.forEach((row) => {
-      ordersByStatus[row.status] = row.count;
+      ordersByStatus[row.status] = Number(row.count);
     });
 
     // Calculate growth percentages
@@ -176,25 +160,20 @@ export const adminRouter = createTRPCRouter({
   getRecentOrders: adminProcedure
     .input(z.object({ limit: z.number().min(1).max(20).default(5) }))
     .query(async ({ ctx, input }) => {
-      const recentOrders = await ctx.db.query.orders.findMany({
-        orderBy: [desc(orders.createdAt)],
-        limit: input.limit,
-        columns: {
-          id: true,
-          orderNumber: true,
-          total: true,
-          status: true,
-          createdAt: true,
-        },
-        with: {
-          user: {
-            columns: {
-              name: true,
-              email: true,
-            },
-          },
-        },
-      });
+      const recentOrders = await ctx.db
+        .selectFrom("order")
+        .select(["id", "orderNumber", "total", "status", "createdAt"])
+        .select((eb) => [
+          jsonObjectFrom(
+            eb
+              .selectFrom("user")
+              .select(["name", "email"])
+              .whereRef("user.id", "=", "order.userId")
+          ).as("user"),
+        ])
+        .orderBy("order.createdAt", "desc")
+        .limit(input.limit)
+        .execute();
 
       return recentOrders;
     }),
@@ -203,21 +182,16 @@ export const adminRouter = createTRPCRouter({
   getLowStockProducts: adminProcedure
     .input(z.object({ limit: z.number().min(1).max(20).default(5) }))
     .query(async ({ ctx, input }) => {
-      const lowStockProducts = await ctx.db.query.products.findMany({
-        where: and(
-          eq(products.isActive, true),
-          sql`${products.stockQuantity}::numeric <= ${products.lowStockThreshold}::numeric`
-        ),
-        orderBy: [sql`${products.stockQuantity}::numeric ASC`],
-        limit: input.limit,
-        columns: {
-          id: true,
-          name: true,
-          sku: true,
-          stockQuantity: true,
-          lowStockThreshold: true,
-        },
-      });
+      const lowStockProducts = await ctx.db
+        .selectFrom("product")
+        .select(["id", "name", "sku", "stockQuantity", "lowStockThreshold"])
+        .where("product.isActive", "=", true)
+        .where(
+          sql`"product"."stockQuantity"::numeric <= "product"."lowStockThreshold"::numeric`
+        )
+        .orderBy(sql`"product"."stockQuantity"::numeric`, "asc")
+        .limit(input.limit)
+        .execute();
 
       return lowStockProducts;
     }),
@@ -244,23 +218,30 @@ export const adminRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const { limit, status } = input;
 
-      const whereClause = status ? eq(orders.status, status) : undefined;
+      let query = ctx.db
+        .selectFrom("order")
+        .selectAll("order")
+        .select((eb) => [
+          jsonObjectFrom(
+            eb
+              .selectFrom("user")
+              .select(["id", "name", "email"])
+              .whereRef("user.id", "=", "order.userId")
+          ).as("user"),
+          jsonArrayFrom(
+            eb
+              .selectFrom("orderItem")
+              .selectAll()
+              .whereRef("orderItem.orderId", "=", "order.id")
+          ).as("items"),
+        ])
+        .orderBy("order.createdAt", "desc");
 
-      const allOrders = await ctx.db.query.orders.findMany({
-        where: whereClause,
-        orderBy: [desc(orders.createdAt)],
-        limit: limit + 1,
-        with: {
-          user: {
-            columns: {
-              id: true,
-              name: true,
-              email: true,
-            },
-          },
-          items: true,
-        },
-      });
+      if (status) {
+        query = query.where("order.status", "=", status);
+      }
+
+      const allOrders = await query.limit(limit + 1).execute();
 
       let nextCursor: string | undefined;
       if (allOrders.length > limit) {
@@ -292,12 +273,19 @@ export const adminRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const order = await ctx.db.query.orders.findFirst({
-        where: eq(orders.id, input.orderId),
-        with: {
-          items: true,
-        },
-      });
+      const order = await ctx.db
+        .selectFrom("order")
+        .selectAll("order")
+        .select((eb) => [
+          jsonArrayFrom(
+            eb
+              .selectFrom("orderItem")
+              .selectAll()
+              .whereRef("orderItem.orderId", "=", "order.id")
+          ).as("items"),
+        ])
+        .where("order.id", "=", input.orderId)
+        .executeTakeFirst();
 
       if (!order) {
         throw new TRPCError({
@@ -323,27 +311,30 @@ export const adminRouter = createTRPCRouter({
 
       // Restore stock if order is cancelled (and wasn't already cancelled)
       if (input.status === "cancelled" && order.status !== "cancelled") {
-        for (const item of order.items) {
-          const product = await ctx.db.query.products.findFirst({
-            where: eq(products.id, item.productId),
-            columns: { stockQuantity: true },
-          });
+        for (const item of order.items ?? []) {
+          const product = await ctx.db
+            .selectFrom("product")
+            .select(["stockQuantity"])
+            .where("product.id", "=", item.productId)
+            .executeTakeFirst();
 
           if (product) {
             const currentStock = Number(product.stockQuantity);
             const restoredStock = currentStock + Number(item.quantity);
             await ctx.db
-              .update(products)
+              .updateTable("product")
               .set({ stockQuantity: restoredStock.toString() })
-              .where(eq(products.id, item.productId));
+              .where("product.id", "=", item.productId)
+              .execute();
           }
         }
       }
 
       await ctx.db
-        .update(orders)
+        .updateTable("order")
         .set(updateData)
-        .where(eq(orders.id, input.orderId));
+        .where("order.id", "=", input.orderId)
+        .execute();
 
       return { success: true };
     }),
@@ -361,31 +352,42 @@ export const adminRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const { limit, search, categoryId } = input;
 
-      let whereClause;
+      let query = ctx.db
+        .selectFrom("product")
+        .selectAll("product")
+        .select((eb) => [
+          jsonObjectFrom(
+            eb
+              .selectFrom("category")
+              .select(["id", "name"])
+              .whereRef("category.id", "=", "product.categoryId")
+          ).as("category"),
+          jsonArrayFrom(
+            eb
+              .selectFrom("productImage")
+              .select(["id", "url"])
+              .whereRef("productImage.productId", "=", "product.id")
+              .orderBy("position", "asc")
+              .limit(1)
+          ).as("images"),
+        ])
+        .orderBy("product.createdAt", "desc");
+
       if (categoryId) {
-        whereClause = eq(products.categoryId, categoryId);
+        query = query.where("product.categoryId", "=", categoryId);
       }
 
-      const allProducts = await ctx.db.query.products.findMany({
-        where: whereClause,
-        orderBy: [desc(products.createdAt)],
-        limit: limit + 1,
-        with: {
-          category: {
-            columns: {
-              id: true,
-              name: true,
-            },
-          },
-          images: {
-            columns: {
-              id: true,
-              url: true,
-            },
-            limit: 1,
-          },
-        },
-      });
+      if (search && search.trim()) {
+        query = query.where((eb) =>
+          eb.or([
+            eb("product.name", "ilike", `%${search}%`),
+            eb("product.slug", "ilike", `%${search}%`),
+            eb("product.sku", "ilike", `%${search}%`),
+          ])
+        );
+      }
+
+      const allProducts = await query.limit(limit + 1).execute();
 
       let nextCursor: string | undefined;
       if (allProducts.length > limit) {
@@ -403,9 +405,11 @@ export const adminRouter = createTRPCRouter({
   toggleProductStatus: adminProcedure
     .input(z.object({ productId: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const product = await ctx.db.query.products.findFirst({
-        where: eq(products.id, input.productId),
-      });
+      const product = await ctx.db
+        .selectFrom("product")
+        .select(["id", "isActive"])
+        .where("product.id", "=", input.productId)
+        .executeTakeFirst();
 
       if (!product) {
         throw new TRPCError({
@@ -415,18 +419,21 @@ export const adminRouter = createTRPCRouter({
       }
 
       await ctx.db
-        .update(products)
+        .updateTable("product")
         .set({ isActive: !product.isActive })
-        .where(eq(products.id, input.productId));
+        .where("product.id", "=", input.productId)
+        .execute();
 
       return { success: true, isActive: !product.isActive };
     }),
 
   // Get all categories
   getCategories: adminProcedure.query(async ({ ctx }) => {
-    const allCategories = await ctx.db.query.categories.findMany({
-      orderBy: [categories.position],
-    });
+    const allCategories = await ctx.db
+      .selectFrom("category")
+      .selectAll()
+      .orderBy("category.position", "asc")
+      .execute();
 
     return allCategories;
   }),
@@ -443,10 +450,11 @@ export const adminRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const [category] = await ctx.db
-        .insert(categories)
+      const category = await ctx.db
+        .insertInto("category")
         .values(input)
-        .returning();
+        .returningAll()
+        .executeTakeFirst();
 
       return category;
     }),
@@ -467,9 +475,10 @@ export const adminRouter = createTRPCRouter({
       const { id, ...updateData } = input;
 
       await ctx.db
-        .update(categories)
+        .updateTable("category")
         .set(updateData)
-        .where(eq(categories.id, id));
+        .where("category.id", "=", id)
+        .execute();
 
       return { success: true };
     }),
@@ -479,9 +488,11 @@ export const adminRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       // Check if category has products
-      const productsInCategory = await ctx.db.query.products.findFirst({
-        where: eq(products.categoryId, input.id),
-      });
+      const productsInCategory = await ctx.db
+        .selectFrom("product")
+        .select(["id"])
+        .where("product.categoryId", "=", input.id)
+        .executeTakeFirst();
 
       if (productsInCategory) {
         throw new TRPCError({
@@ -490,7 +501,10 @@ export const adminRouter = createTRPCRouter({
         });
       }
 
-      await ctx.db.delete(categories).where(eq(categories.id, input.id));
+      await ctx.db
+        .deleteFrom("category")
+        .where("category.id", "=", input.id)
+        .execute();
 
       return { success: true };
     }),
@@ -524,19 +538,25 @@ export const adminRouter = createTRPCRouter({
         categoryId: z.string(),
         isActive: z.boolean().default(true),
         isFeatured: z.boolean().default(false),
-        images: z.array(z.object({
-          url: z.string(),
-          alt: z.string().optional(),
-        })).optional(),
+        images: z
+          .array(
+            z.object({
+              url: z.string(),
+              alt: z.string().optional(),
+            })
+          )
+          .optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
       const { images, ...productData } = input;
 
       // Check if slug already exists
-      const existingProduct = await ctx.db.query.products.findFirst({
-        where: eq(products.slug, input.slug),
-      });
+      const existingProduct = await ctx.db
+        .selectFrom("product")
+        .select(["id"])
+        .where("product.slug", "=", input.slug)
+        .executeTakeFirst();
 
       if (existingProduct) {
         throw new TRPCError({
@@ -546,8 +566,8 @@ export const adminRouter = createTRPCRouter({
       }
 
       // Create product
-      const [product] = await ctx.db
-        .insert(products)
+      const product = await ctx.db
+        .insertInto("product")
         .values({
           ...productData,
           price: productData.price.toString(),
@@ -559,18 +579,22 @@ export const adminRouter = createTRPCRouter({
           stockQuantity: productData.stockQuantity.toString(),
           lowStockThreshold: productData.lowStockThreshold.toString(),
         })
-        .returning();
+        .returningAll()
+        .executeTakeFirst();
 
       // Add images if provided
       if (images && images.length > 0 && product) {
-        await ctx.db.insert(productImages).values(
-          images.map((img, idx) => ({
-            productId: product.id,
-            url: img.url,
-            alt: img.alt ?? product.name,
-            position: idx,
-          }))
-        );
+        await ctx.db
+          .insertInto("productImage")
+          .values(
+            images.map((img, idx) => ({
+              productId: product.id,
+              url: img.url,
+              alt: img.alt ?? product.name,
+              position: idx,
+            }))
+          )
+          .execute();
       }
 
       return product;
@@ -611,9 +635,11 @@ export const adminRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { id, ...updateData } = input;
 
-      const product = await ctx.db.query.products.findFirst({
-        where: eq(products.id, id),
-      });
+      const product = await ctx.db
+        .selectFrom("product")
+        .select(["id", "slug"])
+        .where("product.id", "=", id)
+        .executeTakeFirst();
 
       if (!product) {
         throw new TRPCError({
@@ -624,9 +650,11 @@ export const adminRouter = createTRPCRouter({
 
       // Check if new slug conflicts with existing product
       if (updateData.slug && updateData.slug !== product.slug) {
-        const existingProduct = await ctx.db.query.products.findFirst({
-          where: eq(products.slug, updateData.slug),
-        });
+        const existingProduct = await ctx.db
+          .selectFrom("product")
+          .select(["id"])
+          .where("product.slug", "=", updateData.slug)
+          .executeTakeFirst();
         if (existingProduct) {
           throw new TRPCError({
             code: "BAD_REQUEST",
@@ -639,7 +667,18 @@ export const adminRouter = createTRPCRouter({
       const dbUpdateData: Record<string, unknown> = {};
       for (const [key, value] of Object.entries(updateData)) {
         if (value === undefined) continue;
-        if (["price", "comparePrice", "costPrice", "minOrderQuantity", "quantityStep", "maxOrderQuantity", "stockQuantity", "lowStockThreshold"].includes(key)) {
+        if (
+          [
+            "price",
+            "comparePrice",
+            "costPrice",
+            "minOrderQuantity",
+            "quantityStep",
+            "maxOrderQuantity",
+            "stockQuantity",
+            "lowStockThreshold",
+          ].includes(key)
+        ) {
           dbUpdateData[key] = value === null ? null : String(value);
         } else {
           dbUpdateData[key] = value;
@@ -647,9 +686,10 @@ export const adminRouter = createTRPCRouter({
       }
 
       await ctx.db
-        .update(products)
+        .updateTable("product")
         .set(dbUpdateData)
-        .where(eq(products.id, id));
+        .where("product.id", "=", id)
+        .execute();
 
       return { success: true };
     }),
@@ -658,9 +698,11 @@ export const adminRouter = createTRPCRouter({
   deleteProduct: adminProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const product = await ctx.db.query.products.findFirst({
-        where: eq(products.id, input.id),
-      });
+      const product = await ctx.db
+        .selectFrom("product")
+        .select(["id"])
+        .where("product.id", "=", input.id)
+        .executeTakeFirst();
 
       if (!product) {
         throw new TRPCError({
@@ -669,7 +711,10 @@ export const adminRouter = createTRPCRouter({
         });
       }
 
-      await ctx.db.delete(products).where(eq(products.id, input.id));
+      await ctx.db
+        .deleteFrom("product")
+        .where("product.id", "=", input.id)
+        .execute();
 
       return { success: true };
     }),
@@ -685,20 +730,23 @@ export const adminRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       // Get current max position
-      const existingImages = await ctx.db.query.productImages.findMany({
-        where: eq(productImages.productId, input.productId),
-      });
-      const position = existingImages.length;
+      const existingImages = await ctx.db
+        .selectFrom("productImage")
+        .select(sql<number>`count(*)`.as("count"))
+        .where("productImage.productId", "=", input.productId)
+        .executeTakeFirst();
+      const position = Number(existingImages?.count ?? 0);
 
-      const [image] = await ctx.db
-        .insert(productImages)
+      const image = await ctx.db
+        .insertInto("productImage")
         .values({
           productId: input.productId,
           url: input.url,
-          alt: input.alt,
+          alt: input.alt ?? null,
           position,
         })
-        .returning();
+        .returningAll()
+        .executeTakeFirst();
 
       return image;
     }),
@@ -707,7 +755,10 @@ export const adminRouter = createTRPCRouter({
   deleteProductImage: adminProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      await ctx.db.delete(productImages).where(eq(productImages.id, input.id));
+      await ctx.db
+        .deleteFrom("productImage")
+        .where("productImage.id", "=", input.id)
+        .execute();
       return { success: true };
     }),
 
@@ -715,13 +766,26 @@ export const adminRouter = createTRPCRouter({
   getProduct: adminProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      const product = await ctx.db.query.products.findFirst({
-        where: eq(products.id, input.id),
-        with: {
-          category: true,
-          images: true,
-        },
-      });
+      const product = await ctx.db
+        .selectFrom("product")
+        .selectAll("product")
+        .select((eb) => [
+          jsonObjectFrom(
+            eb
+              .selectFrom("category")
+              .selectAll()
+              .whereRef("category.id", "=", "product.categoryId")
+          ).as("category"),
+          jsonArrayFrom(
+            eb
+              .selectFrom("productImage")
+              .selectAll()
+              .whereRef("productImage.productId", "=", "product.id")
+              .orderBy("position", "asc")
+          ).as("images"),
+        ])
+        .where("product.id", "=", input.id)
+        .executeTakeFirst();
 
       if (!product) {
         throw new TRPCError({
@@ -745,51 +809,51 @@ export const adminRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const { limit, search } = input;
 
-      // Build where clause with optional search
-      let whereClause = eq(users.role, "customer");
+      let query = ctx.db
+        .selectFrom("user")
+        .select([
+          "id",
+          "name",
+          "email",
+          "phone",
+          "createdAt",
+          "emailVerified",
+        ])
+        .where("user.role", "=", "customer")
+        .orderBy("user.createdAt", "desc");
+
       if (search && search.trim()) {
-        whereClause = and(
-          eq(users.role, "customer"),
-          or(
-            like(users.name, `%${search}%`),
-            like(users.email, `%${search}%`),
-            like(users.phone, `%${search}%`)
-          )
-        ) as typeof whereClause;
+        query = query.where((eb) =>
+          eb.or([
+            eb("user.name", "ilike", `%${search}%`),
+            eb("user.email", "ilike", `%${search}%`),
+            eb("user.phone", "ilike", `%${search}%`),
+          ])
+        );
       }
 
-      const allCustomers = await ctx.db.query.users.findMany({
-        where: whereClause,
-        orderBy: [desc(users.createdAt)],
-        limit: limit + 1,
-        columns: {
-          id: true,
-          name: true,
-          email: true,
-          phone: true,
-          createdAt: true,
-          emailVerified: true,
-        },
-      });
+      const allCustomers = await query.limit(limit + 1).execute();
 
       // Get order counts and totals for each customer
       const customerIds = allCustomers.map((c) => c.id);
-      
+
       let statsMap = new Map<string, { orderCount: number; totalSpent: number }>();
-      
+
       if (customerIds.length > 0) {
         const orderStats = await ctx.db
-          .select({
-            userId: orders.userId,
-            orderCount: count(),
-            totalSpent: sql<string>`COALESCE(SUM(${orders.total}), 0)`,
-          })
-          .from(orders)
-          .where(inArray(orders.userId, customerIds))
-          .groupBy(orders.userId);
+          .selectFrom("order")
+          .select(["userId"])
+          .select(sql<number>`count(*)`.as("orderCount"))
+          .select(sql<number>`COALESCE(SUM("order"."total"), 0)`.as("totalSpent"))
+          .where("order.userId", "in", customerIds)
+          .groupBy("userId")
+          .execute();
 
         statsMap = new Map(
-          orderStats.map((s) => [s.userId, { orderCount: s.orderCount, totalSpent: Number(s.totalSpent) }])
+          orderStats.map((s) => [
+            s.userId,
+            { orderCount: s.orderCount, totalSpent: Number(s.totalSpent) },
+          ])
         );
       }
 
@@ -815,17 +879,18 @@ export const adminRouter = createTRPCRouter({
   getCustomer: adminProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      const customer = await ctx.db.query.users.findFirst({
-        where: eq(users.id, input.id),
-        columns: {
-          id: true,
-          name: true,
-          email: true,
-          phone: true,
-          createdAt: true,
-          emailVerified: true,
-        },
-      });
+      const customer = await ctx.db
+        .selectFrom("user")
+        .select([
+          "id",
+          "name",
+          "email",
+          "phone",
+          "createdAt",
+          "emailVerified",
+        ])
+        .where("user.id", "=", input.id)
+        .executeTakeFirst();
 
       if (!customer) {
         throw new TRPCError({
@@ -835,22 +900,25 @@ export const adminRouter = createTRPCRouter({
       }
 
       // Get customer orders
-      const customerOrders = await ctx.db.query.orders.findMany({
-        where: eq(orders.userId, input.id),
-        orderBy: [desc(orders.createdAt)],
-        limit: 10,
-      });
+      const customerOrders = await ctx.db
+        .selectFrom("order")
+        .selectAll()
+        .where("order.userId", "=", input.id)
+        .orderBy("order.createdAt", "desc")
+        .limit(10)
+        .execute();
 
       // Get total spent
       const totalResult = await ctx.db
-        .select({ total: sql<string>`COALESCE(SUM(${orders.total}), 0)` })
-        .from(orders)
-        .where(eq(orders.userId, input.id));
+        .selectFrom("order")
+        .select(sql<number>`COALESCE(SUM("order"."total"), 0)`.as("total"))
+        .where("order.userId", "=", input.id)
+        .executeTakeFirst();
 
       return {
         ...customer,
         orders: customerOrders,
-        totalSpent: Number(totalResult[0]?.total ?? 0),
+        totalSpent: Number(totalResult?.total ?? 0),
         orderCount: customerOrders.length,
       };
     }),
@@ -865,23 +933,27 @@ export const adminRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       await ctx.db
-        .update(products)
+        .updateTable("product")
         .set({ stockQuantity: input.stockQuantity.toString() })
-        .where(eq(products.id, input.productId));
+        .where("product.id", "=", input.productId)
+        .execute();
 
       return { success: true };
     }),
 
   // Get all settings
   getSettings: adminProcedure.query(async ({ ctx }) => {
-    const allSettings = await ctx.db.query.settings.findMany();
-    
+    const allSettings = await ctx.db
+      .selectFrom("setting")
+      .select(["key", "value"])
+      .execute();
+
     // Convert to key-value object
     const settingsMap: Record<string, string> = {};
     allSettings.forEach((setting) => {
       settingsMap[setting.key] = setting.value;
     });
-    
+
     return settingsMap;
   }),
 
@@ -894,20 +966,26 @@ export const adminRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const existing = await ctx.db.query.settings.findFirst({
-        where: eq(settings.key, input.key),
-      });
+      const existing = await ctx.db
+        .selectFrom("setting")
+        .select(["key"])
+        .where("setting.key", "=", input.key)
+        .executeTakeFirst();
 
       if (existing) {
         await ctx.db
-          .update(settings)
+          .updateTable("setting")
           .set({ value: input.value })
-          .where(eq(settings.key, input.key));
+          .where("setting.key", "=", input.key)
+          .execute();
       } else {
-        await ctx.db.insert(settings).values({
-          key: input.key,
-          value: input.value,
-        });
+        await ctx.db
+          .insertInto("setting")
+          .values({
+            key: input.key,
+            value: input.value,
+          })
+          .execute();
       }
 
       return { success: true };
@@ -922,17 +1000,20 @@ export const adminRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       for (const [key, value] of Object.entries(input.settings)) {
-        const existing = await ctx.db.query.settings.findFirst({
-          where: eq(settings.key, key),
-        });
+        const existing = await ctx.db
+          .selectFrom("setting")
+          .select(["key"])
+          .where("setting.key", "=", key)
+          .executeTakeFirst();
 
         if (existing) {
           await ctx.db
-            .update(settings)
+            .updateTable("setting")
             .set({ value })
-            .where(eq(settings.key, key));
+            .where("setting.key", "=", key)
+            .execute();
         } else {
-          await ctx.db.insert(settings).values({ key, value });
+          await ctx.db.insertInto("setting").values({ key, value }).execute();
         }
       }
 

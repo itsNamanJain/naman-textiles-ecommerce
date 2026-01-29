@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { eq, desc, and, gte, lte, sql } from "drizzle-orm";
+import { sql } from "kysely";
 import { TRPCError } from "@trpc/server";
 
 import {
@@ -7,7 +7,6 @@ import {
   protectedProcedure,
   adminProcedure,
 } from "@/server/api/trpc";
-import { coupons } from "@/server/db/schema";
 
 const couponSchema = z.object({
   code: z
@@ -42,14 +41,14 @@ export const couponRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const now = new Date();
 
-      const coupon = await ctx.db.query.coupons.findFirst({
-        where: and(
-          eq(coupons.code, input.code),
-          eq(coupons.isActive, true),
-          lte(coupons.startDate, now),
-          gte(coupons.endDate, now)
-        ),
-      });
+      const coupon = await ctx.db
+        .selectFrom("coupon")
+        .selectAll()
+        .where("code", "=", input.code)
+        .where("isActive", "=", true)
+        .where("startDate", "<=", now)
+        .where("endDate", ">=", now)
+        .executeTakeFirst();
 
       if (!coupon) {
         throw new TRPCError({
@@ -120,9 +119,11 @@ export const couponRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const now = new Date();
 
-      let allCoupons = await ctx.db.query.coupons.findMany({
-        orderBy: [desc(coupons.createdAt)],
-      });
+      let allCoupons = await ctx.db
+        .selectFrom("coupon")
+        .selectAll()
+        .orderBy("createdAt", "desc")
+        .execute();
 
       // Filter based on status
       if (input.status === "active") {
@@ -151,9 +152,11 @@ export const couponRouter = createTRPCRouter({
   getById: adminProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      const coupon = await ctx.db.query.coupons.findFirst({
-        where: eq(coupons.id, input.id),
-      });
+      const coupon = await ctx.db
+        .selectFrom("coupon")
+        .selectAll()
+        .where("id", "=", input.id)
+        .executeTakeFirst();
 
       if (!coupon) {
         throw new TRPCError({
@@ -175,9 +178,11 @@ export const couponRouter = createTRPCRouter({
     .input(couponSchema)
     .mutation(async ({ ctx, input }) => {
       // Check if code already exists
-      const existing = await ctx.db.query.coupons.findFirst({
-        where: eq(coupons.code, input.code),
-      });
+      const existing = await ctx.db
+        .selectFrom("coupon")
+        .select(["id"])
+        .where("code", "=", input.code)
+        .executeTakeFirst();
 
       if (existing) {
         throw new TRPCError({
@@ -194,8 +199,8 @@ export const couponRouter = createTRPCRouter({
         });
       }
 
-      const [newCoupon] = await ctx.db
-        .insert(coupons)
+      const newCoupon = await ctx.db
+        .insertInto("coupon")
         .values({
           code: input.code,
           description: input.description ?? null,
@@ -208,7 +213,8 @@ export const couponRouter = createTRPCRouter({
           endDate: input.endDate,
           isActive: input.isActive,
         })
-        .returning();
+        .returningAll()
+        .executeTakeFirst();
 
       return newCoupon;
     }),
@@ -222,9 +228,11 @@ export const couponRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const existing = await ctx.db.query.coupons.findFirst({
-        where: eq(coupons.id, input.id),
-      });
+      const existing = await ctx.db
+        .selectFrom("coupon")
+        .selectAll()
+        .where("id", "=", input.id)
+        .executeTakeFirst();
 
       if (!existing) {
         throw new TRPCError({
@@ -235,9 +243,11 @@ export const couponRouter = createTRPCRouter({
 
       // If changing code, check for duplicates
       if (input.data.code && input.data.code !== existing.code) {
-        const duplicate = await ctx.db.query.coupons.findFirst({
-          where: eq(coupons.code, input.data.code),
-        });
+        const duplicate = await ctx.db
+          .selectFrom("coupon")
+          .select(["id"])
+          .where("code", "=", input.data.code)
+          .executeTakeFirst();
 
         if (duplicate) {
           throw new TRPCError({
@@ -269,11 +279,12 @@ export const couponRouter = createTRPCRouter({
       if (input.data.isActive !== undefined)
         updateData.isActive = input.data.isActive;
 
-      const [updatedCoupon] = await ctx.db
-        .update(coupons)
+      const updatedCoupon = await ctx.db
+        .updateTable("coupon")
         .set(updateData)
-        .where(eq(coupons.id, input.id))
-        .returning();
+        .where("id", "=", input.id)
+        .returningAll()
+        .executeTakeFirst();
 
       return updatedCoupon;
     }),
@@ -282,9 +293,11 @@ export const couponRouter = createTRPCRouter({
   delete: adminProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const existing = await ctx.db.query.coupons.findFirst({
-        where: eq(coupons.id, input.id),
-      });
+      const existing = await ctx.db
+        .selectFrom("coupon")
+        .select(["id"])
+        .where("id", "=", input.id)
+        .executeTakeFirst();
 
       if (!existing) {
         throw new TRPCError({
@@ -293,7 +306,7 @@ export const couponRouter = createTRPCRouter({
         });
       }
 
-      await ctx.db.delete(coupons).where(eq(coupons.id, input.id));
+      await ctx.db.deleteFrom("coupon").where("id", "=", input.id).execute();
 
       return { success: true };
     }),
@@ -302,9 +315,11 @@ export const couponRouter = createTRPCRouter({
   toggleActive: adminProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const existing = await ctx.db.query.coupons.findFirst({
-        where: eq(coupons.id, input.id),
-      });
+      const existing = await ctx.db
+        .selectFrom("coupon")
+        .selectAll()
+        .where("id", "=", input.id)
+        .executeTakeFirst();
 
       if (!existing) {
         throw new TRPCError({
@@ -313,11 +328,12 @@ export const couponRouter = createTRPCRouter({
         });
       }
 
-      const [updated] = await ctx.db
-        .update(coupons)
+      const updated = await ctx.db
+        .updateTable("coupon")
         .set({ isActive: !existing.isActive })
-        .where(eq(coupons.id, input.id))
-        .returning();
+        .where("id", "=", input.id)
+        .returningAll()
+        .executeTakeFirst();
 
       return updated;
     }),
@@ -327,9 +343,10 @@ export const couponRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       await ctx.db
-        .update(coupons)
-        .set({ usageCount: sql`${coupons.usageCount} + 1` })
-        .where(eq(coupons.id, input.id));
+        .updateTable("coupon")
+        .set({ usageCount: sql`"usage_count" + 1` })
+        .where("id", "=", input.id)
+        .execute();
 
       return { success: true };
     }),

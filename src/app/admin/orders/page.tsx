@@ -70,6 +70,9 @@ type OrderStatus =
 export default function AdminOrdersPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [trackingNumbers, setTrackingNumbers] = useState<Record<string, string>>(
+    {}
+  );
 
   const utils = api.useUtils();
 
@@ -90,6 +93,27 @@ export default function AdminOrdersPage() {
 
   const handleStatusChange = (orderId: string, newStatus: OrderStatus) => {
     updateStatusMutation.mutate({ orderId, status: newStatus });
+  };
+
+  const handleTrackingSave = (orderId: string, status: OrderStatus) => {
+    const trackingNumber = trackingNumbers[orderId]?.trim();
+    if (!trackingNumber) {
+      toast.error("Enter a tracking number");
+      return;
+    }
+
+    updateStatusMutation.mutate(
+      { orderId, status, trackingNumber },
+      {
+        onSuccess: () => {
+          setTrackingNumbers((prev) => {
+            const next = { ...prev };
+            delete next[orderId];
+            return next;
+          });
+        },
+      }
+    );
   };
 
   const orders = data?.orders ?? [];
@@ -185,17 +209,27 @@ export default function AdminOrdersPage() {
                       <th className="pb-3 font-medium">Total</th>
                       <th className="pb-3 font-medium">Payment</th>
                       <th className="pb-3 font-medium">Status</th>
+                      <th className="pb-3 font-medium">Tracking</th>
                       <th className="pb-3 font-medium">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     <StaggerContainer>
-                      {filteredOrders.map((order) => (
-                        <StaggerItem
-                          key={order.id}
-                          className="border-b last:border-0"
-                        >
-                          <tr>
+                      {filteredOrders.map((order) => {
+                        const currentTracking =
+                          trackingNumbers[order.id] ??
+                          order.trackingNumber ??
+                          "";
+                        const canSaveTracking =
+                          currentTracking.trim().length > 0 &&
+                          currentTracking !== (order.trackingNumber ?? "");
+
+                        return (
+                          <StaggerItem
+                            key={order.id}
+                            className="border-b last:border-0"
+                          >
+                            <tr>
                             <td className="py-4">
                               <p className="font-medium text-amber-600">
                                 #{order.orderNumber}
@@ -301,6 +335,33 @@ export default function AdminOrdersPage() {
                               </DropdownMenu>
                             </td>
                             <td className="py-4">
+                              <div className="flex min-w-[220px] items-center gap-2">
+                                <Input
+                                  placeholder="Tracking #"
+                                  value={currentTracking}
+                                  onChange={(event) =>
+                                    setTrackingNumbers((prev) => ({
+                                      ...prev,
+                                      [order.id]: event.target.value,
+                                    }))
+                                  }
+                                />
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  disabled={
+                                    updateStatusMutation.isPending ||
+                                    !canSaveTracking
+                                  }
+                                  onClick={() =>
+                                    handleTrackingSave(order.id, order.status)
+                                  }
+                                >
+                                  Save
+                                </Button>
+                              </div>
+                            </td>
+                            <td className="py-4">
                               <Button variant="ghost" size="sm" asChild>
                                 <Link href={`/order-confirmation/${order.id}`}>
                                   <Eye className="mr-2 h-4 w-4" />
@@ -308,9 +369,10 @@ export default function AdminOrdersPage() {
                                 </Link>
                               </Button>
                             </td>
-                          </tr>
-                        </StaggerItem>
-                      ))}
+                            </tr>
+                          </StaggerItem>
+                        );
+                      })}
                     </StaggerContainer>
                   </tbody>
                 </table>

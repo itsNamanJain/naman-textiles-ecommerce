@@ -1,34 +1,40 @@
 import { z } from "zod";
-import { eq, asc, and } from "drizzle-orm";
+import { sql } from "kysely";
 
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
-import { categories } from "@/server/db/schema";
 
 export const categoryRouter = createTRPCRouter({
   // Get all active categories
   getAll: publicProcedure.query(async ({ ctx }) => {
-    return ctx.db.query.categories.findMany({
-      where: eq(categories.isActive, true),
-      orderBy: [asc(categories.position), asc(categories.name)],
-    });
+    return ctx.db
+      .selectFrom("category")
+      .selectAll()
+      .where("isActive", "=", true)
+      .orderBy("position", "asc")
+      .orderBy("name", "asc")
+      .execute();
   }),
 
   // Get all categories with product counts (only counts active products)
   getAllWithCounts: publicProcedure.query(async ({ ctx }) => {
-    const allCategories = await ctx.db.query.categories.findMany({
-      where: eq(categories.isActive, true),
-      orderBy: [asc(categories.position), asc(categories.name)],
-      with: {
-        products: {
-          columns: { id: true, isActive: true },
-        },
-      },
-    });
+    const rows = await ctx.db
+      .selectFrom("category")
+      .selectAll()
+      .select((eb) => [
+        sql<number>`(
+          select count(*) from "product" p
+          where p."category_id" = "category"."id"
+            and p."is_active" = true
+        )`.as("productCount"),
+      ])
+      .where("isActive", "=", true)
+      .orderBy("position", "asc")
+      .orderBy("name", "asc")
+      .execute();
 
-    return allCategories.map((cat) => ({
-      ...cat,
-      productCount: cat.products.filter((p) => p.isActive).length,
-      products: undefined,
+    return rows.map(({ productCount, ...rest }) => ({
+      ...rest,
+      productCount,
     }));
   }),
 
@@ -36,44 +42,48 @@ export const categoryRouter = createTRPCRouter({
   getBySlug: publicProcedure
     .input(z.object({ slug: z.string() }))
     .query(async ({ ctx, input }) => {
-      return ctx.db.query.categories.findFirst({
-        where: and(
-          eq(categories.slug, input.slug),
-          eq(categories.isActive, true)
-        ),
-      });
+      return ctx.db
+        .selectFrom("category")
+        .selectAll()
+        .where("slug", "=", input.slug)
+        .where("isActive", "=", true)
+        .executeTakeFirst();
     }),
 
   // Get category by ID
   getById: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      return ctx.db.query.categories.findFirst({
-        where: eq(categories.id, input.id),
-      });
+      return ctx.db
+        .selectFrom("category")
+        .selectAll()
+        .where("id", "=", input.id)
+        .executeTakeFirst();
     }),
 
   // Get parent categories (no parent)
   getParents: publicProcedure.query(async ({ ctx }) => {
-    const result = await ctx.db.query.categories.findMany({
-      where: eq(categories.isActive, true),
-      orderBy: [asc(categories.position), asc(categories.name)],
-    });
-
-    // Filter for categories without a parent
-    return result.filter((cat) => !cat.parentId);
+    return ctx.db
+      .selectFrom("category")
+      .selectAll()
+      .where("isActive", "=", true)
+      .where("parentId", "is", null)
+      .orderBy("position", "asc")
+      .orderBy("name", "asc")
+      .execute();
   }),
 
   // Get child categories
   getChildren: publicProcedure
     .input(z.object({ parentId: z.string() }))
     .query(async ({ ctx, input }) => {
-      return ctx.db.query.categories.findMany({
-        where: and(
-          eq(categories.parentId, input.parentId),
-          eq(categories.isActive, true)
-        ),
-        orderBy: [asc(categories.position), asc(categories.name)],
-      });
+      return ctx.db
+        .selectFrom("category")
+        .selectAll()
+        .where("parentId", "=", input.parentId)
+        .where("isActive", "=", true)
+        .orderBy("position", "asc")
+        .orderBy("name", "asc")
+        .execute();
     }),
 });

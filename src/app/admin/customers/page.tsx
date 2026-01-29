@@ -50,21 +50,25 @@ export default function AdminCustomersPage() {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null);
-  const [page, setPage] = useState(0);
+  const [cursorStack, setCursorStack] = useState<string[]>([]);
   const limit = 10;
 
   // Debounce search
   const handleSearchChange = (value: string) => {
     setSearch(value);
-    setPage(0);
+    setCursorStack([]);
     // Simple debounce
     setTimeout(() => {
       setDebouncedSearch(value);
     }, 300);
   };
 
+  const currentCursor =
+    cursorStack.length > 0 ? cursorStack[cursorStack.length - 1] : undefined;
+
   const { data, isLoading } = api.admin.getCustomers.useQuery({
     limit,
+    cursor: currentCursor,
     search: debouncedSearch || undefined,
   });
 
@@ -231,13 +235,15 @@ export default function AdminCustomersPage() {
                 </div>
 
                 {/* Pagination */}
-                {data?.nextCursor && (
+                {(data?.nextCursor || cursorStack.length > 0) && (
                   <div className="mt-4 flex items-center justify-end gap-2">
                     <Button
                       variant="outline"
                       size="sm"
-                      disabled={page === 0}
-                      onClick={() => setPage((p) => Math.max(0, p - 1))}
+                      disabled={cursorStack.length === 0}
+                      onClick={() =>
+                        setCursorStack((prev) => prev.slice(0, -1))
+                      }
                     >
                       <ChevronLeft className="h-4 w-4" />
                       Previous
@@ -245,8 +251,11 @@ export default function AdminCustomersPage() {
                     <Button
                       variant="outline"
                       size="sm"
-                      disabled={!data.nextCursor}
-                      onClick={() => setPage((p) => p + 1)}
+                      disabled={!data?.nextCursor}
+                      onClick={() =>
+                        data?.nextCursor &&
+                        setCursorStack((prev) => [...prev, data.nextCursor!])
+                      }
                     >
                       Next
                       <ChevronRight className="h-4 w-4" />
