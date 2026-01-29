@@ -18,7 +18,7 @@ export const categoryRouter = createTRPCRouter({
     const rows = await ctx.db
       .selectFrom("category")
       .selectAll()
-      .select( [
+      .select([
         sql<number>`(
           select count(*) from "product" p
           where p."category_id" = "category"."id"
