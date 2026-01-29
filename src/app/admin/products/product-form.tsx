@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, type ChangeEvent } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -77,6 +77,8 @@ export function ProductForm({
   const utils = api.useUtils();
   const [images, setImages] = useState<{ url: string; alt?: string }[]>([]);
   const [newImageUrl, setNewImageUrl] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const { data: categories } = api.admin.getCategories.useQuery();
 
@@ -212,6 +214,162 @@ export function ProductForm({
 
   const handleRemoveImage = (index: number) => {
     setImages(images.filter((_, i) => i !== index));
+  };
+
+  const compressImage = async (file: File): Promise<File> => {
+    const maxBytes = 10 * 1024 * 1024;
+    let maxDimension = 2000;
+    let quality = 0.75;
+
+    const loadImage = async () => {
+      if ("createImageBitmap" in window) {
+        return await createImageBitmap(file);
+      }
+      return await new Promise<HTMLImageElement>((resolve, reject) => {
+        const img = new Image();
+        const url = URL.createObjectURL(file);
+        img.onload = () => {
+          URL.revokeObjectURL(url);
+          resolve(img);
+        };
+        img.onerror = () => {
+          URL.revokeObjectURL(url);
+          reject(new Error("Failed to load image"));
+        };
+        img.src = url;
+      });
+    };
+
+    const image = await loadImage();
+    const sourceWidth =
+      "width" in image ? image.width : (image as ImageBitmap).width;
+    const sourceHeight =
+      "height" in image ? image.height : (image as ImageBitmap).height;
+
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      throw new Error("Canvas not supported");
+    }
+
+    const drawToCanvas = (dimensionLimit: number) => {
+      const scale = Math.min(
+        1,
+        dimensionLimit / Math.max(sourceWidth, sourceHeight)
+      );
+      const width = Math.round(sourceWidth * scale);
+      const height = Math.round(sourceHeight * scale);
+      canvas.width = width;
+      canvas.height = height;
+      ctx.clearRect(0, 0, width, height);
+      ctx.drawImage(image as CanvasImageSource, 0, 0, width, height);
+    };
+
+    const canvasToBlob = (q: number) =>
+      new Promise<Blob | null>((resolve) => {
+        canvas.toBlob((blob) => resolve(blob), "image/jpeg", q);
+      });
+
+    drawToCanvas(maxDimension);
+    let blob = await canvasToBlob(quality);
+
+    let attempts = 0;
+    while (blob && blob.size > maxBytes && attempts < 6) {
+      attempts += 1;
+      if (attempts % 2 === 0 && maxDimension > 1200) {
+        maxDimension = Math.max(1200, Math.floor(maxDimension * 0.85));
+        drawToCanvas(maxDimension);
+      }
+      quality = Math.max(0.3, quality - 0.1);
+      blob = await canvasToBlob(quality);
+    }
+
+    if (!blob) {
+      throw new Error("Failed to compress image");
+    }
+
+    return new File([blob], file.name.replace(/\.[^.]+$/, ".jpg"), {
+      type: "image/jpeg",
+    });
+  };
+
+  const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files ?? []);
+    if (files.length === 0) return;
+
+    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+    const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+
+    if (!cloudName || !uploadPreset) {
+      console.error("Cloudinary env vars missing", {
+        cloudNamePresent: Boolean(cloudName),
+        uploadPresetPresent: Boolean(uploadPreset),
+      });
+      event.target.value = "";
+      return;
+    }
+
+    setIsUploading(true);
+
+    try {
+      const uploadedImages = await Promise.all(
+        files.map(async (file) => {
+          const compressed = await compressImage(file);
+          if (compressed.size > 10 * 1024 * 1024) {
+            console.error("Image still too large after compression", {
+              name: file.name,
+              originalSize: file.size,
+              compressedSize: compressed.size,
+            });
+            return null;
+          }
+          const formData = new FormData();
+          formData.append("file", compressed);
+          formData.append("upload_preset", uploadPreset);
+
+          const response = await fetch(
+            `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+            {
+              method: "POST",
+              body: formData,
+            }
+          );
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Cloudinary upload failed", {
+              status: response.status,
+              statusText: response.statusText,
+              errorText,
+            });
+            throw new Error(errorText || "Upload failed");
+          }
+
+          const data = (await response.json()) as {
+            secure_url?: string;
+            error?: { message?: string };
+          };
+          if (!data.secure_url) {
+            console.error("Cloudinary upload missing secure_url", data);
+            throw new Error(data.error?.message || "Upload failed");
+          }
+          return { url: data.secure_url };
+        })
+      );
+
+      const validImages = uploadedImages.filter((img): img is { url: string } =>
+        Boolean(img)
+      );
+      if (validImages.length > 0) {
+        setImages((prev) => [...prev, ...validImages]);
+        toast.success("Image uploaded");
+      }
+    } catch (error) {
+      console.error("Upload error", error);
+    } finally {
+      setIsUploading(false);
+      event.target.value = "";
+    }
   };
 
   const generateSlug = (name: string) => {
@@ -414,6 +572,30 @@ export function ProductForm({
                 <CardTitle className="text-ink-1 text-lg">Images</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
+                <div className="flex flex-wrap items-center gap-2">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="hidden"
+                    onChange={handleFileSelect}
+                  />
+                  <Button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="bg-ink-1 text-paper-1 hover:bg-ink-0 rounded-full"
+                    disabled={isUploading}
+                  >
+                    {isUploading && (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    )}
+                    Upload from device
+                  </Button>
+                  <p className="text-muted-2 text-xs">
+                    Select one or more images (phone gallery or camera)
+                  </p>
+                </div>
                 <div className="flex gap-2">
                   <Input
                     placeholder="Image URL"
