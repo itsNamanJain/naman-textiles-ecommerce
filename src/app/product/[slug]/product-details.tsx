@@ -15,7 +15,6 @@ import {
   Check,
   Truck,
   Shield,
-  RotateCcw,
   ImageIcon,
   Trash2,
   Star,
@@ -26,6 +25,10 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { FadeIn } from "@/components/ui/motion";
 import { formatPrice, cn } from "@/lib/utils";
+import {
+  MAX_METER_ORDER_QUANTITY,
+  MAX_PIECE_ORDER_QUANTITY,
+} from "@/lib/constants";
 import { cartStore } from "@/stores";
 import { useXStateSelector } from "@/hooks";
 import { api } from "@/trpc/react";
@@ -112,7 +115,10 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   });
 
   const minQty = Number(product.minOrderQuantity);
-  const maxQty = Infinity;
+  const maxQty =
+    product.sellingMode === "meter"
+      ? MAX_METER_ORDER_QUANTITY
+      : MAX_PIECE_ORDER_QUANTITY;
   const step = 1;
   const price = Number(product.price);
   const unitLabel = product.sellingMode === "piece" ? "piece" : "meter";
@@ -429,7 +435,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             </div>
 
             {/* Features */}
-            <div className="grid grid-cols-3 gap-2 rounded-2xl border border-black/5 bg-white/80 p-3">
+            <div className="grid grid-cols-2 gap-2 rounded-2xl border border-black/5 bg-white/80 p-3">
               <div className="flex flex-col items-center text-center">
                 <Truck className="text-brand-1 mb-1 h-5 w-5" />
                 <span className="text-xs font-medium">Free Delivery</span>
@@ -439,11 +445,6 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 <Shield className="text-brand-1 mb-1 h-5 w-5" />
                 <span className="text-xs font-medium">Quality Assured</span>
                 <span className="text-muted-2 text-[10px]">100% Genuine</span>
-              </div>
-              <div className="flex flex-col items-center text-center">
-                <RotateCcw className="text-brand-1 mb-1 h-5 w-5" />
-                <span className="text-xs font-medium">Easy Returns</span>
-                <span className="text-muted-2 text-[10px]">7 Days</span>
               </div>
             </div>
 

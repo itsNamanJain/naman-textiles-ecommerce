@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  Truck,
-  Shield,
-  RefreshCw,
-  Headphones,
-  type LucideIcon,
-} from "lucide-react";
+import { Truck, Shield, Headphones, type LucideIcon } from "lucide-react";
 import { StaggerContainer, StaggerItem } from "@/components/ui/motion";
 import { api } from "@/trpc/react";
 import { formatPrice } from "@/lib/utils";
@@ -29,11 +23,6 @@ export function FeaturesSection() {
       icon: Shield,
       title: "Secure Payment",
       description: "100% secure payment gateway",
-    },
-    {
-      icon: RefreshCw,
-      title: "Easy Returns",
-      description: "7-day hassle-free returns",
     },
     {
       icon: Headphones,

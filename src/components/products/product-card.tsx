@@ -17,6 +17,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatPrice, formatUnit, cn } from "@/lib/utils";
+import {
+  MAX_METER_ORDER_QUANTITY,
+  MAX_PIECE_ORDER_QUANTITY,
+} from "@/lib/constants";
 import { cartStore } from "@/stores";
 import { useXStateSelector } from "@/hooks";
 import { api } from "@/trpc/react";
@@ -87,7 +91,10 @@ export function ProductCard({ product, className }: ProductCardProps) {
 
   const minQty = parseFloat(product.minOrderQuantity);
   const step = 1;
-  const maxQty = Infinity;
+  const maxQty =
+    product.sellingMode === "meter"
+      ? MAX_METER_ORDER_QUANTITY
+      : MAX_PIECE_ORDER_QUANTITY;
 
   const handleToggleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();

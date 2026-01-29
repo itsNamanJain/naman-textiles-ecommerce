@@ -1,4 +1,8 @@
 import { createStore } from "@xstate/store";
+import {
+  MAX_METER_ORDER_QUANTITY,
+  MAX_PIECE_ORDER_QUANTITY,
+} from "@/lib/constants";
 
 export type CartItem = {
   productId: string;
@@ -16,6 +20,11 @@ export type CartState = {
   isOpen: boolean;
   isLoading: boolean;
 };
+
+const getMaxQuantity = (item: Pick<CartItem, "sellingMode">) =>
+  item.sellingMode === "meter"
+    ? MAX_METER_ORDER_QUANTITY
+    : MAX_PIECE_ORDER_QUANTITY;
 
 // Helper to load cart from localStorage
 const loadCartFromStorage = (): CartItem[] => {
@@ -67,17 +76,20 @@ export const cartStore = createStore({
         // Update existing item quantity
         newItems = context.items.map((item, index) => {
           if (index === existingIndex) {
-            const newQuantity = item.quantity + event.quantity;
+            const maxQty = getMaxQuantity(item);
+            const newQuantity = Math.min(
+              item.quantity + event.quantity,
+              maxQty
+            );
             return { ...item, quantity: newQuantity };
           }
           return item;
         });
       } else {
         // Add new item
-        newItems = [
-          ...context.items,
-          { ...event.item, quantity: event.quantity },
-        ];
+        const maxQty = getMaxQuantity(event.item);
+        const quantity = Math.min(event.quantity, maxQty);
+        newItems = [...context.items, { ...event.item, quantity }];
       }
 
       saveCartToStorage(newItems);
@@ -93,7 +105,8 @@ export const cartStore = createStore({
         if (item.productId === event.productId) {
           // Validate quantity against constraints
           const minQty = item.minOrderQuantity;
-          const quantity = Math.max(minQty, event.quantity);
+          const maxQty = getMaxQuantity(item);
+          const quantity = Math.min(maxQty, Math.max(minQty, event.quantity));
           return { ...item, quantity };
         }
         return item;
@@ -107,7 +120,8 @@ export const cartStore = createStore({
     incrementQuantity: (context, event: { productId: string }) => {
       const newItems = context.items.map((item) => {
         if (item.productId === event.productId) {
-          const newQuantity = item.quantity + 1;
+          const maxQty = getMaxQuantity(item);
+          const newQuantity = Math.min(item.quantity + 1, maxQty);
           return { ...item, quantity: newQuantity };
         }
         return item;

@@ -9,7 +9,11 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import { generateOrderNumber } from "@/lib/utils";
-import { DEFAULT_SETTINGS } from "@/lib/constants";
+import {
+  DEFAULT_SETTINGS,
+  MAX_METER_ORDER_QUANTITY,
+  MAX_PIECE_ORDER_QUANTITY,
+} from "@/lib/constants";
 
 const shippingAddressSchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -79,6 +83,7 @@ export const orderRouter = createTRPCRouter({
             name: p.name,
             price: Number(p.price),
             minOrderQuantity: Number(p.minOrderQuantity),
+            sellingMode: p.sellingMode,
             unit: p.sellingMode === "piece" ? "piece" : "meter",
           },
         ])
@@ -102,6 +107,26 @@ export const orderRouter = createTRPCRouter({
         if (quantity < productInfo.minOrderQuantity) {
           invalidItems.push(
             `${productInfo.name} (min: ${productInfo.minOrderQuantity})`
+          );
+          return null;
+        }
+
+        if (
+          productInfo.sellingMode === "meter" &&
+          quantity > MAX_METER_ORDER_QUANTITY
+        ) {
+          invalidItems.push(
+            `${productInfo.name} (max: ${MAX_METER_ORDER_QUANTITY})`
+          );
+          return null;
+        }
+
+        if (
+          productInfo.sellingMode === "piece" &&
+          quantity > MAX_PIECE_ORDER_QUANTITY
+        ) {
+          invalidItems.push(
+            `${productInfo.name} (max: ${MAX_PIECE_ORDER_QUANTITY})`
           );
           return null;
         }

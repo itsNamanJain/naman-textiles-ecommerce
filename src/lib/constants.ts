@@ -40,3 +40,6 @@ export const DEFAULT_SETTINGS = {
   codEnabled: "true",
   onlinePaymentEnabled: "false",
 } as const;
+
+export const MAX_METER_ORDER_QUANTITY = 100;
+export const MAX_PIECE_ORDER_QUANTITY = 10;
