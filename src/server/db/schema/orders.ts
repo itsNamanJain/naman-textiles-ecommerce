@@ -40,10 +40,10 @@ export const orders = createTable(
     // Shipping address (snapshot at time of order)
     shippingName: varchar("shipping_name", { length: 255 }).notNull(),
     shippingPhone: varchar("shipping_phone", { length: 20 }).notNull(),
-    shippingAddressLine1: varchar("shipping_address_line_1", {
+    shippingAddressLine1: varchar("shipping_address_line1", {
       length: 500,
     }).notNull(),
-    shippingAddressLine2: varchar("shipping_address_line_2", { length: 500 }),
+    shippingAddressLine2: varchar("shipping_address_line2", { length: 500 }),
     shippingCity: varchar("shipping_city", { length: 100 }).notNull(),
     shippingState: varchar("shipping_state", { length: 100 }).notNull(),
     shippingPincode: varchar("shipping_pincode", { length: 10 }).notNull(),
