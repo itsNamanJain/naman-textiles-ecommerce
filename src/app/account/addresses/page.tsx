@@ -15,7 +15,6 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import {
   Dialog,
@@ -57,7 +56,7 @@ const addressSchema = z.object({
   city: z.string().min(2, "City is required"),
   state: z.string().min(2, "State is required"),
   pincode: z.string().regex(/^[1-9][0-9]{5}$/, "Enter a valid pincode"),
-  isDefault: z.boolean().default(false),
+  isDefault: z.boolean(),
 });
 
 type AddressFormData = z.infer<typeof addressSchema>;

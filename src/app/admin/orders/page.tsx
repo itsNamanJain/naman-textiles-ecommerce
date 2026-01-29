@@ -68,7 +68,7 @@ type OrderStatus =
   | "refunded";
 
 export default function AdminOrdersPage() {
-  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<OrderStatus | "all">("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [trackingNumbers, setTrackingNumbers] = useState<
     Record<string, string>
@@ -163,7 +163,7 @@ export default function AdminOrdersPage() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as OrderStatus | "all")}>
                 <SelectTrigger className="w-full rounded-full border-black/10 bg-white/80 sm:w-48">
                   <Filter className="mr-2 h-4 w-4" />
                   <SelectValue placeholder="Filter by status" />

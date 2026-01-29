@@ -24,6 +24,7 @@ export const users = createTable(
     password: varchar("password", { length: 255 }),
     role: userRoleEnum("role").default("customer").notNull(),
     phone: varchar("phone", { length: 20 }),
+    emailVerified: timestamp("email_verified", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .$defaultFn(() => new Date())
       .notNull(),

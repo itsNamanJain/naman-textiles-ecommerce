@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { jsonObjectFrom } from "kysely/helpers/postgres";
+import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/postgres";
 import { TRPCError } from "@trpc/server";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
@@ -44,6 +44,13 @@ export const wishlistRouter = createTRPCRouter({
                   .selectAll()
                   .whereRef("category.id", "=", "product.categoryId")
               ).as("category"),
+              jsonArrayFrom(
+                eb2
+                  .selectFrom("productImage")
+                  .select(["productImage.url", "productImage.alt"])
+                  .whereRef("productImage.productId", "=", "product.id")
+                  .orderBy("productImage.position", "asc")
+              ).as("images"),
             ])
             .whereRef("product.id", "=", "wishlistItem.productId")
         ).as("product"),
@@ -51,9 +58,12 @@ export const wishlistRouter = createTRPCRouter({
       .where("wishlistItem.wishlistId", "=", wishlist!.id)
       .orderBy("wishlistItem.createdAt", "asc")
       .execute();
+    
+    // make sure the items having product and its category is not null
+    const validItems = items.filter((item) => item.product && item.product.category); 
 
     // Filter out items where product is inactive
-    const activeItems = items.filter((item) => item.product?.isActive);
+    const activeItems = validItems.filter((item) => item.product?.isActive);
 
     return {
       id: wishlist!.id,

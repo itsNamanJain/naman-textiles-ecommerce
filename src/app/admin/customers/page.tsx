@@ -172,14 +172,6 @@ export default function AdminCustomersPage() {
                                 <p className="text-ink-1 font-medium">
                                   {customer.name ?? "Unknown"}
                                 </p>
-                                {customer.emailVerified && (
-                                  <Badge
-                                    variant="secondary"
-                                    className="text-xs"
-                                  >
-                                    Verified
-                                  </Badge>
-                                )}
                               </div>
                             </div>
                           </TableCell>

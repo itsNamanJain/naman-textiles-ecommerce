@@ -173,16 +173,14 @@ export default function WishlistPage() {
             <StaggerContainer className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
               {items.map((item) => (
                 <StaggerItem key={item.id}>
-                  <ProductCard
-                    product={{
-                      ...item.product,
-                      images:
-                        item.product.images?.map((img) => ({
-                          url: img.url,
-                          alt: null,
-                        })) ?? [],
-                    }}
-                  />
+                  {item.product && (
+                    <ProductCard
+                      product={{
+                        ...item.product,
+                        images: item.product.images ?? [],
+                      }}
+                    />
+                  )}
                 </StaggerItem>
               ))}
             </StaggerContainer>

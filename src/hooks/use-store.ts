@@ -16,7 +16,7 @@ import equal from "fast-deep-equal";
  */
  
 export const useXStateSelector = <
-  TStore extends Readable<any> & { getSnapshot: () => any },
+  TStore extends Readable<unknown> & { getSnapshot: () => unknown },
   T,
 >(
   store: TStore,
