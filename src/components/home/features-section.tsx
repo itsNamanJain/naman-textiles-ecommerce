@@ -9,15 +9,15 @@ import { DEFAULT_SETTINGS } from "@/lib/constants";
 export function FeaturesSection() {
   const { data: settings } = api.settings.getPublicSettings.useQuery();
 
-  const freeShippingThreshold = Number(
-    settings?.shippingFreeThreshold ?? DEFAULT_SETTINGS.shippingFreeThreshold
+  const shippingRate = Number(
+    settings?.shippingBaseRate ?? DEFAULT_SETTINGS.shippingBaseRate
   );
 
   const features: { icon: LucideIcon; title: string; description: string }[] = [
     {
       icon: Truck,
-      title: "Free Shipping",
-      description: `Free shipping on orders above ${formatPrice(freeShippingThreshold)}`,
+      title: "Flat Shipping",
+      description: `Standard delivery fee of ${formatPrice(shippingRate)}`,
     },
     {
       icon: Shield,

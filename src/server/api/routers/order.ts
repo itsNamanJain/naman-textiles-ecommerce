@@ -15,6 +15,8 @@ import {
   MAX_PIECE_ORDER_QUANTITY,
 } from "@/lib/constants";
 
+const GST_REGEX = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/;
+
 const shippingAddressSchema = z.object({
   name: z.string().min(2, "Name is required"),
   phone: z.string().min(10, "Valid phone number required"),
@@ -37,6 +39,13 @@ export const orderRouter = createTRPCRouter({
       z.object({
         items: z.array(orderItemSchema).min(1, "At least one item required"),
         shippingAddress: shippingAddressSchema,
+        gstNumber: z
+          .string()
+          .trim()
+          .optional()
+          .refine((value) => !value || GST_REGEX.test(value), {
+            message: "Invalid GST number",
+          }),
         paymentMethod: z.enum(["cod", "online"]).default("cod"),
         customerNote: z.string().optional(),
         couponCode: z.string().optional(),
@@ -54,10 +63,6 @@ export const orderRouter = createTRPCRouter({
       allSettings.forEach((setting) => {
         settingsMap[setting.key] = setting.value;
       });
-      const freeShippingThreshold = Number(
-        settingsMap.shippingFreeThreshold ??
-          DEFAULT_SETTINGS.shippingFreeThreshold
-      );
       const shippingRate = Number(
         settingsMap.shippingBaseRate ?? DEFAULT_SETTINGS.shippingBaseRate
       );
@@ -164,7 +169,7 @@ export const orderRouter = createTRPCRouter({
         });
       }
 
-      const shippingCost = subtotal >= freeShippingThreshold ? 0 : shippingRate;
+      const shippingCost = shippingRate;
 
       let discount = 0;
       let appliedCouponCode: string | null = null;
@@ -223,7 +228,9 @@ export const orderRouter = createTRPCRouter({
         appliedCouponCode = coupon.code;
       }
 
-      const total = subtotal + shippingCost - discount;
+      const taxableAmount = Math.max(subtotal - discount, 0);
+      const tax = Math.round(taxableAmount * 0.05 * 100) / 100;
+      const total = subtotal + shippingCost - discount + tax;
 
       // Create order with embedded shipping address
       const order = await ctx.db
@@ -236,6 +243,7 @@ export const orderRouter = createTRPCRouter({
           paymentMethod: input.paymentMethod,
           subtotal: subtotal.toString(),
           shippingCost: shippingCost.toString(),
+          tax: tax.toString(),
           discount: discount.toString(),
           couponDiscount: discount.toString(),
           total: total.toString(),
@@ -247,6 +255,7 @@ export const orderRouter = createTRPCRouter({
           shippingCity: input.shippingAddress.city,
           shippingState: input.shippingAddress.state,
           shippingPincode: input.shippingAddress.pincode,
+          gstNumber: input.gstNumber ? input.gstNumber.toUpperCase() : null,
           customerNote: input.customerNote ?? null,
         })
         .returningAll()
@@ -291,6 +300,7 @@ export const orderRouter = createTRPCRouter({
         totals: {
           subtotal,
           shippingCost,
+          tax,
           discount,
           total,
         },

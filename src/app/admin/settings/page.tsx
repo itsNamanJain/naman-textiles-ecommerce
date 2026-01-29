@@ -28,7 +28,6 @@ import { toast } from "sonner";
 import { DEFAULT_SETTINGS } from "@/lib/constants";
 
 type SettingsType = {
-  shippingFreeThreshold: string;
   shippingBaseRate: string;
   orderMinAmount: string;
   codEnabled: string;
@@ -37,7 +36,10 @@ type SettingsType = {
 
 export default function AdminSettingsPage() {
   const [formData, setFormData] = useState<SettingsType>({
-    ...DEFAULT_SETTINGS,
+    shippingBaseRate: DEFAULT_SETTINGS.shippingBaseRate,
+    orderMinAmount: DEFAULT_SETTINGS.orderMinAmount,
+    codEnabled: DEFAULT_SETTINGS.codEnabled,
+    onlinePaymentEnabled: DEFAULT_SETTINGS.onlinePaymentEnabled,
   });
   const [hasChanges, setHasChanges] = useState(false);
 
@@ -121,30 +123,10 @@ export default function AdminSettingsPage() {
                 Shipping Settings
               </CardTitle>
               <CardDescription className="text-muted-2">
-                Configure shipping rates and free shipping threshold
+                Configure shipping rates
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="shippingFreeThreshold">
-                  Free Shipping Threshold
-                </Label>
-                <div className="relative">
-                  <IndianRupee className="text-muted-2 absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
-                  <Input
-                    id="shippingFreeThreshold"
-                    type="number"
-                    value={formData.shippingFreeThreshold}
-                    onChange={(e) =>
-                      handleChange("shippingFreeThreshold", e.target.value)
-                    }
-                    className="rounded-2xl border-black/10 bg-white/80 pl-10"
-                  />
-                </div>
-                <p className="text-muted-2 text-xs">
-                  Orders above this amount get free shipping
-                </p>
-              </div>
               <div className="space-y-2">
                 <Label htmlFor="shippingBaseRate">Shipping Rate</Label>
                 <div className="relative">
@@ -160,7 +142,7 @@ export default function AdminSettingsPage() {
                   />
                 </div>
                 <p className="text-muted-2 text-xs">
-                  Flat shipping rate for orders below free shipping threshold
+                  Flat shipping rate for all orders
                 </p>
               </div>
             </CardContent>

@@ -101,6 +101,8 @@ const INDIAN_STATES = [
   "Puducherry",
 ];
 
+const GST_REGEX = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/;
+
 const checkoutSchema = z.object({
   name: z
     .string()
@@ -122,6 +124,13 @@ const checkoutSchema = z.object({
     .regex(/^[a-zA-Z\s]+$/, "City name can only contain letters"),
   state: z.string().min(1, "Please select a state"),
   pincode: z.string().regex(/^[1-9][0-9]{5}$/, "Enter a valid 6-digit pincode"),
+  gstNumber: z
+    .string()
+    .trim()
+    .optional()
+    .refine((value) => !value || GST_REGEX.test(value), {
+      message: "Enter a valid GST number",
+    }),
   paymentMethod: z.enum(["cod", "online"]),
   customerNote: z.string().max(500, "Note is too long").optional(),
   saveAddress: z.boolean(),
@@ -170,6 +179,7 @@ function CheckoutContent() {
   const [serverTotals, setServerTotals] = useState<{
     subtotal: number;
     shippingCost: number;
+    tax: number;
     discount: number;
     total: number;
   } | null>(null);
@@ -196,9 +206,6 @@ function CheckoutContent() {
   const utils = api.useUtils();
 
   // Get settings from DB or use defaults
-  const freeShippingThreshold = Number(
-    settings?.shippingFreeThreshold ?? DEFAULT_SETTINGS.shippingFreeThreshold
-  );
   const shippingRate = Number(
     settings?.shippingBaseRate ?? DEFAULT_SETTINGS.shippingBaseRate
   );
@@ -212,9 +219,13 @@ function CheckoutContent() {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-  const shipping = subtotal >= freeShippingThreshold ? 0 : shippingRate;
+  const shipping = shippingRate;
   const discount = appliedCoupon?.discount ?? 0;
-  const total = subtotal + shipping - discount;
+  const taxableAmount = Math.max(subtotal - discount, 0);
+  const tax = Math.round(taxableAmount * 0.05 * 100) / 100;
+  const igst = tax / 2;
+  const cgst = tax / 2;
+  const total = subtotal + shipping - discount + tax;
 
   const form = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
@@ -226,6 +237,7 @@ function CheckoutContent() {
       city: "",
       state: "",
       pincode: "",
+      gstNumber: "",
       paymentMethod: "cod",
       customerNote: "",
       saveAddress: false,
@@ -342,6 +354,7 @@ function CheckoutContent() {
         setServerTotals({
           subtotal: data.totals.subtotal,
           shippingCost: data.totals.shippingCost,
+          tax: data.totals.tax,
           discount: data.totals.discount,
           total: data.totals.total,
         });
@@ -406,6 +419,7 @@ function CheckoutContent() {
         state: data.state,
         pincode: data.pincode,
       },
+      gstNumber: data.gstNumber ? data.gstNumber.toUpperCase() : undefined,
       paymentMethod: data.paymentMethod,
       customerNote: data.customerNote,
       couponCode: appliedCoupon?.code,
@@ -497,17 +511,25 @@ function CheckoutContent() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-1">Shipping</span>
-                  <span>
-                    {serverTotals.shippingCost === 0
-                      ? "FREE"
-                      : formatPrice(serverTotals.shippingCost)}
-                  </span>
+                  <span>{formatPrice(serverTotals.shippingCost)}</span>
                 </div>
                 {serverTotals.discount > 0 && (
                   <div className="text-success-1 flex justify-between">
                     <span>Discount</span>
                     <span>-{formatPrice(serverTotals.discount)}</span>
                   </div>
+                )}
+                {serverTotals.tax > 0 && (
+                  <>
+                    <div className="flex justify-between">
+                      <span className="text-muted-1">IGST (2.5%)</span>
+                      <span>{formatPrice(serverTotals.tax / 2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-1">CGST (2.5%)</span>
+                      <span>{formatPrice(serverTotals.tax / 2)}</span>
+                    </div>
+                  </>
                 )}
                 <div className="text-ink-1 flex justify-between border-t pt-2 font-semibold">
                   <span>Total</span>
@@ -841,6 +863,30 @@ function CheckoutContent() {
                           />
                         </div>
 
+                        <FormField
+                          control={form.control}
+                          name="gstNumber"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>GST Number (Optional)</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="22AAAAA0000A1Z5"
+                                  maxLength={15}
+                                  className="rounded-2xl border-black/10 bg-white/80 uppercase"
+                                  {...field}
+                                  onChange={(e) => {
+                                    field.onChange(
+                                      e.target.value.toUpperCase()
+                                    );
+                                  }}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
                         {/* Save address toggle for new addresses */}
                         {isNewAddress && (
                           <FormField
@@ -1076,13 +1122,7 @@ function CheckoutContent() {
                         </div>
                         <div className="flex justify-between text-sm">
                           <span className="text-muted-1">Shipping</span>
-                          <span>
-                            {shipping === 0 ? (
-                              <span className="text-success-1">FREE</span>
-                            ) : (
-                              formatPrice(shipping)
-                            )}
-                          </span>
+                          <span>{formatPrice(shipping)}</span>
                         </div>
                         {discount > 0 && (
                           <div className="flex justify-between text-sm">
@@ -1092,6 +1132,14 @@ function CheckoutContent() {
                             </span>
                           </div>
                         )}
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-1">IGST (2.5%)</span>
+                          <span>{formatPrice(igst)}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-1">CGST (2.5%)</span>
+                          <span>{formatPrice(cgst)}</span>
+                        </div>
                       </div>
 
                       <Separator />

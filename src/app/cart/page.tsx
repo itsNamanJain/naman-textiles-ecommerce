@@ -33,9 +33,6 @@ export default function CartPage() {
   const { data: settings } = api.settings.getPublicSettings.useQuery();
 
   // Get settings from DB or use defaults
-  const freeShippingThreshold = Number(
-    settings?.shippingFreeThreshold ?? DEFAULT_SETTINGS.shippingFreeThreshold
-  );
   const shippingRate = Number(
     settings?.shippingBaseRate ?? DEFAULT_SETTINGS.shippingBaseRate
   );
@@ -64,7 +61,7 @@ export default function CartPage() {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-  const shipping = subtotal >= freeShippingThreshold ? 0 : shippingRate;
+  const shipping = shippingRate;
   const total = subtotal + shipping;
 
   const handleIncrement = (productId: string) => {
@@ -281,20 +278,8 @@ export default function CartPage() {
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-1">Shipping</span>
-                    <span className="font-medium">
-                      {shipping === 0 ? (
-                        <span className="text-success-1">FREE</span>
-                      ) : (
-                        formatPrice(shipping)
-                      )}
-                    </span>
+                    <span className="font-medium">{formatPrice(shipping)}</span>
                   </div>
-                  {subtotal < freeShippingThreshold && (
-                    <p className="text-brand-1 text-xs">
-                      Add {formatPrice(freeShippingThreshold - subtotal)} more
-                      for free shipping!
-                    </p>
-                  )}
                   <Separator />
                   <div className="flex justify-between">
                     <span className="text-ink-1 text-lg font-semibold">
@@ -318,7 +303,7 @@ export default function CartPage() {
                     <div className="text-muted-1 flex items-center gap-2 text-xs">
                       <Truck className="text-brand-1 h-4 w-4" />
                       <span>
-                        Free shipping above {formatPrice(freeShippingThreshold)}
+                        Standard delivery fee of {formatPrice(shippingRate)}
                       </span>
                     </div>
                     <div className="text-muted-1 flex items-center gap-2 text-xs">

@@ -47,6 +47,7 @@ export const orders = createTable(
     shippingCity: varchar("shipping_city", { length: 100 }).notNull(),
     shippingState: varchar("shipping_state", { length: 100 }).notNull(),
     shippingPincode: varchar("shipping_pincode", { length: 10 }).notNull(),
+    gstNumber: varchar("gst_number", { length: 15 }),
 
     // Tracking
     trackingNumber: varchar("tracking_number", { length: 255 }),

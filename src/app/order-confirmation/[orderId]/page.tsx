@@ -297,19 +297,19 @@ export default function OrderConfirmationPage() {
                   )}
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-1">Shipping</span>
-                    <span>
-                      {Number(order.shippingCost) === 0 ? (
-                        <span className="text-success-1">FREE</span>
-                      ) : (
-                        formatPrice(Number(order.shippingCost))
-                      )}
-                    </span>
+                    <span>{formatPrice(Number(order.shippingCost))}</span>
                   </div>
                   {Number(order.tax) > 0 && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-1">Tax</span>
-                      <span>{formatPrice(Number(order.tax))}</span>
-                    </div>
+                    <>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-1">IGST (2.5%)</span>
+                        <span>{formatPrice(Number(order.tax) / 2)}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-1">CGST (2.5%)</span>
+                        <span>{formatPrice(Number(order.tax) / 2)}</span>
+                      </div>
+                    </>
                   )}
 
                   <Separator />

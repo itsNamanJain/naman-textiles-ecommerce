@@ -35,7 +35,7 @@ export const STORE_INFO = {
 // Note: Keys use snake_case to match database storage format
 export const DEFAULT_SETTINGS = {
   shippingFreeThreshold: "1000",
-  shippingBaseRate: "99",
+  shippingBaseRate: "199",
   orderMinAmount: "500",
   codEnabled: "true",
   onlinePaymentEnabled: "false",
