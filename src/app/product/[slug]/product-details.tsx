@@ -13,7 +13,6 @@ import {
   ChevronRight,
   Home,
   Check,
-  Truck,
   Shield,
   ImageIcon,
   Trash2,
@@ -25,7 +24,6 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { FadeIn } from "@/components/ui/motion";
 import { formatPrice, cn } from "@/lib/utils";
-import { DEFAULT_SETTINGS } from "@/lib/constants";
 import {
   MAX_METER_ORDER_QUANTITY,
   MAX_PIECE_ORDER_QUANTITY,

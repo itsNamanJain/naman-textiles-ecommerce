@@ -50,11 +50,6 @@ export default function AdminDashboard() {
     { refetchInterval: 30000 }
   );
 
-  const { data: lowStockProducts } = api.admin.getLowStockProducts.useQuery(
-    { limit: 5 },
-    { refetchInterval: 60000 }
-  );
-
   return (
     <div className="space-y-6">
       {/* Page Header */}

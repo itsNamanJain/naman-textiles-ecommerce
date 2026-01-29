@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Phone, Mail, MapPin } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { api } from "@/trpc/react";
-import { STORE_INFO, DEFAULT_SETTINGS } from "@/lib/constants";
+import { STORE_INFO } from "@/lib/constants";
 
 // Custom social icons (since lucide brand icons are deprecated)
 const FacebookIcon = () => (

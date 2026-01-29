@@ -264,10 +264,6 @@ export const adminRouter = createTRPCRouter({
       return recentOrders;
     }),
 
-  // Get low stock products
-  getLowStockProducts: adminProcedure
-    .input(z.object({ limit: z.number().min(1).max(20).default(5) }))
-    .query(async () => []),
 
   // Get all orders with pagination
   getOrders: adminProcedure
