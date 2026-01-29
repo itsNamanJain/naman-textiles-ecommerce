@@ -223,7 +223,7 @@ export function ProductForm({
   };
 
   const compressImage = async (file: File): Promise<File> => {
-    const maxBytes = 10 * 1024 * 1024;
+    const maxBytes = 5 * 1024 * 1024;
     let maxDimension = 2000;
     let quality = 0.75;
 
@@ -321,7 +321,7 @@ export function ProductForm({
       const uploadedImages = await Promise.all(
         files.map(async (file) => {
           const compressed = await compressImage(file);
-          if (compressed.size > 10 * 1024 * 1024) {
+          if (compressed.size > 5 * 1024 * 1024) {
             console.error("Image still too large after compression", {
               name: file.name,
               originalSize: file.size,
