@@ -726,7 +726,7 @@ export const adminRouter = createTRPCRouter({
 
       let query = ctx.db
         .selectFrom("user")
-        .select(["id", "name", "email", "phone", "createdAt", "emailVerified"])
+        .select(["id", "name", "email", "phone", "createdAt"])
         .where("user.role", "=", "customer")
         .orderBy("user.createdAt", "desc");
 

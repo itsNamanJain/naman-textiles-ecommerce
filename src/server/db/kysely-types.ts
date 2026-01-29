@@ -1,65 +1,56 @@
-import type { Kyselify } from "drizzle-orm/kysely";
+import type { Generated } from "kysely";
 
-import * as schema from "./schema";
+import type * as schema from "./schema";
 
-// ==================== CAMEL CASE CONVERSION TYPES ====================
-// These handle the CamelCasePlugin transformation
+// ==================== UTILITY TYPES ====================
+// Convert Drizzle types to Kysely-compatible types with Generated markers
 
-type ToCamel<S extends string | number | symbol> = S extends string
-  ? S extends `${infer Head}_${infer Tail}`
-    ? `${ToCamel<Uncapitalize<Head>>}${Capitalize<ToCamel<Tail>>}`
-    : S extends `${infer Head}-${infer Tail}`
-      ? `${ToCamel<Uncapitalize<Head>>}${Capitalize<ToCamel<Tail>>}`
-      : Uncapitalize<S>
-  : never;
+type DrizzleSelect<T> = T extends { $inferSelect: infer S } ? S : never;
+type DrizzleInsert<T> = T extends { $inferInsert: infer I } ? I : never;
 
-type ObjectToCamel<T extends object | undefined | null> = T extends undefined
-  ? undefined
-  : T extends null
-    ? null
-    : T extends Array<infer ArrayType>
-      ? Array<ArrayType>
-      : T extends Uint8Array
-        ? Uint8Array
-        : T extends Date
-          ? Date
-          : {
-              [K in keyof T as ToCamel<K>]: T[K];
-            };
+// Marks fields that are optional in insert (have defaults) as Generated<T>
+type ToKyselyTable<T> = {
+  [K in keyof DrizzleSelect<T>]: K extends keyof DrizzleInsert<T>
+    ? undefined extends DrizzleInsert<T>[K]
+      ? Generated<DrizzleSelect<T>[K]>
+      : DrizzleSelect<T>[K]
+    : Generated<DrizzleSelect<T>[K]>;
+};
 
 // ==================== DATABASE INTERFACE ====================
-// Auto-generated from Drizzle schema using Kyselify
+// Types derived directly from Drizzle schema
 
 export interface Database {
   // Users & Auth
-  user: ObjectToCamel<Kyselify<typeof schema.users>>;
-  account: ObjectToCamel<Kyselify<typeof schema.accounts>>;
-  session: ObjectToCamel<Kyselify<typeof schema.sessions>>;
-  verificationToken: ObjectToCamel<Kyselify<typeof schema.verificationTokens>>;
-  address: ObjectToCamel<Kyselify<typeof schema.addresses>>;
+  user: ToKyselyTable<typeof schema.users>;
+  account: ToKyselyTable<typeof schema.accounts>;
+  session: ToKyselyTable<typeof schema.sessions>;
+  verificationToken: ToKyselyTable<typeof schema.verificationTokens>;
+  address: ToKyselyTable<typeof schema.addresses>;
 
   // Inventory
-  category: ObjectToCamel<Kyselify<typeof schema.categories>>;
-  product: ObjectToCamel<Kyselify<typeof schema.products>>;
-  productVariant: ObjectToCamel<Kyselify<typeof schema.productVariants>>;
+  category: ToKyselyTable<typeof schema.categories>;
+  product: ToKyselyTable<typeof schema.products>;
+  productImage: ToKyselyTable<typeof schema.productImages>;
+  productVariant: ToKyselyTable<typeof schema.productVariants>;
 
   // Cart & Wishlist
-  cart: ObjectToCamel<Kyselify<typeof schema.carts>>;
-  cartItem: ObjectToCamel<Kyselify<typeof schema.cartItems>>;
-  wishlist: ObjectToCamel<Kyselify<typeof schema.wishlists>>;
-  wishlistItem: ObjectToCamel<Kyselify<typeof schema.wishlistItems>>;
+  cart: ToKyselyTable<typeof schema.carts>;
+  cartItem: ToKyselyTable<typeof schema.cartItems>;
+  wishlist: ToKyselyTable<typeof schema.wishlists>;
+  wishlistItem: ToKyselyTable<typeof schema.wishlistItems>;
 
   // Orders
-  order: ObjectToCamel<Kyselify<typeof schema.orders>>;
-  orderItem: ObjectToCamel<Kyselify<typeof schema.orderItems>>;
+  order: ToKyselyTable<typeof schema.orders>;
+  orderItem: ToKyselyTable<typeof schema.orderItems>;
 
   // Reviews
-  review: ObjectToCamel<Kyselify<typeof schema.reviews>>;
+  review: ToKyselyTable<typeof schema.reviews>;
 
   // Marketing
-  coupon: ObjectToCamel<Kyselify<typeof schema.coupons>>;
-  banner: ObjectToCamel<Kyselify<typeof schema.banners>>;
+  coupon: ToKyselyTable<typeof schema.coupons>;
+  banner: ToKyselyTable<typeof schema.banners>;
 
   // Settings
-  setting: ObjectToCamel<Kyselify<typeof schema.settings>>;
+  setting: ToKyselyTable<typeof schema.settings>;
 }

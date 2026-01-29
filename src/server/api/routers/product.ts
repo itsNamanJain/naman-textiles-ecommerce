@@ -13,8 +13,8 @@ export const productRouter = createTRPCRouter({
         cursor: z.string().nullish(),
         categorySlug: z.string().optional(),
         search: z.string().optional(),
-        minPrice: z.number().optional(),
-        maxPrice: z.number().optional(),
+        minPrice: z.string().optional(),
+        maxPrice: z.string().optional(),
         sortBy: z
           .enum(["newest", "oldest", "price-asc", "price-desc", "name"])
           .default("newest"),
