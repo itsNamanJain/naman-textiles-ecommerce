@@ -260,7 +260,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
             "absolute inset-x-0 bottom-0 p-1 transition-all duration-200",
             isInCart
               ? "translate-y-0"
-              : "translate-y-full group-hover:translate-y-0"
+              : "translate-y-0 md:translate-y-full md:group-hover:translate-y-0"
           )}
         >
           {isInCart ? (

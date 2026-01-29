@@ -107,7 +107,7 @@ export function CategoryGrid({
                     </div>
 
                     {/* Hover Arrow */}
-                    <div className="absolute top-4 right-4 opacity-0 transition-opacity group-hover:opacity-100">
+                    <div className="absolute top-4 right-4 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100">
                       <div className="text-ink-1 rounded-full bg-white/70 p-2 shadow-sm">
                         <svg
                           className="text-ink-1 h-4 w-4"
