@@ -62,7 +62,12 @@ type ProductData = {
   categoryId: string;
   isActive: boolean;
   isFeatured: boolean;
-  images?: { id: string; url: string; alt?: string | null }[];
+  images?: {
+    id: string;
+    url: string;
+    alt?: string | null;
+    publicId?: string | null;
+  }[];
 };
 
 interface ProductFormProps {
@@ -81,7 +86,9 @@ export function ProductForm({
   isQuickAdd = false,
 }: ProductFormProps) {
   const utils = api.useUtils();
-  const [images, setImages] = useState<{ url: string; alt?: string }[]>([]);
+  const [images, setImages] = useState<
+    { url: string; alt?: string; publicId?: string }[]
+  >([]);
   const [newImageUrl, setNewImageUrl] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -151,6 +158,7 @@ export function ProductForm({
         product.images?.map((img) => ({
           url: img.url,
           alt: img.alt ?? undefined,
+          publicId: img.publicId ?? undefined,
         })) ?? []
       );
     },
@@ -353,18 +361,19 @@ export function ProductForm({
 
           const data = (await response.json()) as {
             secure_url?: string;
+            public_id?: string;
             error?: { message?: string };
           };
           if (!data.secure_url) {
             console.error("Cloudinary upload missing secure_url", data);
             throw new Error(data.error?.message || "Upload failed");
           }
-          return { url: data.secure_url };
+          return { url: data.secure_url, publicId: data.public_id };
         })
       );
 
-      const validImages = uploadedImages.filter((img): img is { url: string } =>
-        Boolean(img)
+      const validImages = uploadedImages.filter(
+        (img): img is { url: string; publicId?: string } => Boolean(img)
       );
       if (validImages.length > 0) {
         setImages((prev) => [...prev, ...validImages]);

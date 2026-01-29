@@ -17,12 +17,29 @@ import {
   ImageIcon,
   Copy,
   Zap,
+  Trash2,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import {
   Select,
   SelectContent,
@@ -64,6 +81,16 @@ export default function AdminProductsPage() {
     },
     onError: (error) => {
       toast.error(error.message || "Failed to update product");
+    },
+  });
+
+  const deleteProductMutation = api.admin.deleteProduct.useMutation({
+    onSuccess: () => {
+      toast.success("Product deleted");
+      utils.admin.getProducts.invalidate();
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to delete product");
     },
   });
 
@@ -184,10 +211,45 @@ export default function AdminProductsPage() {
               <StaggerContainer className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                 {filteredProducts.map((product) => (
                   <StaggerItem key={product.id}>
-                    <div className="rounded-2xl border border-black/10 bg-white/90 p-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+                    <div className="relative rounded-2xl border border-black/10 bg-white/90 p-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
                       {/* Product Image - Smaller aspect ratio */}
                       <div className="bg-paper-2 relative mb-2 aspect-[4/3] overflow-hidden rounded-xl">
-                        {product.images?.[0]?.url ? (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="absolute top-2 right-2 z-20 h-8 w-8 rounded-full bg-white/90 shadow-sm"
+                          onClick={() => handleToggleStatus(product.id)}
+                          disabled={toggleStatusMutation.isPending}
+                          title={product.isActive ? "Deactivate" : "Activate"}
+                        >
+                          {product.isActive ? (
+                            <ToggleRight className="text-success-1 h-4 w-4" />
+                          ) : (
+                            <ToggleLeft className="text-muted-3 h-4 w-4" />
+                          )}
+                        </Button>
+                        {product.images && product.images.length > 1 ? (
+                          <Carousel opts={{ loop: true }} className="h-full">
+                            <CarouselContent className="-ml-0 h-full">
+                              {product.images.map((img) => (
+                                <CarouselItem
+                                  key={img.id}
+                                  className="h-full pl-0"
+                                >
+                                  <div className="relative h-full w-full">
+                                    <Image
+                                      src={img.url}
+                                      alt={product.name}
+                                      fill
+                                      className="object-cover"
+                                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                                    />
+                                  </div>
+                                </CarouselItem>
+                              ))}
+                            </CarouselContent>
+                          </Carousel>
+                        ) : product.images?.[0]?.url ? (
                           <Image
                             src={product.images[0].url}
                             alt={product.name}
@@ -201,7 +263,7 @@ export default function AdminProductsPage() {
                           </div>
                         )}
                         {!product.isActive && (
-                          <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                          <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-black/50">
                             <Badge
                               variant="secondary"
                               className="bg-danger-2 text-danger-4 text-xs"
@@ -211,7 +273,7 @@ export default function AdminProductsPage() {
                           </div>
                         )}
                         {product.isFeatured && (
-                          <Badge className="bg-paper-1 text-brand-3 absolute top-1 left-1 text-xs">
+                          <Badge className="bg-paper-1 text-brand-3 absolute top-1 left-1 z-10 text-xs">
                             Featured
                           </Badge>
                         )}
@@ -273,20 +335,43 @@ export default function AdminProductsPage() {
                           >
                             <Copy className="h-3.5 w-3.5" />
                           </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 rounded-full"
-                            onClick={() => handleToggleStatus(product.id)}
-                            disabled={toggleStatusMutation.isPending}
-                            title={product.isActive ? "Deactivate" : "Activate"}
-                          >
-                            {product.isActive ? (
-                              <ToggleRight className="text-success-1 h-4 w-4" />
-                            ) : (
-                              <ToggleLeft className="text-muted-3 h-4 w-4" />
-                            )}
-                          </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                className="hover:bg-danger-1 h-8 w-8 rounded-full border-black/10 bg-white/80"
+                                title="Delete"
+                                disabled={deleteProductMutation.isPending}
+                              >
+                                <Trash2 className="text-danger-4 h-3.5 w-3.5" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent className="border border-black/5 bg-white/95">
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                  Delete product?
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This will permanently remove the product and
+                                  its images.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  className="bg-danger-4 hover:bg-danger-3"
+                                  onClick={() =>
+                                    deleteProductMutation.mutate({
+                                      id: product.id,
+                                    })
+                                  }
+                                >
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
                         </div>
                       </div>
                     </div>

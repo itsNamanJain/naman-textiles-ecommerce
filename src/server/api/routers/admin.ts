@@ -2,8 +2,10 @@ import { z } from "zod";
 import { sql } from "kysely";
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/postgres";
 import { TRPCError } from "@trpc/server";
+import crypto from "crypto";
 
 import { createTRPCRouter, adminProcedure } from "@/server/api/trpc";
+import { env } from "@/env";
 
 // Helper function to calculate growth percentage
 function calculateGrowth(current: number, previous: number): number {
@@ -11,6 +13,90 @@ function calculateGrowth(current: number, previous: number): number {
     return current > 0 ? 100 : 0;
   }
   return ((current - previous) / previous) * 100;
+}
+
+function extractCloudinaryPublicId(url: string): string | null {
+  try {
+    const parsed = new URL(url);
+    const uploadIndex = parsed.pathname.indexOf("/upload/");
+    if (uploadIndex === -1) return null;
+    const afterUpload = parsed.pathname.slice(uploadIndex + "/upload/".length);
+    let segments = afterUpload.split("/").filter(Boolean);
+
+    const versionIndex = segments.findIndex((seg) => /^v\\d+$/.test(seg));
+    if (versionIndex >= 0) {
+      segments = segments.slice(versionIndex + 1);
+    }
+
+    if (segments.length === 0) return null;
+    const joined = segments.join("/");
+    return joined.replace(/\\.[^/.]+$/, "");
+  } catch {
+    return null;
+  }
+}
+
+async function deleteCloudinaryImageByUrl(url: string, publicId?: string) {
+  const cloudName = env.CLOUDINARY_CLOUD_NAME;
+  const apiKey = env.CLOUDINARY_API_KEY;
+  const apiSecret = env.CLOUDINARY_API_SECRET;
+
+  if (!cloudName || !apiKey || !apiSecret) {
+    console.error("Cloudinary server env vars missing");
+    return;
+  }
+
+  const resolvedPublicId = publicId ?? extractCloudinaryPublicId(url);
+  if (!resolvedPublicId) {
+    console.error("Unable to derive Cloudinary public_id from URL", url);
+    return;
+  }
+
+  const timestamp = Math.floor(Date.now() / 1000);
+  const signatureBase = `invalidate=true&public_id=${resolvedPublicId}&timestamp=${timestamp}${apiSecret}`;
+  const signature = crypto
+    .createHash("sha1")
+    .update(signatureBase)
+    .digest("hex");
+
+  const body = new URLSearchParams({
+    public_id: resolvedPublicId,
+    timestamp: String(timestamp),
+    api_key: apiKey,
+    signature,
+    invalidate: "true",
+  });
+
+  const response = await fetch(
+    `https://api.cloudinary.com/v1_1/${cloudName}/image/destroy`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body,
+    }
+  );
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error("Cloudinary destroy failed", {
+      status: response.status,
+      statusText: response.statusText,
+      errorText,
+    });
+    return;
+  }
+
+  try {
+    const data = (await response.json()) as { result?: string };
+    if (data.result && data.result !== "ok") {
+      console.error("Cloudinary destroy non-ok result", {
+        publicId: resolvedPublicId,
+        result: data.result,
+      });
+    }
+  } catch (error) {
+    console.error("Cloudinary destroy parse error", error);
+  }
 }
 
 export const adminRouter = createTRPCRouter({
@@ -489,6 +575,7 @@ export const adminRouter = createTRPCRouter({
             z.object({
               url: z.string(),
               alt: z.string().optional(),
+              publicId: z.string().optional(),
             })
           )
           .optional(),
@@ -532,6 +619,7 @@ export const adminRouter = createTRPCRouter({
               productId: product.id,
               url: img.url,
               alt: img.alt ?? product.name,
+              publicId: img.publicId ?? null,
               position: idx,
             }))
           )
@@ -626,6 +714,18 @@ export const adminRouter = createTRPCRouter({
         });
       }
 
+      const productImages = await ctx.db
+        .selectFrom("productImage")
+        .select(["url", "publicId"])
+        .where("productImage.productId", "=", input.id)
+        .execute();
+
+      await Promise.all(
+        productImages.map((img) =>
+          deleteCloudinaryImageByUrl(img.url ?? "", img.publicId ?? undefined)
+        )
+      );
+
       await ctx.db
         .deleteFrom("product")
         .where("product.id", "=", input.id)
@@ -641,6 +741,7 @@ export const adminRouter = createTRPCRouter({
         productId: z.string(),
         url: z.string(),
         alt: z.string().optional(),
+        publicId: z.string().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -658,6 +759,7 @@ export const adminRouter = createTRPCRouter({
           productId: input.productId,
           url: input.url,
           alt: input.alt ?? null,
+          publicId: input.publicId ?? null,
           position,
         })
         .returningAll()
@@ -670,6 +772,19 @@ export const adminRouter = createTRPCRouter({
   deleteProductImage: adminProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      const image = await ctx.db
+        .selectFrom("productImage")
+        .select(["url", "publicId"])
+        .where("productImage.id", "=", input.id)
+        .executeTakeFirst();
+
+      if (image?.url || image?.publicId) {
+        await deleteCloudinaryImageByUrl(
+          image?.url ?? "",
+          image?.publicId ?? undefined
+        );
+      }
+
       await ctx.db
         .deleteFrom("productImage")
         .where("productImage.id", "=", input.id)

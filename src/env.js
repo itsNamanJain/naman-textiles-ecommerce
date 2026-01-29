@@ -14,6 +14,9 @@ export const env = createEnv({
     AUTH_SECRET: z.string(),
     GOOGLE_CLIENT_ID: z.string().optional(),
     GOOGLE_CLIENT_SECRET: z.string().optional(),
+    CLOUDINARY_CLOUD_NAME: z.string().optional(),
+    CLOUDINARY_API_KEY: z.string().optional(),
+    CLOUDINARY_API_SECRET: z.string().optional(),
   },
 
   /**
@@ -37,6 +40,9 @@ export const env = createEnv({
     AUTH_SECRET: process.env.AUTH_SECRET,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+    CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
+    CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
+    CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
     NEXT_PUBLIC_GOOGLE_AUTH_ENABLED:
       process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED,
     NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME:

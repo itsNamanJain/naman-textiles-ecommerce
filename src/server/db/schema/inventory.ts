@@ -78,6 +78,7 @@ export const productImages = createTable(
       .notNull()
       .references(() => products.id, { onDelete: "cascade" }),
     url: varchar("url", { length: 500 }).notNull(),
+    publicId: varchar("public_id", { length: 255 }),
     alt: varchar("alt", { length: 255 }),
     position: integer("position").default(0).notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })
