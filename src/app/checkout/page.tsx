@@ -206,8 +206,8 @@ function CheckoutContent() {
 
   const shippingRate = Number(DEFAULT_SETTINGS.shippingBaseRate);
   const minOrderAmount = Number(DEFAULT_SETTINGS.orderMinAmount);
-  const codEnabled = DEFAULT_SETTINGS.codEnabled === "true";
-  const onlinePaymentEnabled = DEFAULT_SETTINGS.onlinePaymentEnabled === "true";
+  const codEnabled = DEFAULT_SETTINGS.codEnabled;
+  const onlinePaymentEnabled = DEFAULT_SETTINGS.onlinePaymentEnabled;
 
   const subtotal = items.reduce(
     (sum, item) => sum + item.price * item.quantity,

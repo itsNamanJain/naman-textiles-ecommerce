@@ -36,8 +36,8 @@ export const DEFAULT_SETTINGS = {
   shippingFreeThreshold: "1000",
   shippingBaseRate: "199",
   orderMinAmount: "500",
-  codEnabled: "true",
-  onlinePaymentEnabled: "false",
+  codEnabled: false,
+  onlinePaymentEnabled: false,
 } as const;
 
 export const MAX_METER_ORDER_QUANTITY = 100;
