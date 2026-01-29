@@ -38,11 +38,11 @@ const Toaster = ({ ...props }: ToasterProps) => {
         },
       }}
       icons={{
-        success: <CheckCircle2 className="size-4 text-success-1" />,
-        info: <Info className="size-4 text-info-1" />,
-        warning: <AlertTriangle className="size-4 text-brand-3" />,
-        error: <XCircle className="size-4 text-danger-4" />,
-        loading: <Loader2 className="size-4 animate-spin text-brand-1" />,
+        success: <CheckCircle2 className="text-success-1 size-4" />,
+        info: <Info className="text-info-1 size-4" />,
+        warning: <AlertTriangle className="text-brand-3 size-4" />,
+        error: <XCircle className="text-danger-4 size-4" />,
+        loading: <Loader2 className="text-brand-1 size-4 animate-spin" />,
       }}
       expand
       closeButton

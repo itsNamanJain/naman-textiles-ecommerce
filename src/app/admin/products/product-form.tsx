@@ -33,25 +33,10 @@ const productSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   slug: z.string().min(2, "Slug must be at least 2 characters"),
   description: z.string().optional(),
-  shortDescription: z.string().optional(),
   price: z.coerce.number().positive("Price must be positive"),
   comparePrice: z.coerce.number().optional(),
-  costPrice: z.coerce.number().optional(),
   sellingMode: z.enum(["meter", "piece"]),
-  unit: z.enum(["meter", "yard", "piece", "set", "kg"]),
   minOrderQuantity: z.coerce.number().positive(),
-  quantityStep: z.coerce.number().positive(),
-  maxOrderQuantity: z.coerce.number().optional(),
-  sku: z.string().optional(),
-  fabricType: z.string().optional(),
-  material: z.string().optional(),
-  width: z.string().optional(),
-  weight: z.string().optional(),
-  color: z.string().optional(),
-  pattern: z.string().optional(),
-  composition: z.string().optional(),
-  stockQuantity: z.coerce.number(),
-  lowStockThreshold: z.coerce.number(),
   categoryId: z.string().min(1, "Category is required"),
   isActive: z.boolean(),
   isFeatured: z.boolean(),
@@ -64,25 +49,10 @@ type ProductData = {
   name: string;
   slug: string;
   description: string | null;
-  shortDescription: string | null;
   price: string;
   comparePrice: string | null;
-  costPrice: string | null;
   sellingMode: "meter" | "piece";
-  unit: "meter" | "yard" | "piece" | "set" | "kg";
   minOrderQuantity: string;
-  quantityStep: string;
-  maxOrderQuantity: string | null;
-  sku: string | null;
-  fabricType: string | null;
-  material: string | null;
-  width: string | null;
-  weight: string | null;
-  color: string | null;
-  pattern: string | null;
-  composition: string | null;
-  stockQuantity: string;
-  lowStockThreshold: string;
   categoryId: string;
   isActive: boolean;
   isFeatured: boolean;
@@ -145,11 +115,7 @@ export function ProductForm({
     resolver: zodResolver(productSchema),
     defaultValues: {
       sellingMode: "meter",
-      unit: "meter",
       minOrderQuantity: 1,
-      quantityStep: 0.5,
-      stockQuantity: 0,
-      lowStockThreshold: 10,
       isActive: true,
       isFeatured: false,
     },
@@ -165,30 +131,12 @@ export function ProductForm({
       name: isDuplicate ? `${product.name} (Copy)` : product.name,
       slug: isDuplicate ? "" : product.slug,
       description: product.description ?? "",
-      shortDescription: product.shortDescription ?? "",
       price: Number(product.price),
       comparePrice: product.comparePrice
         ? Number(product.comparePrice)
         : undefined,
-      costPrice: product.costPrice ? Number(product.costPrice) : undefined,
       sellingMode: product.sellingMode,
-      unit: product.unit,
       minOrderQuantity: Number(product.minOrderQuantity),
-      quantityStep: Number(product.quantityStep),
-      maxOrderQuantity: product.maxOrderQuantity
-        ? Number(product.maxOrderQuantity)
-        : undefined,
-      sku: isDuplicate ? "" : (product.sku ?? ""),
-      fabricType: product.fabricType ?? "",
-      material: product.material ?? "",
-      width: product.width ?? "",
-      weight: product.weight ?? "",
-      color: product.color ?? "",
-      pattern: product.pattern ?? "",
-      composition: product.composition ?? "",
-      // For duplicate: reset stock to 0
-      stockQuantity: isDuplicate ? 0 : Number(product.stockQuantity),
-      lowStockThreshold: Number(product.lowStockThreshold),
       categoryId: product.categoryId,
       isActive: isDuplicate ? true : product.isActive,
       isFeatured: isDuplicate ? false : product.isFeatured,
@@ -213,25 +161,10 @@ export function ProductForm({
         name: "",
         slug: "",
         description: "",
-        shortDescription: "",
         price: undefined,
         comparePrice: undefined,
-        costPrice: undefined,
         sellingMode: "meter",
-        unit: "meter",
         minOrderQuantity: 1,
-        quantityStep: 0.5,
-        maxOrderQuantity: undefined,
-        sku: "",
-        fabricType: "",
-        material: "",
-        width: "",
-        weight: "",
-        color: "",
-        pattern: "",
-        composition: "",
-        stockQuantity: 0,
-        lowStockThreshold: 10,
         categoryId: "",
         isActive: true,
         isFeatured: false,
@@ -259,17 +192,12 @@ export function ProductForm({
         id: editProduct.id,
         ...data,
         comparePrice: cleanOptionalNumber(data.comparePrice, true),
-        costPrice: cleanOptionalNumber(data.costPrice, true),
-        maxOrderQuantity: cleanOptionalNumber(data.maxOrderQuantity, true),
       });
     } else {
       createMutation.mutate({
         ...data,
         comparePrice:
           cleanOptionalNumber(data.comparePrice, false) ?? undefined,
-        costPrice: cleanOptionalNumber(data.costPrice, false) ?? undefined,
-        maxOrderQuantity:
-          cleanOptionalNumber(data.maxOrderQuantity, false) ?? undefined,
         images: images.length > 0 ? images : undefined,
       });
     }
@@ -365,24 +293,14 @@ export function ProductForm({
               </div>
 
               {!isQuickAdd && (
-                <>
-                  <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="shortDescription">Short Description</Label>
-                    <Input
-                      id="shortDescription"
-                      {...register("shortDescription")}
-                    />
-                  </div>
-
-                  <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="description">Full Description</Label>
-                    <Textarea
-                      id="description"
-                      {...register("description")}
-                      rows={4}
-                    />
-                  </div>
-                </>
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea
+                    id="description"
+                    {...register("description")}
+                    rows={4}
+                  />
+                </div>
               )}
 
               <div className="space-y-2">
@@ -408,13 +326,6 @@ export function ProductForm({
                   </p>
                 )}
               </div>
-
-              {!isQuickAdd && (
-                <div className="space-y-2">
-                  <Label htmlFor="sku">SKU</Label>
-                  <Input id="sku" {...register("sku")} />
-                </div>
-              )}
             </CardContent>
           </Card>
 
@@ -463,18 +374,6 @@ export function ProductForm({
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="costPrice">Cost Price (Optional)</Label>
-                    <Input
-                      id="costPrice"
-                      type="number"
-                      step="0.01"
-                      placeholder="For profit calculation"
-                      {...register("costPrice")}
-                    />
-                    <p className="text-muted-2 text-xs">Your purchase cost</p>
-                  </div>
-
-                  <div className="space-y-2">
                     <Label htmlFor="sellingMode">Selling Mode</Label>
                     <Select
                       value={watch("sellingMode")}
@@ -494,153 +393,14 @@ export function ProductForm({
                 </>
               )}
 
-              <div className="space-y-2">
-                <Label htmlFor="unit">Unit</Label>
-                <Select
-                  value={watch("unit")}
-                  onValueChange={(
-                    value: "meter" | "yard" | "piece" | "set" | "kg"
-                  ) => setValue("unit", value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="meter">Meter</SelectItem>
-                    <SelectItem value="yard">Yard</SelectItem>
-                    <SelectItem value="piece">Piece</SelectItem>
-                    <SelectItem value="set">Set</SelectItem>
-                    <SelectItem value="kg">Kilogram</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
               {!isQuickAdd && (
                 <div className="space-y-2">
                   <Label htmlFor="minOrderQuantity">Min Order Qty</Label>
                   <Input
                     id="minOrderQuantity"
                     type="number"
-                    step="0.5"
+                    step="1"
                     {...register("minOrderQuantity")}
-                  />
-                </div>
-              )}
-
-              {!isQuickAdd && (
-                <>
-                  <div className="space-y-2">
-                    <Label htmlFor="quantityStep">Quantity Step</Label>
-                    <Input
-                      id="quantityStep"
-                      type="number"
-                      step="0.1"
-                      {...register("quantityStep")}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="maxOrderQuantity">
-                      Max Order Qty (Optional)
-                    </Label>
-                    <Input
-                      id="maxOrderQuantity"
-                      type="number"
-                      step="0.5"
-                      placeholder="No limit"
-                      {...register("maxOrderQuantity")}
-                    />
-                  </div>
-                </>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Fabric Details - Hidden in Quick Add */}
-          {!isQuickAdd && (
-            <Card className="border border-black/5 bg-white/80">
-              <CardHeader>
-                <CardTitle className="text-ink-1 text-lg">
-                  Fabric Details
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="grid gap-4 md:grid-cols-3">
-                <div className="space-y-2">
-                  <Label htmlFor="fabricType">Fabric Type</Label>
-                  <Input id="fabricType" {...register("fabricType")} />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="material">Material</Label>
-                  <Input id="material" {...register("material")} />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="composition">Composition</Label>
-                  <Input
-                    id="composition"
-                    {...register("composition")}
-                    placeholder="e.g., 100% Cotton"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="width">Width</Label>
-                  <Input
-                    id="width"
-                    {...register("width")}
-                    placeholder="e.g., 44 inches"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="weight">Weight</Label>
-                  <Input
-                    id="weight"
-                    {...register("weight")}
-                    placeholder="e.g., 150 GSM"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="color">Color</Label>
-                  <Input id="color" {...register("color")} />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="pattern">Pattern</Label>
-                  <Input id="pattern" {...register("pattern")} />
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Inventory - Simplified in Quick Add */}
-          <Card className="border border-black/5 bg-white/80">
-            <CardHeader>
-              <CardTitle className="text-ink-1 text-lg">Inventory</CardTitle>
-            </CardHeader>
-            <CardContent
-              className={`grid gap-4 ${isQuickAdd ? "md:grid-cols-1" : "md:grid-cols-2"}`}
-            >
-              <div className="space-y-2">
-                <Label htmlFor="stockQuantity">Stock Quantity</Label>
-                <Input
-                  id="stockQuantity"
-                  type="number"
-                  step="0.5"
-                  placeholder="e.g., 100"
-                  {...register("stockQuantity")}
-                />
-              </div>
-
-              {!isQuickAdd && (
-                <div className="space-y-2">
-                  <Label htmlFor="lowStockThreshold">Low Stock Threshold</Label>
-                  <Input
-                    id="lowStockThreshold"
-                    type="number"
-                    {...register("lowStockThreshold")}
                   />
                 </div>
               )}

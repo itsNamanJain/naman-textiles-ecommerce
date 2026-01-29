@@ -76,9 +76,6 @@ export const productRouter = createTRPCRouter({
           eb.or([
             eb("product.name", "ilike", `%${search}%`),
             eb("product.description", "ilike", `%${search}%`),
-            eb("product.fabricType", "ilike", `%${search}%`),
-            eb("product.material", "ilike", `%${search}%`),
-            eb("product.color", "ilike", `%${search}%`),
           ])
         );
       }
@@ -301,10 +298,6 @@ export const productRouter = createTRPCRouter({
           eb.or([
             eb("product.name", "ilike", `%${input.query}%`),
             eb("product.description", "ilike", `%${input.query}%`),
-            eb("product.fabricType", "ilike", `%${input.query}%`),
-            eb("product.material", "ilike", `%${input.query}%`),
-            eb("product.color", "ilike", `%${input.query}%`),
-            eb("product.sku", "ilike", `%${input.query}%`),
           ])
         )
         .orderBy("product.createdAt", "desc")

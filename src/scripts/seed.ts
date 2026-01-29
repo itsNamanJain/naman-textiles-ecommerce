@@ -15,47 +15,31 @@ const sampleCategories = [
     name: "Cotton Fabrics",
     slug: "cotton-fabrics",
     description: "Premium quality cotton fabrics for all occasions",
-    imageUrl: "https://images.unsplash.com/photo-1558171813-4c088753af8f?w=800",
-    displayOrder: 1,
   },
   {
     name: "Silk Fabrics",
     slug: "silk-fabrics",
     description: "Luxurious silk fabrics for special occasions",
-    imageUrl:
-      "https://images.unsplash.com/photo-1528459105426-b9548367069b?w=800",
-    displayOrder: 2,
   },
   {
     name: "Linen Fabrics",
     slug: "linen-fabrics",
     description: "Breathable linen fabrics perfect for summer",
-    imageUrl:
-      "https://images.unsplash.com/photo-1604176354204-9268737828e4?w=800",
-    displayOrder: 3,
   },
   {
     name: "Printed Fabrics",
     slug: "printed-fabrics",
     description: "Beautiful printed fabrics with unique patterns",
-    imageUrl: "https://images.unsplash.com/photo-1558171813-4c088753af8f?w=800",
-    displayOrder: 4,
   },
   {
     name: "Embroidered Fabrics",
     slug: "embroidered-fabrics",
     description: "Intricate embroidered fabrics for premium garments",
-    imageUrl:
-      "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=800",
-    displayOrder: 5,
   },
   {
     name: "Suit Pieces",
     slug: "suit-pieces",
     description: "Complete suit piece sets for traditional wear",
-    imageUrl:
-      "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800",
-    displayOrder: 6,
   },
 ];
 
@@ -65,7 +49,6 @@ const sampleProducts = [
     slug: "premium-pure-cotton-fabric-white",
     description:
       "High-quality pure cotton fabric, perfect for summer wear. Soft, breathable, and comfortable. Ideal for shirts, kurtas, and dresses.",
-    shortDescription: "Pure cotton fabric - soft and breathable",
     price: "299",
     compareAtPrice: "399",
     categorySlug: "cotton-fabrics",
@@ -93,7 +76,6 @@ const sampleProducts = [
     slug: "banarasi-silk-fabric-royal-blue",
     description:
       "Authentic Banarasi silk fabric with traditional weaving. Perfect for sarees, lehengas, and bridal wear. Rich texture and lustrous finish.",
-    shortDescription: "Authentic Banarasi silk with traditional weaving",
     price: "1299",
     compareAtPrice: "1599",
     categorySlug: "silk-fabrics",
@@ -120,7 +102,6 @@ const sampleProducts = [
     slug: "pure-linen-fabric-natural-beige",
     description:
       "Premium quality pure linen fabric. Lightweight, breathable, and perfect for summer clothing. Gets softer with every wash.",
-    shortDescription: "Premium pure linen - perfect for summer",
     price: "599",
     compareAtPrice: "799",
     categorySlug: "linen-fabrics",
@@ -147,7 +128,6 @@ const sampleProducts = [
     slug: "floral-print-cotton-pink-rose",
     description:
       "Beautiful floral printed cotton fabric with elegant rose patterns. Perfect for dresses, skirts, and summer wear.",
-    shortDescription: "Elegant floral print on soft cotton",
     price: "349",
     compareAtPrice: "449",
     categorySlug: "printed-fabrics",
@@ -172,7 +152,6 @@ const sampleProducts = [
     slug: "chikankari-embroidered-fabric-white",
     description:
       "Traditional Lucknowi Chikankari embroidered fabric. Handcrafted with intricate patterns. Perfect for kurtas and ethnic wear.",
-    shortDescription: "Traditional Lucknowi Chikankari embroidery",
     price: "899",
     compareAtPrice: "1199",
     categorySlug: "embroidered-fabrics",
@@ -199,7 +178,6 @@ const sampleProducts = [
     slug: "unstitched-suit-piece-set-maroon-gold",
     description:
       "Complete unstitched suit piece set with kurta fabric, bottom fabric, and dupatta. Perfect for festivals and special occasions.",
-    shortDescription: "Complete 3-piece suit set",
     price: "2499",
     compareAtPrice: "3499",
     categorySlug: "suit-pieces",
@@ -226,7 +204,6 @@ const sampleProducts = [
     slug: "cotton-cambric-fabric-sky-blue",
     description:
       "Fine quality cotton cambric fabric. Lightweight and soft, perfect for formal shirts and summer wear.",
-    shortDescription: "Fine cotton cambric for formal wear",
     price: "249",
     compareAtPrice: "349",
     categorySlug: "cotton-fabrics",
@@ -253,7 +230,6 @@ const sampleProducts = [
     slug: "raw-silk-fabric-mustard-yellow",
     description:
       "Natural raw silk fabric with beautiful texture. Perfect for ethnic wear, blouses, and festive clothing.",
-    shortDescription: "Natural raw silk with beautiful texture",
     price: "799",
     compareAtPrice: "999",
     categorySlug: "silk-fabrics",
@@ -305,7 +281,6 @@ async function seed() {
         email: "admin@namantextiles.com",
         password: hashedPassword,
         role: "admin",
-        emailVerified: new Date(),
       });
       console.log(
         "✅ Admin user created (admin@namantextiles.com / admin123)\n"

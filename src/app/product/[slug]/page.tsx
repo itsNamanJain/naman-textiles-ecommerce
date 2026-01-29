@@ -22,8 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${product.name} - Naman Textiles`,
     description:
-      product.metaDescription ??
-      product.shortDescription ??
+      product.description ??
       `Buy ${product.name} at best price. Quality fabric from Naman Textiles, Gandhi Nagar, Delhi.`,
     openGraph: {
       images: product.images[0]?.url ? [product.images[0].url] : [],

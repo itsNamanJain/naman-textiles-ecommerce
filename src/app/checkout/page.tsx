@@ -205,11 +205,8 @@ function CheckoutContent() {
   const minOrderAmount = Number(
     settings?.orderMinAmount ?? DEFAULT_SETTINGS.orderMinAmount
   );
-  const codEnabled =
-    (settings?.codEnabled ?? DEFAULT_SETTINGS.codEnabled) === "true";
-  const onlinePaymentEnabled =
-    (settings?.onlinePaymentEnabled ??
-      DEFAULT_SETTINGS.onlinePaymentEnabled) === "true";
+  const codEnabled = true;
+  const onlinePaymentEnabled = false;
 
   const subtotal = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -250,12 +247,8 @@ function CheckoutContent() {
 
   // Set default payment method based on what's enabled
   useEffect(() => {
-    if (codEnabled) {
-      form.setValue("paymentMethod", "cod");
-    } else if (onlinePaymentEnabled) {
-      form.setValue("paymentMethod", "online");
-    }
-  }, [codEnabled, onlinePaymentEnabled, form]);
+    form.setValue("paymentMethod", "cod");
+  }, [form]);
 
   // When saved addresses load, select the default one
   useEffect(() => {
@@ -402,9 +395,7 @@ function CheckoutContent() {
     createOrderMutation.mutate({
       items: items.map((item) => ({
         productId: item.productId,
-        productName: item.name,
         quantity: item.quantity,
-        unit: item.unit,
       })),
       shippingAddress: {
         name: data.name,
@@ -513,7 +504,7 @@ function CheckoutContent() {
                   </span>
                 </div>
                 {serverTotals.discount > 0 && (
-                  <div className="flex justify-between text-success-1">
+                  <div className="text-success-1 flex justify-between">
                     <span>Discount</span>
                     <span>-{formatPrice(serverTotals.discount)}</span>
                   </div>
@@ -561,11 +552,11 @@ function CheckoutContent() {
             >
               <Home className="h-4 w-4" />
             </Link>
-            <ChevronRight className="h-4 w-4 text-muted-3" />
+            <ChevronRight className="text-muted-3 h-4 w-4" />
             <Link href="/cart" className="text-muted-2 hover:text-brand-1">
               Cart
             </Link>
-            <ChevronRight className="h-4 w-4 text-muted-3" />
+            <ChevronRight className="text-muted-3 h-4 w-4" />
             <span className="text-ink-1 font-medium">Checkout</span>
           </nav>
         </div>
@@ -698,7 +689,7 @@ function CheckoutContent() {
                                 <FormLabel>Phone Number</FormLabel>
                                 <FormControl>
                                   <div className="relative">
-                                    <span className="absolute top-1/2 left-3 -translate-y-1/2 text-muted-2">
+                                    <span className="text-muted-2 absolute top-1/2 left-3 -translate-y-1/2">
                                       +91
                                     </span>
                                     <Input
@@ -918,25 +909,6 @@ function CheckoutContent() {
                                     </Label>
                                   </div>
                                 )}
-                                {onlinePaymentEnabled && (
-                                  <div className="flex cursor-pointer items-center space-x-3 rounded-2xl border border-black/10 bg-white/80 p-4 transition-colors hover:bg-white">
-                                    <RadioGroupItem
-                                      value="online"
-                                      id="online"
-                                    />
-                                    <Label
-                                      htmlFor="online"
-                                      className="flex-1 cursor-pointer"
-                                    >
-                                      <div className="text-ink-1 font-medium">
-                                        Online Payment
-                                      </div>
-                                      <div className="text-muted-1 text-sm">
-                                        UPI, Cards, Net Banking
-                                      </div>
-                                    </Label>
-                                  </div>
-                                )}
                               </RadioGroup>
                             </FormControl>
                             <FormMessage />
@@ -1010,9 +982,19 @@ function CheckoutContent() {
                                 {item.name}
                               </p>
                               <p className="text-muted-2 text-xs">
-                                {formatQuantity(item.quantity, item.unit)}{" "}
-                                {formatUnit(item.unit, item.quantity)} x{" "}
-                                {formatPrice(item.price)}
+                                {formatQuantity(
+                                  item.quantity,
+                                  item.sellingMode === "piece"
+                                    ? "piece"
+                                    : "meter"
+                                )}{" "}
+                                {formatUnit(
+                                  item.sellingMode === "piece"
+                                    ? "piece"
+                                    : "meter",
+                                  item.quantity
+                                )}{" "}
+                                x {formatPrice(item.price)}
                               </p>
                               <p className="text-ink-1 text-sm font-medium">
                                 {formatPrice(item.price * item.quantity)}
@@ -1029,13 +1011,13 @@ function CheckoutContent() {
                         {appliedCoupon ? (
                           <div className="bg-success-2 flex items-center justify-between rounded-2xl p-3">
                             <div className="flex items-center gap-2">
-                              <Tag className="h-4 w-4 text-success-1" />
+                              <Tag className="text-success-1 h-4 w-4" />
                               <div>
-                                <p className="text-sm font-medium text-success-1">
+                                <p className="text-success-1 text-sm font-medium">
                                   {appliedCoupon.code}
                                 </p>
                                 {appliedCoupon.description && (
-                                  <p className="text-xs text-success-1">
+                                  <p className="text-success-1 text-xs">
                                     {appliedCoupon.description}
                                   </p>
                                 )}
@@ -1046,7 +1028,7 @@ function CheckoutContent() {
                               variant="ghost"
                               size="sm"
                               onClick={handleRemoveCoupon}
-                              className="h-8 w-8 p-0 text-success-1 hover:bg-success-2 hover:text-success-1"
+                              className="text-success-1 hover:bg-success-2 hover:text-success-1 h-8 w-8 p-0"
                             >
                               <X className="h-4 w-4" />
                             </Button>

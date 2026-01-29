@@ -64,7 +64,7 @@ export function RelatedProducts({
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center">
-                      <ImageIcon className="h-12 w-12 text-muted-3" />
+                      <ImageIcon className="text-muted-3 h-12 w-12" />
                     </div>
                   )}
                   {discount > 0 && (
@@ -89,7 +89,7 @@ export function RelatedProducts({
                       {formatPrice(Number(product.price))}
                     </span>
                     <span className="text-muted-2 text-xs">
-                      /{product.unit}
+                      /{product.sellingMode === "piece" ? "piece" : "meter"}
                     </span>
                     {product.comparePrice && (
                       <span className="text-muted-2 text-sm line-through">

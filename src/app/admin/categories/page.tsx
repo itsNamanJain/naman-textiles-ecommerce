@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import {
   FolderTree,
   Plus,
@@ -9,15 +8,11 @@ import {
   Trash2,
   Loader2,
   RefreshCw,
-  ImageIcon,
-  ToggleLeft,
-  ToggleRight,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
@@ -51,13 +46,11 @@ export default function AdminCategoriesPage() {
     name: string;
     slug: string;
     description: string;
-    image: string;
   } | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
     description: "",
-    image: "",
   });
 
   const utils = api.useUtils();
@@ -104,7 +97,7 @@ export default function AdminCategoriesPage() {
   });
 
   const resetForm = () => {
-    setFormData({ name: "", slug: "", description: "", image: "" });
+    setFormData({ name: "", slug: "", description: "" });
   };
 
   const handleNameChange = (name: string) => {
@@ -137,13 +130,11 @@ export default function AdminCategoriesPage() {
       name: category.name,
       slug: category.slug,
       description: category.description ?? "",
-      image: category.image ?? "",
     });
     setFormData({
       name: category.name,
       slug: category.slug,
       description: category.description ?? "",
-      image: category.image ?? "",
     });
     setIsDialogOpen(true);
   };
@@ -239,20 +230,6 @@ export default function AdminCategoriesPage() {
                       }
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="image">Image URL</Label>
-                    <Input
-                      id="image"
-                      placeholder="https://example.com/image.jpg"
-                      value={formData.image}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          image: e.target.value,
-                        }))
-                      }
-                    />
-                  </div>
                 </div>
                 <DialogFooter>
                   <Button
@@ -304,33 +281,6 @@ export default function AdminCategoriesPage() {
                 {categories.map((category) => (
                   <StaggerItem key={category.id}>
                     <div className="rounded-2xl border border-black/10 bg-white/90 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-                      {/* Category Image */}
-                      <div className="bg-paper-2 relative mb-3 aspect-video overflow-hidden rounded-2xl">
-                        {category.image ? (
-                          <Image
-                            src={category.image}
-                            alt={category.name}
-                            fill
-                            className="object-cover"
-                            sizes="(max-width: 768px) 100vw, 33vw"
-                          />
-                        ) : (
-                          <div className="flex h-full items-center justify-center">
-                            <ImageIcon className="text-muted-3 h-12 w-12" />
-                          </div>
-                        )}
-                        {!category.isActive && (
-                          <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-                            <Badge
-                              variant="secondary"
-                              className="bg-danger-2 text-danger-4"
-                            >
-                              Inactive
-                            </Badge>
-                          </div>
-                        )}
-                      </div>
-
                       {/* Category Info */}
                       <div className="space-y-2">
                         <div className="flex items-start justify-between">
@@ -342,11 +292,6 @@ export default function AdminCategoriesPage() {
                               /{category.slug}
                             </p>
                           </div>
-                          {category.isActive ? (
-                            <ToggleRight className="text-success-1 h-5 w-5" />
-                          ) : (
-                            <ToggleLeft className="text-muted-3 h-5 w-5" />
-                          )}
                         </div>
 
                         {category.description && (

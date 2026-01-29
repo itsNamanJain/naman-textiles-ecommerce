@@ -7,12 +7,8 @@ export type CartItem = {
   image?: string;
   price: number;
   quantity: number;
-  unit: string;
   sellingMode: "meter" | "piece";
   minOrderQuantity: number;
-  quantityStep: number;
-  maxOrderQuantity?: number;
-  stockQuantity: number;
 };
 
 export type CartState = {
@@ -72,12 +68,7 @@ export const cartStore = createStore({
         newItems = context.items.map((item, index) => {
           if (index === existingIndex) {
             const newQuantity = item.quantity + event.quantity;
-            // Respect max order quantity if set
-            const maxQty = item.maxOrderQuantity ?? Infinity;
-            return {
-              ...item,
-              quantity: Math.min(newQuantity, maxQty, item.stockQuantity),
-            };
+            return { ...item, quantity: newQuantity };
           }
           return item;
         });
@@ -102,11 +93,7 @@ export const cartStore = createStore({
         if (item.productId === event.productId) {
           // Validate quantity against constraints
           const minQty = item.minOrderQuantity;
-          const maxQty = Math.min(
-            item.maxOrderQuantity ?? Infinity,
-            item.stockQuantity
-          );
-          const quantity = Math.max(minQty, Math.min(event.quantity, maxQty));
+          const quantity = Math.max(minQty, event.quantity);
           return { ...item, quantity };
         }
         return item;
@@ -120,12 +107,8 @@ export const cartStore = createStore({
     incrementQuantity: (context, event: { productId: string }) => {
       const newItems = context.items.map((item) => {
         if (item.productId === event.productId) {
-          const newQuantity = item.quantity + item.quantityStep;
-          const maxQty = Math.min(
-            item.maxOrderQuantity ?? Infinity,
-            item.stockQuantity
-          );
-          return { ...item, quantity: Math.min(newQuantity, maxQty) };
+          const newQuantity = item.quantity + 1;
+          return { ...item, quantity: newQuantity };
         }
         return item;
       });
@@ -139,7 +122,7 @@ export const cartStore = createStore({
       const newItems = context.items
         .map((item) => {
           if (item.productId === event.productId) {
-            const newQuantity = item.quantity - item.quantityStep;
+            const newQuantity = item.quantity - 1;
             // Remove item if quantity goes below minimum
             if (newQuantity < item.minOrderQuantity) {
               return null;

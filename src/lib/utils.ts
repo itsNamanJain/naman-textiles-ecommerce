@@ -14,7 +14,10 @@ export function formatPrice(price: number | string): string {
   }).format(numPrice);
 }
 
-export function formatUnit(unit: string, quantity?: number | string): string {
+export function formatUnit(
+  unit: string = "meter",
+  quantity?: number | string
+): string {
   const unitLabels: Record<string, { singular: string; plural: string }> = {
     meter: { singular: "meter", plural: "meters" },
     piece: { singular: "piece", plural: "pieces" },
@@ -49,7 +52,7 @@ export function generateOrderNumber(): string {
 
 export function formatQuantity(
   quantity: number | string,
-  unit?: string
+  unit: string = "meter"
 ): string {
   const qty = typeof quantity === "string" ? parseFloat(quantity) : quantity;
 

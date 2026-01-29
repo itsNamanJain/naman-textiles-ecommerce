@@ -30,11 +30,7 @@ type ProductCardProps = {
     price: string;
     comparePrice: string | null;
     sellingMode: "meter" | "piece";
-    unit: string;
     minOrderQuantity: string;
-    quantityStep: string;
-    maxOrderQuantity: string | null;
-    stockQuantity: string;
     isFeatured: boolean;
     images: { url: string; alt: string | null }[];
     category: { name: string; slug: string } | null;
@@ -86,16 +82,12 @@ export function ProductCard({ product, className }: ProductCardProps) {
     comparePrice && comparePrice > price
       ? Math.round(((comparePrice - price) / comparePrice) * 100)
       : null;
-  const isOutOfStock = parseFloat(product.stockQuantity) <= 0;
   const mainImage = product.images[0]?.url;
   const hoverImage = product.images[1]?.url ?? mainImage;
 
   const minQty = parseFloat(product.minOrderQuantity);
-  const step = parseFloat(product.quantityStep);
-  const maxQty = product.maxOrderQuantity
-    ? parseFloat(product.maxOrderQuantity)
-    : parseFloat(product.stockQuantity);
-  const stockQty = parseFloat(product.stockQuantity);
+  const step = 1;
+  const maxQty = Infinity;
 
   const handleToggleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -118,12 +110,8 @@ export function ProductCard({ product, className }: ProductCardProps) {
         slug: product.slug,
         image: product.images[0]?.url,
         price: price,
-        unit: product.unit,
         sellingMode: product.sellingMode,
         minOrderQuantity: minQty,
-        quantityStep: step,
-        maxOrderQuantity: maxQty,
-        stockQuantity: stockQty,
       },
       quantity: minQty,
     });
@@ -133,7 +121,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
   const handleIncrement = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (quantityInCart + step <= Math.min(maxQty, stockQty)) {
+    if (quantityInCart + step <= maxQty) {
       cartStore.send({ type: "incrementQuantity", productId: product.id });
     }
   };
@@ -151,7 +139,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
     toast.success("Removed from cart");
   };
 
-  const canIncrement = quantityInCart + step <= Math.min(maxQty, stockQty);
+  const canIncrement = quantityInCart + step <= maxQty;
   const canDecrement = quantityInCart - step >= minQty;
 
   return (
@@ -200,11 +188,6 @@ export function ProductCard({ product, className }: ProductCardProps) {
               Featured
             </Badge>
           )}
-          {isOutOfStock && (
-            <Badge className="bg-ink-1 rounded px-1.5 py-0.5 text-[10px] font-semibold text-white">
-              Out of Stock
-            </Badge>
-          )}
         </div>
 
         {/* Wishlist */}
@@ -222,68 +205,66 @@ export function ProductCard({ product, className }: ProductCardProps) {
         </button>
 
         {/* Cart Controls */}
-        {!isOutOfStock && (
-          <div
-            className={cn(
-              "absolute inset-x-0 bottom-0 p-1 transition-all duration-200",
-              isInCart
-                ? "translate-y-0"
-                : "translate-y-full group-hover:translate-y-0"
-            )}
-          >
-            {isInCart ? (
-              <div className="flex items-center justify-center gap-1">
+        <div
+          className={cn(
+            "absolute inset-x-0 bottom-0 p-1 transition-all duration-200",
+            isInCart
+              ? "translate-y-0"
+              : "translate-y-full group-hover:translate-y-0"
+          )}
+        >
+          {isInCart ? (
+            <div className="flex items-center justify-center gap-1">
+              <button
+                className="text-danger-4 hover:bg-danger-1 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow transition-all active:scale-95"
+                onClick={handleRemove}
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+              <div className="flex items-center overflow-hidden rounded-full bg-white shadow">
                 <button
-                  className="text-danger-4 hover:bg-danger-1 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow transition-all active:scale-95"
-                  onClick={handleRemove}
+                  className={cn(
+                    "flex h-8 w-8 items-center justify-center transition-all active:scale-95",
+                    canDecrement
+                      ? "text-muted-1 hover:bg-paper-1"
+                      : "text-muted-3 cursor-not-allowed"
+                  )}
+                  onClick={handleDecrement}
+                  disabled={!canDecrement}
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Minus className="h-3.5 w-3.5" strokeWidth={2.5} />
                 </button>
-                <div className="flex items-center overflow-hidden rounded-full bg-white shadow">
-                  <button
-                    className={cn(
-                      "flex h-8 w-8 items-center justify-center transition-all active:scale-95",
-                      canDecrement
-                        ? "text-muted-1 hover:bg-paper-1"
-                        : "text-muted-3 cursor-not-allowed"
-                    )}
-                    onClick={handleDecrement}
-                    disabled={!canDecrement}
-                  >
-                    <Minus className="h-3.5 w-3.5" strokeWidth={2.5} />
-                  </button>
-                  <div className="bg-paper-1 flex h-8 min-w-[32px] items-center justify-center px-1">
-                    <span className="text-ink-1 text-sm font-bold">
-                      {quantityInCart}
-                    </span>
-                  </div>
-                  <button
-                    className={cn(
-                      "flex h-8 w-8 items-center justify-center transition-all active:scale-95",
-                      canIncrement
-                        ? "text-muted-1 hover:bg-paper-1"
-                        : "text-muted-3 cursor-not-allowed"
-                    )}
-                    onClick={handleIncrement}
-                    disabled={!canIncrement}
-                  >
-                    <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />
-                  </button>
+                <div className="bg-paper-1 flex h-8 min-w-[32px] items-center justify-center px-1">
+                  <span className="text-ink-1 text-sm font-bold">
+                    {quantityInCart}
+                  </span>
                 </div>
-              </div>
-            ) : (
-              <div className="flex justify-center">
-                <Button
-                  className="bg-brand-1 hover:bg-brand-2 h-8 rounded-full px-3 text-xs font-semibold shadow active:scale-[0.98]"
-                  onClick={handleAddToCart}
+                <button
+                  className={cn(
+                    "flex h-8 w-8 items-center justify-center transition-all active:scale-95",
+                    canIncrement
+                      ? "text-muted-1 hover:bg-paper-1"
+                      : "text-muted-3 cursor-not-allowed"
+                  )}
+                  onClick={handleIncrement}
+                  disabled={!canIncrement}
                 >
-                  <ShoppingCart className="mr-1.5 h-3.5 w-3.5" />
-                  Add to Cart
-                </Button>
+                  <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />
+                </button>
               </div>
-            )}
-          </div>
-        )}
+            </div>
+          ) : (
+            <div className="flex justify-center">
+              <Button
+                className="bg-brand-1 hover:bg-brand-2 h-8 rounded-full px-3 text-xs font-semibold shadow active:scale-[0.98]"
+                onClick={handleAddToCart}
+              >
+                <ShoppingCart className="mr-1.5 h-3.5 w-3.5" />
+                Add to Cart
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Info */}
@@ -306,7 +287,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
             {formatPrice(price)}
           </span>
           <span className="text-muted-2 text-[10px]">
-            /{formatUnit(product.unit)}
+            /{formatUnit(product.sellingMode === "piece" ? "piece" : "meter")}
           </span>
           {comparePrice && comparePrice > price && (
             <span className="text-muted-2 text-[10px] line-through">

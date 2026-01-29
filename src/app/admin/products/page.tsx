@@ -15,7 +15,6 @@ import {
   ToggleLeft,
   ToggleRight,
   ImageIcon,
-  PackagePlus,
   Check,
   X,
   Copy,
@@ -56,12 +55,6 @@ export default function AdminProductsPage() {
     null
   );
   const [isQuickAdd, setIsQuickAdd] = useState(false);
-  const [stockEditProduct, setStockEditProduct] = useState<{
-    id: string;
-    name: string;
-    currentStock: number;
-  } | null>(null);
-  const [newStockValue, setNewStockValue] = useState("");
 
   const utils = api.useUtils();
 
@@ -84,56 +77,16 @@ export default function AdminProductsPage() {
     },
   });
 
-  const updateStockMutation = api.admin.updateStock.useMutation({
-    onSuccess: () => {
-      toast.success("Stock updated successfully");
-      utils.admin.getProducts.invalidate();
-      setStockEditProduct(null);
-      setNewStockValue("");
-    },
-    onError: (error) => {
-      toast.error(error.message || "Failed to update stock");
-    },
-  });
-
   const handleToggleStatus = (productId: string) => {
     toggleStatusMutation.mutate({ productId });
-  };
-
-  const handleOpenStockEdit = (product: {
-    id: string;
-    name: string;
-    stockQuantity: string;
-  }) => {
-    setStockEditProduct({
-      id: product.id,
-      name: product.name,
-      currentStock: Number(product.stockQuantity),
-    });
-    setNewStockValue(product.stockQuantity);
-  };
-
-  const handleUpdateStock = () => {
-    if (!stockEditProduct) return;
-    const stockValue = Number(newStockValue);
-    if (isNaN(stockValue) || stockValue < 0) {
-      toast.error("Please enter a valid stock quantity");
-      return;
-    }
-    updateStockMutation.mutate({
-      productId: stockEditProduct.id,
-      stockQuantity: stockValue,
-    });
   };
 
   const products = data?.products ?? [];
   const categories = categoriesData ?? [];
 
   // Client-side search filter
-  const filteredProducts = products.filter(
-    (product) =>
-      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.sku?.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredProducts = products.filter((product) =>
+    product.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -286,26 +239,7 @@ export default function AdminProductsPage() {
                         <div className="flex items-center justify-between">
                           <p className="text-brand-3 text-sm font-bold">
                             {formatPrice(Number(product.price))}
-                            <span className="text-muted-2 text-xs font-normal">
-                              /{product.unit}
-                            </span>
                           </p>
-                          <button
-                            onClick={() => handleOpenStockEdit(product)}
-                            className="hover:bg-paper-2 rounded-full px-2 py-1 text-xs transition-colors"
-                            title="Click to edit stock"
-                          >
-                            <span
-                              className={
-                                Number(product.stockQuantity) <=
-                                Number(product.lowStockThreshold)
-                                  ? "text-danger-4"
-                                  : "text-muted-2"
-                              }
-                            >
-                              Stock: {product.stockQuantity}
-                            </span>
-                          </button>
                         </div>
 
                         {/* Actions - Compact icon buttons */}
@@ -397,68 +331,6 @@ export default function AdminProductsPage() {
         }
         isQuickAdd={isQuickAdd}
       />
-
-      {/* Stock Edit Dialog */}
-      <Dialog
-        open={!!stockEditProduct}
-        onOpenChange={(open) => !open && setStockEditProduct(null)}
-      >
-        <DialogContent className="border border-black/5 bg-white/90 sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="font-display text-ink-1 flex items-center gap-2">
-              <PackagePlus className="h-5 w-5" />
-              Update Stock
-            </DialogTitle>
-          </DialogHeader>
-          {stockEditProduct && (
-            <div className="space-y-4">
-              <div>
-                <p className="text-ink-1 font-medium">
-                  {stockEditProduct.name}
-                </p>
-                <p className="text-muted-2 text-sm">
-                  Current stock: {stockEditProduct.currentStock}
-                </p>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="stock">New Stock Quantity</Label>
-                <Input
-                  id="stock"
-                  type="number"
-                  min="0"
-                  step="1"
-                  value={newStockValue}
-                  onChange={(e) => setNewStockValue(e.target.value)}
-                  placeholder="Enter new stock quantity"
-                />
-              </div>
-            </div>
-          )}
-          <DialogFooter className="flex gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setStockEditProduct(null)}
-              disabled={updateStockMutation.isPending}
-              className="rounded-full border-black/10 bg-white/80"
-            >
-              <X className="mr-2 h-4 w-4" />
-              Cancel
-            </Button>
-            <Button
-              onClick={handleUpdateStock}
-              disabled={updateStockMutation.isPending}
-              className="bg-ink-1 text-paper-1 hover:bg-ink-0 rounded-full"
-            >
-              {updateStockMutation.isPending ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Check className="mr-2 h-4 w-4" />
-              )}
-              Update Stock
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

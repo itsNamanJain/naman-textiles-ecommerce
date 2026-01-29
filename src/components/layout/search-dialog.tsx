@@ -126,7 +126,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
                     <p className="text-brand-3 font-semibold">
                       {formatPrice(Number(product.price))}
                       <span className="text-muted-2 text-sm font-normal">
-                        /{product.unit}
+                        /{product.sellingMode === "piece" ? "piece" : "meter"}
                       </span>
                     </p>
                   </div>

@@ -30,5 +30,3 @@ export const sellingModeEnum = pgEnum("selling_mode", [
   "meter", // Sold by meter (fabric rolls)
   "piece", // Sold by piece (ready items, accessories)
 ]);
-
-export const unitEnum = pgEnum("unit", ["meter", "piece", "kg", "yard", "set"]);

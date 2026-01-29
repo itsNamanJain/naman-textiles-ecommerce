@@ -53,7 +53,7 @@ export default function ContactPage() {
             >
               <Home className="h-4 w-4" />
             </Link>
-            <ChevronRight className="h-4 w-4 text-muted-3" />
+            <ChevronRight className="text-muted-3 h-4 w-4" />
             <span className="text-ink-1 font-medium">Contact Us</span>
           </nav>
         </div>

@@ -216,23 +216,7 @@ export default function AdminSettingsPage() {
                 />
               </div>
 
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label>Online Payment</Label>
-                  <p className="text-muted-2 text-xs">
-                    Accept online payments (UPI, Cards, etc.)
-                  </p>
-                </div>
-                <Switch
-                  checked={formData.onlinePaymentEnabled === "true"}
-                  onCheckedChange={(checked) =>
-                    handleChange(
-                      "onlinePaymentEnabled",
-                      checked ? "true" : "false"
-                    )
-                  }
-                />
-              </div>
+              {/* Online payment integration hidden for now */}
             </CardContent>
           </Card>
         </FadeIn>

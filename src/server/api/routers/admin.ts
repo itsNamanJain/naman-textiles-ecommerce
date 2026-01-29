@@ -80,16 +80,8 @@ export const adminRouter = createTRPCRouter({
       .executeTakeFirst();
     const totalProducts = Number(productsResult?.count ?? 0);
 
-    // Low stock count
-    const lowStockResult = await ctx.db
-      .selectFrom("product")
-      .select(sql<number>`count(*)`.as("count"))
-      .where("product.isActive", "=", true)
-      .where(
-        sql`"product"."stockQuantity"::numeric <= "product"."lowStockThreshold"::numeric`
-      )
-      .executeTakeFirst();
-    const lowStockCount = Number(lowStockResult?.count ?? 0);
+    // Low stock count (inventory tracking disabled)
+    const lowStockCount = 0;
 
     // Total customers (all time)
     const customersResult = await ctx.db
@@ -189,20 +181,7 @@ export const adminRouter = createTRPCRouter({
   // Get low stock products
   getLowStockProducts: adminProcedure
     .input(z.object({ limit: z.number().min(1).max(20).default(5) }))
-    .query(async ({ ctx, input }) => {
-      const lowStockProducts = await ctx.db
-        .selectFrom("product")
-        .select(["id", "name", "sku", "stockQuantity", "lowStockThreshold"])
-        .where("product.isActive", "=", true)
-        .where(
-          sql`"product"."stockQuantity"::numeric <= "product"."lowStockThreshold"::numeric`
-        )
-        .orderBy(sql`"product"."stockQuantity"::numeric`, "asc")
-        .limit(input.limit)
-        .execute();
-
-      return lowStockProducts;
-    }),
+    .query(async () => []),
 
   // Get all orders with pagination
   getOrders: adminProcedure
@@ -390,7 +369,6 @@ export const adminRouter = createTRPCRouter({
           eb.or([
             eb("product.name", "ilike", `%${search}%`),
             eb("product.slug", "ilike", `%${search}%`),
-            eb("product.sku", "ilike", `%${search}%`),
           ])
         );
       }
@@ -440,7 +418,7 @@ export const adminRouter = createTRPCRouter({
     const allCategories = await ctx.db
       .selectFrom("category")
       .selectAll()
-      .orderBy("category.position", "asc")
+      .orderBy("category.name", "asc")
       .execute();
 
     return allCategories;
@@ -453,8 +431,6 @@ export const adminRouter = createTRPCRouter({
         name: z.string().min(2),
         slug: z.string().min(2),
         description: z.string().optional(),
-        image: z.string().optional(),
-        parentId: z.string().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -475,8 +451,6 @@ export const adminRouter = createTRPCRouter({
         name: z.string().min(2).optional(),
         slug: z.string().min(2).optional(),
         description: z.string().optional(),
-        image: z.string().optional(),
-        isActive: z.boolean().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -524,25 +498,10 @@ export const adminRouter = createTRPCRouter({
         name: z.string().min(2),
         slug: z.string().min(2),
         description: z.string().optional(),
-        shortDescription: z.string().optional(),
         price: z.number().positive(),
         comparePrice: z.number().positive().optional(),
-        costPrice: z.number().positive().optional(),
         sellingMode: z.enum(["meter", "piece"]).default("meter"),
-        unit: z.enum(["meter", "yard", "piece", "set", "kg"]).default("meter"),
         minOrderQuantity: z.number().positive().default(1),
-        quantityStep: z.number().positive().default(0.5),
-        maxOrderQuantity: z.number().positive().optional(),
-        sku: z.string().optional(),
-        fabricType: z.string().optional(),
-        material: z.string().optional(),
-        width: z.string().optional(),
-        weight: z.string().optional(),
-        color: z.string().optional(),
-        pattern: z.string().optional(),
-        composition: z.string().optional(),
-        stockQuantity: z.number().default(0),
-        lowStockThreshold: z.number().default(10),
         categoryId: z.string(),
         isActive: z.boolean().default(true),
         isFeatured: z.boolean().default(false),
@@ -580,12 +539,7 @@ export const adminRouter = createTRPCRouter({
           ...productData,
           price: productData.price.toString(),
           comparePrice: productData.comparePrice?.toString(),
-          costPrice: productData.costPrice?.toString(),
           minOrderQuantity: productData.minOrderQuantity.toString(),
-          quantityStep: productData.quantityStep.toString(),
-          maxOrderQuantity: productData.maxOrderQuantity?.toString(),
-          stockQuantity: productData.stockQuantity.toString(),
-          lowStockThreshold: productData.lowStockThreshold.toString(),
         })
         .returningAll()
         .executeTakeFirst();
@@ -616,25 +570,10 @@ export const adminRouter = createTRPCRouter({
         name: z.string().min(2).optional(),
         slug: z.string().min(2).optional(),
         description: z.string().optional(),
-        shortDescription: z.string().optional(),
         price: z.number().positive().optional(),
         comparePrice: z.number().positive().nullable().optional(),
-        costPrice: z.number().positive().nullable().optional(),
         sellingMode: z.enum(["meter", "piece"]).optional(),
-        unit: z.enum(["meter", "yard", "piece", "set", "kg"]).optional(),
         minOrderQuantity: z.number().positive().optional(),
-        quantityStep: z.number().positive().optional(),
-        maxOrderQuantity: z.number().positive().nullable().optional(),
-        sku: z.string().nullable().optional(),
-        fabricType: z.string().nullable().optional(),
-        material: z.string().nullable().optional(),
-        width: z.string().nullable().optional(),
-        weight: z.string().nullable().optional(),
-        color: z.string().nullable().optional(),
-        pattern: z.string().nullable().optional(),
-        composition: z.string().nullable().optional(),
-        stockQuantity: z.number().optional(),
-        lowStockThreshold: z.number().optional(),
         categoryId: z.string().optional(),
         isActive: z.boolean().optional(),
         isFeatured: z.boolean().optional(),
@@ -675,18 +614,7 @@ export const adminRouter = createTRPCRouter({
       const dbUpdateData: Record<string, unknown> = {};
       for (const [key, value] of Object.entries(updateData)) {
         if (value === undefined) continue;
-        if (
-          [
-            "price",
-            "comparePrice",
-            "costPrice",
-            "minOrderQuantity",
-            "quantityStep",
-            "maxOrderQuantity",
-            "stockQuantity",
-            "lowStockThreshold",
-          ].includes(key)
-        ) {
+        if (["price", "comparePrice", "minOrderQuantity"].includes(key)) {
           dbUpdateData[key] = value === null ? null : String(value);
         } else {
           dbUpdateData[key] = value;
@@ -887,7 +815,7 @@ export const adminRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const customer = await ctx.db
         .selectFrom("user")
-        .select(["id", "name", "email", "phone", "createdAt", "emailVerified"])
+        .select(["id", "name", "email", "phone", "createdAt"])
         .where("user.id", "=", input.id)
         .executeTakeFirst();
 
@@ -920,24 +848,6 @@ export const adminRouter = createTRPCRouter({
         totalSpent: Number(totalResult?.total ?? 0),
         orderCount: customerOrders.length,
       };
-    }),
-
-  // Update product stock
-  updateStock: adminProcedure
-    .input(
-      z.object({
-        productId: z.string(),
-        stockQuantity: z.number().min(0),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
-      await ctx.db
-        .updateTable("product")
-        .set({ stockQuantity: input.stockQuantity.toString() })
-        .where("product.id", "=", input.productId)
-        .execute();
-
-      return { success: true };
     }),
 
   // Get all settings

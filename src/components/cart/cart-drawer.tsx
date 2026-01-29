@@ -132,7 +132,10 @@ export function CartDrawer() {
                       </div>
 
                       <p className="text-muted-2 mt-1 text-sm">
-                        {formatPrice(item.price)} / {formatUnit(item.unit)}
+                        {formatPrice(item.price)} /{" "}
+                        {formatUnit(
+                          item.sellingMode === "piece" ? "piece" : "meter"
+                        )}
                       </p>
 
                       <div className="mt-auto flex items-center justify-between pt-2">
@@ -146,7 +149,10 @@ export function CartDrawer() {
                               <Minus className="h-3 w-3" />
                             </button>
                             <span className="w-8 text-center text-sm font-medium">
-                              {formatQuantity(item.quantity, item.unit)}
+                              {formatQuantity(
+                                item.quantity,
+                                item.sellingMode === "piece" ? "piece" : "meter"
+                              )}
                             </span>
                             <button
                               className="hover:bg-paper-1 flex h-7 w-7 items-center justify-center"

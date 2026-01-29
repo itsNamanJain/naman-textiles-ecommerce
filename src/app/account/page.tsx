@@ -131,7 +131,7 @@ export default function ProfilePage() {
                         <FormLabel>Full Name</FormLabel>
                         <FormControl>
                           <div className="relative">
-                            <User className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-3" />
+                            <User className="text-muted-3 absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                             <Input
                               className="rounded-2xl border-black/10 bg-white/80 pl-10"
                               placeholder="Your name"
@@ -151,7 +151,7 @@ export default function ProfilePage() {
                         <FormLabel>Email Address</FormLabel>
                         <FormControl>
                           <div className="relative">
-                            <Mail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-3" />
+                            <Mail className="text-muted-3 absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                             <Input
                               className="rounded-2xl border-black/10 bg-white/80 pl-10"
                               type="email"
@@ -175,7 +175,7 @@ export default function ProfilePage() {
                       <FormLabel>Phone Number (Optional)</FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <Phone className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-3" />
+                          <Phone className="text-muted-3 absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                           <Input
                             className="rounded-2xl border-black/10 bg-white/80 pl-10"
                             placeholder="+91 98765 43210"

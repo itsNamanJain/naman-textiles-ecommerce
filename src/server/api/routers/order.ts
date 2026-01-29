@@ -23,11 +23,7 @@ const shippingAddressSchema = z.object({
 
 const orderItemSchema = z.object({
   productId: z.string(),
-  productName: z.string().optional(),
-  productSku: z.string().optional(),
-  price: z.number().optional(),
   quantity: z.number(),
-  unit: z.string(),
 });
 
 export const orderRouter = createTRPCRouter({
@@ -71,18 +67,7 @@ export const orderRouter = createTRPCRouter({
       // Fetch current stock for all products
       const productStock = await ctx.db
         .selectFrom("product")
-        .select([
-          "id",
-          "name",
-          "stockQuantity",
-          "price",
-          "sku",
-          "unit",
-          "minOrderQuantity",
-          "maxOrderQuantity",
-          "trackQuantity",
-          "allowBackorder",
-        ])
+        .select(["id", "name", "price", "minOrderQuantity", "sellingMode"])
         .where("id", "in", productIds)
         .execute();
 
@@ -92,22 +77,14 @@ export const orderRouter = createTRPCRouter({
           p.id,
           {
             name: p.name,
-            stock: Number(p.stockQuantity),
             price: Number(p.price),
-            sku: p.sku ?? null,
-            unit: p.unit,
             minOrderQuantity: Number(p.minOrderQuantity),
-            maxOrderQuantity: p.maxOrderQuantity
-              ? Number(p.maxOrderQuantity)
-              : null,
-            trackQuantity: p.trackQuantity,
-            allowBackorder: p.allowBackorder,
+            unit: p.sellingMode === "piece" ? "piece" : "meter",
           },
         ])
       );
 
       // Check stock availability for all items
-      const outOfStockItems: string[] = [];
       const invalidItems: string[] = [];
       const normalizedItems = input.items.map((item) => {
         const productInfo = stockMap.get(item.productId);
@@ -129,35 +106,14 @@ export const orderRouter = createTRPCRouter({
           return null;
         }
 
-        if (
-          productInfo.maxOrderQuantity !== null &&
-          quantity > productInfo.maxOrderQuantity
-        ) {
-          invalidItems.push(
-            `${productInfo.name} (max: ${productInfo.maxOrderQuantity})`
-          );
-          return null;
-        }
-
         const unitPrice = productInfo.price;
-        const stock = productInfo.stock;
-
-        if (productInfo.trackQuantity && !productInfo.allowBackorder) {
-          if (stock < quantity) {
-            outOfStockItems.push(
-              `${productInfo.name} (requested: ${quantity}, available: ${stock})`
-            );
-          }
-        }
 
         return {
           productId: item.productId,
           productName: productInfo.name,
-          productSku: productInfo.sku,
           unitPrice,
           quantity,
           unit: productInfo.unit,
-          trackQuantity: productInfo.trackQuantity,
         };
       });
 
@@ -165,13 +121,6 @@ export const orderRouter = createTRPCRouter({
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: `Invalid items: ${invalidItems.join(", ")}`,
-        });
-      }
-
-      if (outOfStockItems.length > 0) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: `Insufficient stock for: ${outOfStockItems.join(", ")}`,
         });
       }
 

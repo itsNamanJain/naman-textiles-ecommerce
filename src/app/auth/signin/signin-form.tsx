@@ -161,7 +161,7 @@ export function SignInForm() {
                       <FormLabel>Email</FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <Mail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-3" />
+                          <Mail className="text-muted-3 absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                           <Input
                             type="email"
                             placeholder="you@example.com"
@@ -191,7 +191,7 @@ export function SignInForm() {
                       </div>
                       <FormControl>
                         <div className="relative">
-                          <Lock className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-3" />
+                          <Lock className="text-muted-3 absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                           <Input
                             type={showPassword ? "text" : "password"}
                             placeholder="••••••••"

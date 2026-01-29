@@ -171,7 +171,7 @@ export default function SignUpPage() {
                       <FormLabel>Full Name</FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <User className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-3" />
+                          <User className="text-muted-3 absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                           <Input
                             placeholder="John Doe"
                             className="rounded-2xl border-black/10 bg-white/80 pl-10"
@@ -192,7 +192,7 @@ export default function SignUpPage() {
                       <FormLabel>Email</FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <Mail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-3" />
+                          <Mail className="text-muted-3 absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                           <Input
                             type="email"
                             placeholder="you@example.com"
@@ -214,7 +214,7 @@ export default function SignUpPage() {
                       <FormLabel>Phone (Optional)</FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <Phone className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-3" />
+                          <Phone className="text-muted-3 absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                           <Input
                             type="tel"
                             placeholder="+91 98765 43210"
@@ -236,7 +236,7 @@ export default function SignUpPage() {
                       <FormLabel>Password</FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <Lock className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-3" />
+                          <Lock className="text-muted-3 absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                           <Input
                             type={showPassword ? "text" : "password"}
                             placeholder="••••••••"
@@ -269,7 +269,7 @@ export default function SignUpPage() {
                       <FormLabel>Confirm Password</FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <Lock className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-3" />
+                          <Lock className="text-muted-3 absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                           <Input
                             type={showConfirmPassword ? "text" : "password"}
                             placeholder="••••••••"

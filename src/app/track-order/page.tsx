@@ -80,7 +80,7 @@ export default function TrackOrderPage() {
             >
               <Home className="h-4 w-4" />
             </Link>
-            <ChevronRight className="h-4 w-4 text-muted-3" />
+            <ChevronRight className="text-muted-3 h-4 w-4" />
             <span className="text-ink-1 font-medium">Track Order</span>
           </nav>
         </div>
@@ -264,7 +264,7 @@ export default function TrackOrderPage() {
             )}
 
             {/* Help Text */}
-            <p className="mt-8 text-center text-sm text-muted-2">
+            <p className="text-muted-2 mt-8 text-center text-sm">
               Can&apos;t find your order?{" "}
               <Link href="/contact" className="text-brand-3 hover:underline">
                 Contact our support team

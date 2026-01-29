@@ -121,7 +121,7 @@ export default function CartPage() {
             >
               <Home className="h-4 w-4" />
             </Link>
-            <ChevronRight className="h-4 w-4 text-muted-3" />
+            <ChevronRight className="text-muted-3 h-4 w-4" />
             <span className="text-ink-1 font-medium">Shopping Cart</span>
           </nav>
         </div>
@@ -161,7 +161,7 @@ export default function CartPage() {
                           />
                         ) : (
                           <div className="flex h-full items-center justify-center">
-                            <ShoppingCart className="h-8 w-8 text-muted-3" />
+                            <ShoppingCart className="text-muted-3 h-8 w-8" />
                           </div>
                         )}
                       </Link>
@@ -178,7 +178,9 @@ export default function CartPage() {
                             </Link>
                             <p className="text-muted-2 mt-1 text-sm">
                               {formatPrice(item.price)} /{" "}
-                              {formatUnit(item.unit)}
+                              {formatUnit(
+                                item.sellingMode === "piece" ? "piece" : "meter"
+                              )}
                             </p>
                           </div>
                           <Button
@@ -204,7 +206,12 @@ export default function CartPage() {
                                 <Minus className="h-3 w-3 sm:h-4 sm:w-4" />
                               </Button>
                               <div className="text-ink-1 flex h-8 w-12 items-center justify-center text-sm font-medium sm:h-9 sm:w-16">
-                                {formatQuantity(item.quantity, item.unit)}
+                                {formatQuantity(
+                                  item.quantity,
+                                  item.sellingMode === "piece"
+                                    ? "piece"
+                                    : "meter"
+                                )}
                               </div>
                               <Button
                                 variant="ghost"

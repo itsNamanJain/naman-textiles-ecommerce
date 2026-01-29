@@ -36,22 +36,10 @@ type Product = {
   name: string;
   slug: string;
   description: string | null;
-  shortDescription: string | null;
   price: string;
   comparePrice: string | null;
   sellingMode: "meter" | "piece";
-  unit: string;
   minOrderQuantity: string;
-  quantityStep: string;
-  maxOrderQuantity: string | null;
-  stockQuantity: string;
-  fabricType: string | null;
-  material: string | null;
-  width: string | null;
-  weight: string | null;
-  color: string | null;
-  pattern: string | null;
-  composition: string | null;
   categoryId: string;
   category: { id: string; name: string; slug: string } | null;
   images: { id: string; url: string; alt: string | null }[];
@@ -124,12 +112,10 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   });
 
   const minQty = Number(product.minOrderQuantity);
-  const maxQty = Math.min(
-    product.maxOrderQuantity ? Number(product.maxOrderQuantity) : Infinity,
-    Number(product.stockQuantity)
-  );
-  const step = Number(product.quantityStep);
+  const maxQty = Infinity;
+  const step = 1;
   const price = Number(product.price);
+  const unitLabel = product.sellingMode === "piece" ? "piece" : "meter";
 
   const handleAddToCart = () => {
     cartStore.send({
@@ -140,14 +126,8 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         slug: product.slug,
         image: product.images[0]?.url,
         price: price,
-        unit: product.unit,
         sellingMode: product.sellingMode,
         minOrderQuantity: minQty,
-        quantityStep: step,
-        maxOrderQuantity: product.maxOrderQuantity
-          ? Number(product.maxOrderQuantity)
-          : undefined,
-        stockQuantity: Number(product.stockQuantity),
       },
       quantity: minQty,
     });
@@ -182,7 +162,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       try {
         await navigator.share({
           title: product.name,
-          text: product.shortDescription ?? `Check out ${product.name}`,
+          text: product.description ?? `Check out ${product.name}`,
           url: window.location.href,
         });
       } catch {
@@ -215,7 +195,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       )
     : 0;
 
-  const inStock = Number(product.stockQuantity) > 0;
+  const inStock = true;
   const canIncrement = quantityInCart + step <= maxQty;
   const canDecrement = quantityInCart - step >= minQty;
 
@@ -228,13 +208,13 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             <Link href="/" className="text-muted-2 hover:text-brand-1">
               <Home className="h-4 w-4" />
             </Link>
-            <ChevronRight className="h-4 w-4 text-muted-3" />
+            <ChevronRight className="text-muted-3 h-4 w-4" />
             <Link href="/products" className="text-muted-2 hover:text-brand-1">
               Products
             </Link>
             {product.category && (
               <>
-                <ChevronRight className="h-4 w-4 text-muted-3" />
+                <ChevronRight className="text-muted-3 h-4 w-4" />
                 <Link
                   href={`/category/${product.category.slug}`}
                   className="text-muted-2 hover:text-brand-1"
@@ -243,7 +223,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 </Link>
               </>
             )}
-            <ChevronRight className="h-4 w-4 text-muted-3" />
+            <ChevronRight className="text-muted-3 h-4 w-4" />
             <span className="text-ink-1 line-clamp-1 font-medium">
               {product.name}
             </span>
@@ -267,7 +247,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 />
               ) : (
                 <div className="flex h-full items-center justify-center">
-                  <ImageIcon className="h-24 w-24 text-muted-3" />
+                  <ImageIcon className="text-muted-3 h-24 w-24" />
                 </div>
               )}
               {discount > 0 && (
@@ -322,7 +302,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               <span className="text-brand-1 text-3xl font-semibold">
                 {formatPrice(price)}
               </span>
-              <span className="text-brand-3">/{product.unit}</span>
+              <span className="text-brand-3">/{unitLabel}</span>
               {product.comparePrice && (
                 <span className="text-muted-2 text-xl line-through">
                   {formatPrice(Number(product.comparePrice))}
@@ -330,90 +310,18 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               )}
             </div>
 
-            {product.shortDescription && (
-              <p className="text-muted-1 text-sm md:text-base">
-                {product.shortDescription}
-              </p>
-            )}
-
             {/* Stock Status */}
             <div className="flex items-center gap-2">
               {inStock ? (
                 <>
-                  <Check className="h-5 w-5 text-success-1" />
-                  <span className="font-semibold text-success-1">
-                    In Stock
-                  </span>
-                  <span className="text-brand-3">
-                    ({product.stockQuantity} {product.unit}s available)
-                  </span>
+                  <Check className="text-success-1 h-5 w-5" />
+                  <span className="text-success-1 font-semibold">In Stock</span>
+                  <span className="text-brand-3">Available</span>
                 </>
               ) : (
                 <span className="text-danger-1 font-semibold">
                   Out of Stock
                 </span>
-              )}
-            </div>
-
-            <Separator />
-
-            {/* Fabric Details */}
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              {product.fabricType && (
-                <div>
-                  <span className="text-muted-2">Fabric:</span>
-                  <span className="text-ink-1 ml-2 font-medium">
-                    {product.fabricType}
-                  </span>
-                </div>
-              )}
-              {product.material && (
-                <div>
-                  <span className="text-muted-2">Material:</span>
-                  <span className="text-ink-1 ml-2 font-medium">
-                    {product.material}
-                  </span>
-                </div>
-              )}
-              {product.composition && (
-                <div>
-                  <span className="text-muted-2">Composition:</span>
-                  <span className="text-ink-1 ml-2 font-medium">
-                    {product.composition}
-                  </span>
-                </div>
-              )}
-              {product.width && (
-                <div>
-                  <span className="text-muted-2">Width:</span>
-                  <span className="text-ink-1 ml-2 font-medium">
-                    {product.width}
-                  </span>
-                </div>
-              )}
-              {product.weight && (
-                <div>
-                  <span className="text-muted-2">Weight:</span>
-                  <span className="text-ink-1 ml-2 font-medium">
-                    {product.weight}
-                  </span>
-                </div>
-              )}
-              {product.color && (
-                <div>
-                  <span className="text-muted-2">Color:</span>
-                  <span className="text-ink-1 ml-2 font-medium">
-                    {product.color}
-                  </span>
-                </div>
-              )}
-              {product.pattern && (
-                <div>
-                  <span className="text-muted-2">Pattern:</span>
-                  <span className="text-ink-1 ml-2 font-medium">
-                    {product.pattern}
-                  </span>
-                </div>
               )}
             </div>
 
@@ -440,7 +348,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                             "flex h-10 w-10 items-center justify-center transition-all active:scale-95",
                             canDecrement
                               ? "text-ink-2 hover:bg-paper-1"
-                              : "cursor-not-allowed text-muted-3"
+                              : "text-muted-3 cursor-not-allowed"
                           )}
                           onClick={handleDecrement}
                           disabled={!canDecrement}
@@ -457,7 +365,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                             "flex h-10 w-10 items-center justify-center transition-all active:scale-95",
                             canIncrement
                               ? "text-ink-2 hover:bg-paper-1"
-                              : "cursor-not-allowed text-muted-3"
+                              : "text-muted-3 cursor-not-allowed"
                           )}
                           onClick={handleIncrement}
                           disabled={!canIncrement}
@@ -467,7 +375,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                       </div>
 
                       <span className="text-muted-2 text-sm">
-                        {product.unit} (Step: {step})
+                        {unitLabel} (Step: {step})
                       </span>
                     </div>
 
@@ -488,7 +396,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                       Add to Cart
                     </Button>
                     <span className="text-muted-2 text-sm">
-                      Min: {minQty} {product.unit}
+                      Min: {minQty} {unitLabel}
                     </span>
                   </div>
                 )}

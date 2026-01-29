@@ -9,8 +9,6 @@ export const categoryRouter = createTRPCRouter({
     return ctx.db
       .selectFrom("category")
       .selectAll()
-      .where("isActive", "=", true)
-      .orderBy("position", "asc")
       .orderBy("name", "asc")
       .execute();
   }),
@@ -27,8 +25,6 @@ export const categoryRouter = createTRPCRouter({
             and p."is_active" = true
         )`.as("productCount"),
       ])
-      .where("isActive", "=", true)
-      .orderBy("position", "asc")
       .orderBy("name", "asc")
       .execute();
 
@@ -46,7 +42,6 @@ export const categoryRouter = createTRPCRouter({
         .selectFrom("category")
         .selectAll()
         .where("slug", "=", input.slug)
-        .where("isActive", "=", true)
         .executeTakeFirst();
     }),
 
@@ -59,31 +54,5 @@ export const categoryRouter = createTRPCRouter({
         .selectAll()
         .where("id", "=", input.id)
         .executeTakeFirst();
-    }),
-
-  // Get parent categories (no parent)
-  getParents: publicProcedure.query(async ({ ctx }) => {
-    return ctx.db
-      .selectFrom("category")
-      .selectAll()
-      .where("isActive", "=", true)
-      .where("parentId", "is", null)
-      .orderBy("position", "asc")
-      .orderBy("name", "asc")
-      .execute();
-  }),
-
-  // Get child categories
-  getChildren: publicProcedure
-    .input(z.object({ parentId: z.string() }))
-    .query(async ({ ctx, input }) => {
-      return ctx.db
-        .selectFrom("category")
-        .selectAll()
-        .where("parentId", "=", input.parentId)
-        .where("isActive", "=", true)
-        .orderBy("position", "asc")
-        .orderBy("name", "asc")
-        .execute();
     }),
 });

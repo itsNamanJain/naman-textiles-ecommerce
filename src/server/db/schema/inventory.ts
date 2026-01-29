@@ -8,10 +8,8 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
-import { sellingModeEnum, unitEnum } from "./enums";
+import { sellingModeEnum } from "./enums";
 import { createTable } from "./table-creator";
-
-// ==================== CATEGORY TABLE ====================
 
 export const categories = createTable(
   "category",
@@ -22,10 +20,6 @@ export const categories = createTable(
     name: varchar("name", { length: 255 }).notNull().unique(),
     slug: varchar("slug", { length: 255 }).notNull().unique(),
     description: text("description"),
-    image: varchar("image", { length: 500 }),
-    parentId: varchar("parent_id", { length: 255 }),
-    position: integer("position").default(0).notNull(),
-    isActive: boolean("is_active").default(true).notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })
       .$defaultFn(() => new Date())
       .notNull(),
@@ -33,13 +27,8 @@ export const categories = createTable(
       () => new Date()
     ),
   },
-  (t) => [
-    index("category_slug_idx").on(t.slug),
-    index("category_parent_id_idx").on(t.parentId),
-  ]
+  (t) => [index("category_slug_idx").on(t.slug)]
 );
-
-// ==================== PRODUCT TABLE ====================
 
 export const products = createTable(
   "product",
@@ -50,62 +39,17 @@ export const products = createTable(
     name: varchar("name", { length: 255 }).notNull(),
     slug: varchar("slug", { length: 255 }).notNull().unique(),
     description: text("description"),
-    shortDescription: varchar("short_description", { length: 500 }),
-
-    // Pricing & Selling Mode
-    price: numeric("price", { precision: 10, scale: 2 }).notNull(), // Price per unit
+    price: numeric("price", { precision: 10, scale: 2 }).notNull(),
     comparePrice: numeric("compare_price", { precision: 10, scale: 2 }),
-    costPrice: numeric("cost_price", { precision: 10, scale: 2 }),
-
-    // Selling configuration
-    sellingMode: sellingModeEnum("selling_mode").default("meter").notNull(), // meter or piece
-    unit: unitEnum("unit").default("meter").notNull(), // Display unit
+    sellingMode: sellingModeEnum("selling_mode").default("meter").notNull(),
     minOrderQuantity: numeric("min_order_quantity", { precision: 10, scale: 2 })
       .default("1")
-      .notNull(), // Minimum order qty (e.g., 0.5 for half meter)
-    quantityStep: numeric("quantity_step", { precision: 10, scale: 2 })
-      .default("0.5")
-      .notNull(), // Increment step (e.g., 0.5m, 1m)
-    maxOrderQuantity: numeric("max_order_quantity", {
-      precision: 10,
-      scale: 2,
-    }), // Max per order (optional)
-
-    // Identifiers
-    sku: varchar("sku", { length: 100 }).unique(),
-    barcode: varchar("barcode", { length: 100 }),
-
-    // Fabric specific fields
-    fabricType: varchar("fabric_type", { length: 100 }),
+      .notNull(),
     material: varchar("material", { length: 255 }),
-    width: varchar("width", { length: 50 }), // e.g., "44 inches", "58 inches"
-    weight: varchar("weight", { length: 50 }), // e.g., "150 GSM"
+    width: varchar("width", { length: 50 }),
     color: varchar("color", { length: 100 }),
-    pattern: varchar("pattern", { length: 100 }),
-    composition: varchar("composition", { length: 255 }), // e.g., "100% Cotton"
-
-    // Stock management (stored in base unit)
-    stockQuantity: numeric("stock_quantity", { precision: 10, scale: 2 })
-      .default("0")
-      .notNull(),
-    lowStockThreshold: numeric("low_stock_threshold", {
-      precision: 10,
-      scale: 2,
-    })
-      .default("10")
-      .notNull(),
-    trackQuantity: boolean("track_quantity").default(true).notNull(),
-    allowBackorder: boolean("allow_backorder").default(false).notNull(),
-
-    // Status
     isActive: boolean("is_active").default(true).notNull(),
     isFeatured: boolean("is_featured").default(false).notNull(),
-
-    // SEO
-    metaTitle: varchar("meta_title", { length: 255 }),
-    metaDescription: text("meta_description"),
-
-    // Category
     categoryId: varchar("category_id", { length: 255 })
       .notNull()
       .references(() => categories.id),
@@ -127,8 +71,6 @@ export const products = createTable(
   ]
 );
 
-// ==================== PRODUCT IMAGES TABLE ====================
-
 export const productImages = createTable(
   "product_image",
   {
@@ -148,8 +90,6 @@ export const productImages = createTable(
   (t) => [index("product_image_product_id_idx").on(t.productId)]
 );
 
-// ==================== PRODUCT VARIANTS TABLE ====================
-
 export const productVariants = createTable(
   "product_variant",
   {
@@ -166,10 +106,9 @@ export const productVariants = createTable(
       .default("0")
       .notNull(),
 
-    // Variant attributes
     size: varchar("size", { length: 50 }),
     color: varchar("color", { length: 100 }),
-    length: varchar("length", { length: 50 }), // For pre-cut fabric lengths
+    length: varchar("length", { length: 50 }),
 
     createdAt: timestamp("created_at", { withTimezone: true })
       .$defaultFn(() => new Date())
@@ -181,15 +120,7 @@ export const productVariants = createTable(
   (t) => [index("product_variant_product_id_idx").on(t.productId)]
 );
 
-// ==================== RELATIONS ====================
-
 export const categoriesRelations = relations(categories, ({ one, many }) => ({
-  parent: one(categories, {
-    fields: [categories.parentId],
-    references: [categories.id],
-    relationName: "categoryParent",
-  }),
-  children: many(categories, { relationName: "categoryParent" }),
   products: many(products),
 }));
 
@@ -218,8 +149,6 @@ export const productVariantsRelations = relations(
     }),
   })
 );
-
-// ==================== TYPE EXPORTS ====================
 
 export type Category = typeof categories.$inferSelect;
 export type NewCategory = typeof categories.$inferInsert;
