@@ -31,8 +31,7 @@ export const STORE_INFO = {
   },
 } as const;
 
-// Default settings for dynamic values (fallback if DB is empty)
-// Note: Keys use snake_case to match database storage format
+// Default settings for store behavior
 export const DEFAULT_SETTINGS = {
   shippingFreeThreshold: "1000",
   shippingBaseRate: "199",

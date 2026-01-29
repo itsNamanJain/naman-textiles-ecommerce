@@ -50,7 +50,4 @@ export interface Database {
   // Marketing
   coupon: ToKyselyTable<typeof schema.coupons>;
   banner: ToKyselyTable<typeof schema.banners>;
-
-  // Settings
-  setting: ToKyselyTable<typeof schema.settings>;
 }

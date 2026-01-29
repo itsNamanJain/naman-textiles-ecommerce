@@ -2,8 +2,25 @@ import Link from "next/link";
 import { Home, Search, ShoppingBag, ArrowLeft } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { api } from "@/trpc/server";
 
-export default function NotFound() {
+export default async function NotFound() {
+  let popularCategories: { name: string; slug: string }[] = [];
+
+  try {
+    const categories = await api.category.getAllWithCounts();
+    popularCategories = categories
+      .filter((category) => category.productCount > 0)
+      .sort((a, b) => b.productCount - a.productCount)
+      .slice(0, 5)
+      .map((category) => ({
+        name: category.name,
+        slug: category.slug,
+      }));
+  } catch {
+    popularCategories = [];
+  }
+
   return (
     <div className="flex min-h-[calc(100vh-200px)] flex-col items-center justify-center bg-transparent px-4">
       {/* Decorative fabric pattern */}
@@ -76,21 +93,21 @@ export default function NotFound() {
         <div className="mt-12 rounded-2xl border border-black/5 bg-white/80 p-6 shadow-[0_20px_50px_rgba(15,15,15,0.08)]">
           <h3 className="text-ink-1 text-sm font-medium">Popular Categories</h3>
           <div className="mt-4 flex flex-wrap justify-center gap-2">
-            {[
-              { name: "Cotton Fabrics", slug: "cotton-fabrics" },
-              { name: "Silk Fabrics", slug: "silk-fabrics" },
-              { name: "Linen Fabrics", slug: "linen-fabrics" },
-              { name: "Printed Fabrics", slug: "printed-fabrics" },
-              { name: "Suit Pieces", slug: "suit-pieces" },
-            ].map((category) => (
-              <Link
-                key={category.slug}
-                href={`/category/${category.slug}`}
-                className="text-muted-1 hover:border-brand-1 hover:bg-paper-1 hover:text-brand-3 rounded-full border border-black/10 bg-white/80 px-4 py-2 text-sm transition-colors"
-              >
-                {category.name}
-              </Link>
-            ))}
+            {popularCategories.length > 0 ? (
+              popularCategories.map((category) => (
+                <Link
+                  key={category.slug}
+                  href={`/category/${category.slug}`}
+                  className="text-muted-1 hover:border-brand-1 hover:bg-paper-1 hover:text-brand-3 rounded-full border border-black/10 bg-white/80 px-4 py-2 text-sm transition-colors"
+                >
+                  {category.name}
+                </Link>
+              ))
+            ) : (
+              <span className="text-muted-2 text-sm">
+                Categories are loading. Please try again later.
+              </span>
+            )}
           </div>
         </div>
 

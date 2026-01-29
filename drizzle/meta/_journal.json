@@ -36,6 +36,13 @@
       "when": 1769701102635,
       "tag": "0004_add_gst_number_to_order",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1769702708481,
+      "tag": "0005_slow_callisto",
+      "breakpoints": true
     }
   ]
 }

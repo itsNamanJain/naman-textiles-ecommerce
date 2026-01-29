@@ -54,21 +54,8 @@ export const orderRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
 
-      // Load store settings (fallback to defaults)
-      const allSettings = await ctx.db
-        .selectFrom("setting")
-        .select(["key", "value"])
-        .execute();
-      const settingsMap: Record<string, string> = {};
-      allSettings.forEach((setting) => {
-        settingsMap[setting.key] = setting.value;
-      });
-      const shippingRate = Number(
-        settingsMap.shippingBaseRate ?? DEFAULT_SETTINGS.shippingBaseRate
-      );
-      const minOrderAmount = Number(
-        settingsMap.orderMinAmount ?? DEFAULT_SETTINGS.orderMinAmount
-      );
+      const shippingRate = Number(DEFAULT_SETTINGS.shippingBaseRate);
+      const minOrderAmount = Number(DEFAULT_SETTINGS.orderMinAmount);
 
       // Get product IDs from items
       const productIds = input.items.map((item) => item.productId);

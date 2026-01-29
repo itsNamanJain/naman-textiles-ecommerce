@@ -70,17 +70,12 @@ const customerService = [
 
 export function Footer() {
   const { data: categories } = api.category.getAll.useQuery();
-  const { data: settings } = api.settings.getPublicSettings.useQuery();
   const displayCategories = categories ?? [];
 
-  // Get payment settings from DB
-  const codEnabled =
-    (settings?.codEnabled ?? DEFAULT_SETTINGS.codEnabled) === "true";
-  const onlinePaymentEnabled =
-    (settings?.onlinePaymentEnabled ??
-      DEFAULT_SETTINGS.onlinePaymentEnabled) === "true";
+  const codEnabled = DEFAULT_SETTINGS.codEnabled === "true";
+  const onlinePaymentEnabled = DEFAULT_SETTINGS.onlinePaymentEnabled === "true";
 
-  // Build payment methods list based on settings
+  // Build payment methods list based on defaults
   const paymentMethods: string[] = [];
   if (onlinePaymentEnabled) {
     paymentMethods.push("UPI", "Cards", "Net Banking");

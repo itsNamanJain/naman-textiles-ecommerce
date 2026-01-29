@@ -68,13 +68,56 @@ export function ProductCard({ product, className }: ProductCardProps) {
   );
 
   const toggleWishlistMutation = api.wishlist.toggle.useMutation({
+    onMutate: async () => {
+      await utils.wishlist.isInWishlist.cancel({ productId: product.id });
+      const previousIsInWishlist = utils.wishlist.isInWishlist.getData({
+        productId: product.id,
+      });
+      const previousCount = utils.wishlist.count.getData();
+      const optimisticNext =
+        previousIsInWishlist === undefined ? true : !previousIsInWishlist;
+
+      utils.wishlist.isInWishlist.setData(
+        { productId: product.id },
+        optimisticNext
+      );
+
+      if (
+        typeof previousCount === "number" &&
+        typeof previousIsInWishlist === "boolean"
+      ) {
+        utils.wishlist.count.setData(
+          undefined,
+          previousCount + (optimisticNext ? 1 : -1)
+        );
+      }
+
+      return { previousIsInWishlist, previousCount };
+    },
     onSuccess: (data) => {
-      utils.wishlist.isInWishlist.invalidate({ productId: product.id });
-      utils.wishlist.count.invalidate();
+      utils.wishlist.isInWishlist.setData(
+        { productId: product.id },
+        data.isInWishlist
+      );
       toast.success(data.message);
     },
-    onError: (error) => {
+    onError: (error, _vars, context) => {
+      if (context) {
+        utils.wishlist.isInWishlist.setData(
+          { productId: product.id },
+          context.previousIsInWishlist
+        );
+        if (typeof context.previousCount === "number") {
+          utils.wishlist.count.setData(undefined, context.previousCount);
+        }
+      }
       toast.error(error.message || "Failed to update wishlist");
+    },
+    onSettled: () => {
+      utils.wishlist.isInWishlist.invalidate({ productId: product.id });
+      utils.wishlist.count.invalidate();
+      utils.wishlist.get.invalidate();
+      utils.wishlist.getProductIds.invalidate();
     },
   });
 

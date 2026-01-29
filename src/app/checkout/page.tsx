@@ -197,7 +197,6 @@ function CheckoutContent() {
   const [isValidatingCoupon, setIsValidatingCoupon] = useState(false);
 
   const { items } = useXStateSelector(cartStore, ({ context }) => context);
-  const { data: settings } = api.settings.getPublicSettings.useQuery();
   const { data: savedAddresses, isLoading: isLoadingAddresses } =
     api.address.getAll.useQuery(undefined, {
       enabled: status === "authenticated",
@@ -205,15 +204,10 @@ function CheckoutContent() {
 
   const utils = api.useUtils();
 
-  // Get settings from DB or use defaults
-  const shippingRate = Number(
-    settings?.shippingBaseRate ?? DEFAULT_SETTINGS.shippingBaseRate
-  );
-  const minOrderAmount = Number(
-    settings?.orderMinAmount ?? DEFAULT_SETTINGS.orderMinAmount
-  );
-  const codEnabled = true;
-  const onlinePaymentEnabled = false;
+  const shippingRate = Number(DEFAULT_SETTINGS.shippingBaseRate);
+  const minOrderAmount = Number(DEFAULT_SETTINGS.orderMinAmount);
+  const codEnabled = DEFAULT_SETTINGS.codEnabled === "true";
+  const onlinePaymentEnabled = DEFAULT_SETTINGS.onlinePaymentEnabled === "true";
 
   const subtotal = items.reduce(
     (sum, item) => sum + item.price * item.quantity,

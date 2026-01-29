@@ -5,7 +5,6 @@ import { productRouter } from "@/server/api/routers/product";
 import { orderRouter } from "@/server/api/routers/order";
 import { adminRouter } from "@/server/api/routers/admin";
 import { wishlistRouter } from "@/server/api/routers/wishlist";
-import { settingsRouter } from "@/server/api/routers/settings";
 import { addressRouter } from "@/server/api/routers/address";
 import { couponRouter } from "@/server/api/routers/coupon";
 import { bannerRouter } from "@/server/api/routers/banner";
@@ -25,7 +24,6 @@ export const appRouter = createTRPCRouter({
   order: orderRouter,
   admin: adminRouter,
   wishlist: wishlistRouter,
-  settings: settingsRouter,
   address: addressRouter,
   coupon: couponRouter,
   banner: bannerRouter,

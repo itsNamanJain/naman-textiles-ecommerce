@@ -103,6 +103,8 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     onSuccess: (data) => {
       utils.wishlist.isInWishlist.invalidate({ productId: product.id });
       utils.wishlist.count.invalidate();
+      utils.wishlist.get.invalidate();
+      utils.wishlist.getProductIds.invalidate();
       toast.success(data.message);
     },
     onError: (error) => {

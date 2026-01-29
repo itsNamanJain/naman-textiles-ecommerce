@@ -24,18 +24,12 @@ import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/motion";
 import { formatPrice, formatUnit, formatQuantity } from "@/lib/utils";
 import { cartStore } from "@/stores";
 import { useXStateSelector } from "@/hooks";
-import { api } from "@/trpc/react";
 import { DEFAULT_SETTINGS } from "@/lib/constants";
 
 export default function CartPage() {
   const [isMounted, setIsMounted] = useState(false);
   const { items } = useXStateSelector(cartStore, ({ context }) => context);
-  const { data: settings } = api.settings.getPublicSettings.useQuery();
-
-  // Get settings from DB or use defaults
-  const shippingRate = Number(
-    settings?.shippingBaseRate ?? DEFAULT_SETTINGS.shippingBaseRate
-  );
+  const shippingRate = Number(DEFAULT_SETTINGS.shippingBaseRate);
 
   // Hydrate cart from localStorage on mount
   useEffect(() => {
@@ -62,7 +56,10 @@ export default function CartPage() {
     0
   );
   const shipping = shippingRate;
-  const total = subtotal + shipping;
+  const tax = Math.round(subtotal * 0.05 * 100) / 100;
+  const igst = tax / 2;
+  const cgst = tax / 2;
+  const total = subtotal + shipping + tax;
 
   const handleIncrement = (productId: string) => {
     cartStore.send({ type: "incrementQuantity", productId });
@@ -280,6 +277,18 @@ export default function CartPage() {
                     <span className="text-muted-1">Shipping</span>
                     <span className="font-medium">{formatPrice(shipping)}</span>
                   </div>
+                  {tax > 0 && (
+                    <>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-1">IGST (2.5%)</span>
+                        <span className="font-medium">{formatPrice(igst)}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-1">CGST (2.5%)</span>
+                        <span className="font-medium">{formatPrice(cgst)}</span>
+                      </div>
+                    </>
+                  )}
                   <Separator />
                   <div className="flex justify-between">
                     <span className="text-ink-1 text-lg font-semibold">

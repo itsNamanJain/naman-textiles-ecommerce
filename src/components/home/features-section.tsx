@@ -2,16 +2,11 @@
 
 import { Truck, Shield, Headphones, type LucideIcon } from "lucide-react";
 import { StaggerContainer, StaggerItem } from "@/components/ui/motion";
-import { api } from "@/trpc/react";
 import { formatPrice } from "@/lib/utils";
 import { DEFAULT_SETTINGS } from "@/lib/constants";
 
 export function FeaturesSection() {
-  const { data: settings } = api.settings.getPublicSettings.useQuery();
-
-  const shippingRate = Number(
-    settings?.shippingBaseRate ?? DEFAULT_SETTINGS.shippingBaseRate
-  );
+  const shippingRate = Number(DEFAULT_SETTINGS.shippingBaseRate);
 
   const features: { icon: LucideIcon; title: string; description: string }[] = [
     {

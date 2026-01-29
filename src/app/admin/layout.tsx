@@ -10,7 +10,6 @@ import {
   ShoppingCart,
   FolderTree,
   Users,
-  Settings,
   LogOut,
   Menu,
   X,
@@ -66,11 +65,6 @@ const adminNavItems = [
     href: "/admin/reviews",
     label: "Reviews",
     icon: Star,
-  },
-  {
-    href: "/admin/settings",
-    label: "Settings",
-    icon: Settings,
   },
 ];
 

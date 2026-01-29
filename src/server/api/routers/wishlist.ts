@@ -123,10 +123,13 @@ export const wishlistRouter = createTRPCRouter({
       }
 
       // Add to wishlist
-      await ctx.db.insertInto("wishlistItem").values({
-        wishlistId: wishlist!.id,
-        productId: input.productId,
-      });
+      await ctx.db
+        .insertInto("wishlistItem")
+        .values({
+          wishlistId: wishlist!.id,
+          productId: input.productId,
+        })
+        .execute();
 
       return { success: true, message: "Added to wishlist" };
     }),
@@ -216,10 +219,13 @@ export const wishlistRouter = createTRPCRouter({
         };
       } else {
         // Add to wishlist
-        await ctx.db.insertInto("wishlistItem").values({
-          wishlistId: wishlist!.id,
-          productId: input.productId,
-        });
+        await ctx.db
+          .insertInto("wishlistItem")
+          .values({
+            wishlistId: wishlist!.id,
+            productId: input.productId,
+          })
+          .execute();
         return {
           success: true,
           isInWishlist: true,
