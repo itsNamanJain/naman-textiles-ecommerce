@@ -6,7 +6,7 @@ import { formatPrice } from "@/lib/utils";
 import { DEFAULT_SETTINGS } from "@/lib/constants";
 
 export function FeaturesSection() {
-  const shippingRate = Number(DEFAULT_SETTINGS.shippingBaseRate);
+  const shippingRate = DEFAULT_SETTINGS.shippingBaseRate;
 
   const features: { icon: LucideIcon; title: string; description: string }[] = [
     {

@@ -33,9 +33,8 @@ export const STORE_INFO = {
 
 // Default settings for store behavior
 export const DEFAULT_SETTINGS = {
-  shippingFreeThreshold: "1000",
-  shippingBaseRate: "199",
-  orderMinAmount: "500",
+  shippingBaseRate: 199,
+  orderMinAmount: 500,
   codEnabled: false,
   onlinePaymentEnabled: false,
 } as const;

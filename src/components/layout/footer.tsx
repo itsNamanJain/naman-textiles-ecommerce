@@ -72,8 +72,8 @@ export function Footer() {
   const { data: categories } = api.category.getAll.useQuery();
   const displayCategories = categories ?? [];
 
-  const codEnabled = DEFAULT_SETTINGS.codEnabled === "true";
-  const onlinePaymentEnabled = DEFAULT_SETTINGS.onlinePaymentEnabled === "true";
+  const codEnabled = DEFAULT_SETTINGS.codEnabled;
+  const onlinePaymentEnabled = DEFAULT_SETTINGS.onlinePaymentEnabled;
 
   // Build payment methods list based on defaults
   const paymentMethods: string[] = [];

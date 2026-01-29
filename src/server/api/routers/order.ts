@@ -54,8 +54,8 @@ export const orderRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
 
-      const shippingRate = Number(DEFAULT_SETTINGS.shippingBaseRate);
-      const minOrderAmount = Number(DEFAULT_SETTINGS.orderMinAmount);
+      const shippingRate = DEFAULT_SETTINGS.shippingBaseRate;
+      const minOrderAmount = DEFAULT_SETTINGS.orderMinAmount;
 
       // Get product IDs from items
       const productIds = input.items.map((item) => item.productId);

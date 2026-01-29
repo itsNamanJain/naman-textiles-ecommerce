@@ -204,8 +204,8 @@ function CheckoutContent() {
 
   const utils = api.useUtils();
 
-  const shippingRate = Number(DEFAULT_SETTINGS.shippingBaseRate);
-  const minOrderAmount = Number(DEFAULT_SETTINGS.orderMinAmount);
+  const shippingRate = DEFAULT_SETTINGS.shippingBaseRate;
+  const minOrderAmount = DEFAULT_SETTINGS.orderMinAmount;
   const codEnabled = DEFAULT_SETTINGS.codEnabled;
   const onlinePaymentEnabled = DEFAULT_SETTINGS.onlinePaymentEnabled;
 

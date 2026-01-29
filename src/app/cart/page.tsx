@@ -29,7 +29,7 @@ import { DEFAULT_SETTINGS } from "@/lib/constants";
 export default function CartPage() {
   const [isMounted, setIsMounted] = useState(false);
   const { items } = useXStateSelector(cartStore, ({ context }) => context);
-  const shippingRate = Number(DEFAULT_SETTINGS.shippingBaseRate);
+  const shippingRate = DEFAULT_SETTINGS.shippingBaseRate;
 
   // Hydrate cart from localStorage on mount
   useEffect(() => {
