@@ -19,6 +19,11 @@ export const paymentStatusEnum = pgEnum("payment_status", [
   "refunded",
 ]);
 
+export const cancellationRequestStatusEnum = pgEnum(
+  "cancellation_request_status",
+  ["pending", "approved", "rejected"]
+);
+
 export const discountTypeEnum = pgEnum("discount_type", [
   "percentage",
   "fixed",

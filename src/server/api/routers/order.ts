@@ -316,6 +316,12 @@ export const orderRouter = createTRPCRouter({
               .select(["id", "name", "email"])
               .whereRef("user.id", "=", "order.userId")
           ).as("user"),
+          jsonObjectFrom(
+            eb
+              .selectFrom("cancellationRequest")
+              .select(["id", "status", "reason", "createdAt"])
+              .whereRef("cancellationRequest.orderId", "=", "order.id")
+          ).as("cancellationRequest"),
         ])
         .where("order.id", "=", input.id);
 
@@ -397,6 +403,12 @@ export const orderRouter = createTRPCRouter({
               .selectAll()
               .whereRef("orderItem.orderId", "=", "order.id")
           ).as("items"),
+          jsonObjectFrom(
+            eb
+              .selectFrom("cancellationRequest")
+              .select(["id", "status", "reason", "createdAt"])
+              .whereRef("cancellationRequest.orderId", "=", "order.id")
+          ).as("cancellationRequest"),
         ])
         .where("order.userId", "=", userId)
         .orderBy("order.createdAt", "desc");
@@ -453,6 +465,12 @@ export const orderRouter = createTRPCRouter({
           message: "Only pending orders can be cancelled",
         });
       }
+      if (order.paymentStatus === "paid") {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Paid orders require a cancellation request",
+        });
+      }
 
       await ctx.db
         .updateTable("order")
@@ -461,6 +479,68 @@ export const orderRouter = createTRPCRouter({
         .execute();
 
       return { success: true };
+    }),
+
+  // Request cancellation for paid orders
+  requestCancellation: protectedProcedure
+    .input(
+      z.object({
+        orderId: z.string(),
+        reason: z.string().max(1000).optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+
+      const order = await ctx.db
+        .selectFrom("order")
+        .selectAll("order")
+        .where("order.id", "=", input.orderId)
+        .where("order.userId", "=", userId)
+        .executeTakeFirst();
+
+      if (!order) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Order not found",
+        });
+      }
+
+      if (order.status === "cancelled") {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Order is already cancelled",
+        });
+      }
+
+      if (order.paymentStatus !== "paid") {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Only paid orders need a cancellation request",
+        });
+      }
+
+      const existing = await ctx.db
+        .selectFrom("cancellationRequest")
+        .select(["id", "status"])
+        .where("cancellationRequest.orderId", "=", input.orderId)
+        .executeTakeFirst();
+
+      if (existing) {
+        return { success: true, status: existing.status };
+      }
+
+      await ctx.db
+        .insertInto("cancellationRequest")
+        .values({
+          orderId: input.orderId,
+          userId,
+          reason: input.reason?.trim() || null,
+          status: "pending",
+        })
+        .execute();
+
+      return { success: true, status: "pending" as const };
     }),
 
   // Get order count for user

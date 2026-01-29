@@ -307,6 +307,12 @@ export const adminRouter = createTRPCRouter({
               .selectAll()
               .whereRef("orderItem.orderId", "=", "order.id")
           ).as("items"),
+          jsonObjectFrom(
+            eb
+              .selectFrom("cancellationRequest")
+              .select(["id", "status", "reason", "createdAt"])
+              .whereRef("cancellationRequest.orderId", "=", "order.id")
+          ).as("cancellationRequest"),
         ])
         .orderBy("order.createdAt", "desc");
 
@@ -387,6 +393,45 @@ export const adminRouter = createTRPCRouter({
         .set(updateData)
         .where("order.id", "=", input.orderId)
         .execute();
+
+      return { success: true };
+    }),
+
+  // Approve or reject cancellation requests
+  updateCancellationRequest: adminProcedure
+    .input(
+      z.object({
+        orderId: z.string(),
+        status: z.enum(["approved", "rejected"]),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const request = await ctx.db
+        .selectFrom("cancellationRequest")
+        .selectAll()
+        .where("cancellationRequest.orderId", "=", input.orderId)
+        .executeTakeFirst();
+
+      if (!request) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Cancellation request not found",
+        });
+      }
+
+      await ctx.db
+        .updateTable("cancellationRequest")
+        .set({ status: input.status })
+        .where("cancellationRequest.id", "=", request.id)
+        .execute();
+
+      if (input.status === "approved") {
+        await ctx.db
+          .updateTable("order")
+          .set({ status: "cancelled" })
+          .where("order.id", "=", input.orderId)
+          .execute();
+      }
 
       return { success: true };
     }),

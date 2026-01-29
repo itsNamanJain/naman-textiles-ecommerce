@@ -1,6 +1,17 @@
 import { relations } from "drizzle-orm";
-import { index, numeric, text, timestamp, varchar } from "drizzle-orm/pg-core";
-import { orderStatusEnum, paymentStatusEnum } from "./enums";
+import {
+  index,
+  numeric,
+  text,
+  timestamp,
+  uniqueIndex,
+  varchar,
+} from "drizzle-orm/pg-core";
+import {
+  cancellationRequestStatusEnum,
+  orderStatusEnum,
+  paymentStatusEnum,
+} from "./enums";
 import { users } from "./users";
 import { products } from "./inventory";
 import { createTable } from "./table-creator";
@@ -72,6 +83,37 @@ export const orders = createTable(
     index("order_status_idx").on(t.status),
     index("order_payment_status_idx").on(t.paymentStatus),
     index("order_created_at_idx").on(t.createdAt),
+  ]
+);
+
+export const cancellationRequests = createTable(
+  "cancellation_request",
+  {
+    id: varchar("id", { length: 255 })
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    orderId: varchar("order_id", { length: 255 })
+      .notNull()
+      .references(() => orders.id, { onDelete: "cascade" }),
+    userId: varchar("user_id", { length: 255 })
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    reason: text("reason"),
+    status: cancellationRequestStatusEnum("status")
+      .default("pending")
+      .notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .$defaultFn(() => new Date())
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
+      () => new Date()
+    ),
+  },
+  (t) => [
+    index("cancellation_request_order_id_idx").on(t.orderId),
+    index("cancellation_request_user_id_idx").on(t.userId),
+    index("cancellation_request_status_idx").on(t.status),
+    uniqueIndex("cancellation_request_order_unique_idx").on(t.orderId),
   ]
 );
 

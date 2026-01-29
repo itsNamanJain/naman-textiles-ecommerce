@@ -43,6 +43,7 @@ export interface Database {
   // Orders
   order: ToKyselyTable<typeof schema.orders>;
   orderItem: ToKyselyTable<typeof schema.orderItems>;
+  cancellationRequest: ToKyselyTable<typeof schema.cancellationRequests>;
 
   // Reviews
   review: ToKyselyTable<typeof schema.reviews>;

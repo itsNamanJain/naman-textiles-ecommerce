@@ -90,6 +90,16 @@ export default function AdminOrdersPage() {
       toast.error(error.message || "Failed to update status");
     },
   });
+  const updateCancellationMutation =
+    api.admin.updateCancellationRequest.useMutation({
+      onSuccess: () => {
+        toast.success("Cancellation request updated");
+        utils.admin.getOrders.invalidate();
+      },
+      onError: (error) => {
+        toast.error(error.message || "Failed to update request");
+      },
+    });
 
   const handleStatusChange = (orderId: string, newStatus: OrderStatus) => {
     updateStatusMutation.mutate({ orderId, status: newStatus });
@@ -338,6 +348,32 @@ export default function AdminOrdersPage() {
                                 </DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>
+                            {order.cancellationRequest?.status ===
+                              "pending" && (
+                              <div className="mt-2">
+                                <Badge className="bg-paper-1 text-brand-3">
+                                  Cancellation Requested
+                                </Badge>
+                                {order.cancellationRequest.reason && (
+                                  <p className="text-muted-2 mt-1 text-xs">
+                                    Reason: {order.cancellationRequest.reason}
+                                  </p>
+                                )}
+                              </div>
+                            )}
+                            {order.cancellationRequest?.status ===
+                              "rejected" && (
+                              <div className="mt-2">
+                                <Badge className="bg-danger-3 text-danger-4">
+                                  Cancellation Rejected
+                                </Badge>
+                                {order.cancellationRequest.reason && (
+                                  <p className="text-muted-2 mt-1 text-xs">
+                                    Reason: {order.cancellationRequest.reason}
+                                  </p>
+                                )}
+                              </div>
+                            )}
                           </td>
                           <td className="py-4">
                             <div className="flex min-w-[220px] items-center gap-2">
@@ -369,17 +405,56 @@ export default function AdminOrdersPage() {
                             </div>
                           </td>
                           <td className="py-4">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              asChild
-                              className="text-ink-1"
-                            >
-                              <Link href={`/order-confirmation/${order.id}`}>
-                                <Eye className="mr-2 h-4 w-4" />
-                                View
-                              </Link>
-                            </Button>
+                            <div className="flex items-center gap-2">
+                              {order.cancellationRequest?.status ===
+                                "pending" && (
+                                <>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="text-success-1 rounded-full border-black/10 bg-white/80 hover:bg-white"
+                                    disabled={
+                                      updateCancellationMutation.isPending
+                                    }
+                                    onClick={() =>
+                                      updateCancellationMutation.mutate({
+                                        orderId: order.id,
+                                        status: "approved",
+                                      })
+                                    }
+                                  >
+                                    Approve
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="text-danger-1 rounded-full border-black/10 bg-white/80 hover:bg-white"
+                                    disabled={
+                                      updateCancellationMutation.isPending
+                                    }
+                                    onClick={() =>
+                                      updateCancellationMutation.mutate({
+                                        orderId: order.id,
+                                        status: "rejected",
+                                      })
+                                    }
+                                  >
+                                    Reject
+                                  </Button>
+                                </>
+                              )}
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                asChild
+                                className="text-ink-1"
+                              >
+                                <Link href={`/order-confirmation/${order.id}`}>
+                                  <Eye className="mr-2 h-4 w-4" />
+                                  View
+                                </Link>
+                              </Button>
+                            </div>
                           </td>
                         </tr>
                       );

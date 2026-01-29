@@ -1,11 +1,23 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { Package, ChevronRight, ShoppingBag, Loader2, Eye } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/motion";
 import { formatPrice } from "@/lib/utils";
 import { api } from "@/trpc/react";
@@ -23,6 +35,9 @@ const statusColors: Record<string, string> = {
 
 export default function OrdersPage() {
   const utils = api.useUtils();
+  const [cancelRequestReasons, setCancelRequestReasons] = useState<
+    Record<string, string>
+  >({});
 
   const { data, isLoading } = api.order.getUserOrders.useQuery({
     limit: 20,
@@ -37,6 +52,18 @@ export default function OrdersPage() {
       toast.error(error.message || "Failed to cancel order");
     },
   });
+  const requestCancellationMutation = api.order.requestCancellation.useMutation(
+    {
+      onSuccess: () => {
+        toast.success("Cancellation request submitted");
+        utils.order.getUserOrders.invalidate();
+        utils.order.getCount.invalidate();
+      },
+      onError: (error) => {
+        toast.error(error.message || "Failed to submit request");
+      },
+    }
+  );
 
   if (isLoading) {
     return (
@@ -128,25 +155,88 @@ export default function OrdersPage() {
                           Online Payment (PhonePe)
                         </p>
                       </div>
-                      <div className="flex items-center gap-2">
-                        {order.status === "pending" && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="text-danger-1 hover:text-danger-2 rounded-full border-black/10"
-                            disabled={cancelMutation.isPending}
-                            onClick={() => {
-                              const confirmed = window.confirm(
-                                "Cancel this order? This can't be undone."
-                              );
-                              if (confirmed) {
-                                cancelMutation.mutate({ orderId: order.id });
-                              }
-                            }}
-                          >
-                            Cancel
-                          </Button>
+                      <div className="flex flex-wrap items-center gap-2">
+                        {order.cancellationRequest?.status === "pending" && (
+                          <Badge className="bg-paper-1 text-brand-3">
+                            Cancellation Requested
+                          </Badge>
                         )}
+                        {order.cancellationRequest?.status === "rejected" && (
+                          <Badge className="bg-danger-3 text-danger-4">
+                            Cancellation Rejected
+                          </Badge>
+                        )}
+                        {order.status === "pending" &&
+                          order.paymentStatus !== "paid" && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="text-danger-1 hover:text-danger-2 rounded-full border-black/10"
+                              disabled={cancelMutation.isPending}
+                              onClick={() => {
+                                const confirmed = window.confirm(
+                                  "Cancel this order? This can't be undone."
+                                );
+                                if (confirmed) {
+                                  cancelMutation.mutate({ orderId: order.id });
+                                }
+                              }}
+                            >
+                              Cancel
+                            </Button>
+                          )}
+                        {order.paymentStatus === "paid" &&
+                          order.status !== "cancelled" &&
+                          !order.cancellationRequest && (
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="text-danger-1 hover:text-danger-2 rounded-full border-black/10"
+                                >
+                                  Request Cancel
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent className="border border-black/5 bg-white/95">
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>
+                                    Request Cancellation
+                                  </AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Tell us why you want to cancel (optional).
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <textarea
+                                  className="focus:border-brand-1 focus:ring-brand-1 w-full rounded-2xl border border-black/10 bg-white/80 p-3 text-sm focus:ring-1 focus:outline-none"
+                                  rows={3}
+                                  placeholder="Reason (optional)"
+                                  value={cancelRequestReasons[order.id] ?? ""}
+                                  onChange={(event) =>
+                                    setCancelRequestReasons((prev) => ({
+                                      ...prev,
+                                      [order.id]: event.target.value,
+                                    }))
+                                  }
+                                />
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Back</AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() =>
+                                      requestCancellationMutation.mutate({
+                                        orderId: order.id,
+                                        reason:
+                                          cancelRequestReasons[order.id] ?? "",
+                                      })
+                                    }
+                                    className="bg-danger-1 hover:bg-danger-2 text-white"
+                                  >
+                                    Submit Request
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          )}
                         <Button
                           variant="outline"
                           size="sm"

@@ -29,12 +29,6 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
   Form,
   FormControl,
   FormField,
@@ -170,16 +164,6 @@ function CheckoutContent() {
   const router = useRouter();
   const { status } = useSession();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [confirmationOrderId, setConfirmationOrderId] = useState<string | null>(
-    null
-  );
-  const [serverTotals, setServerTotals] = useState<{
-    subtotal: number;
-    shippingCost: number;
-    tax: number;
-    discount: number;
-    total: number;
-  } | null>(null);
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(
     null
   );
@@ -335,16 +319,7 @@ function CheckoutContent() {
   const createOrderMutation = api.order.create.useMutation({
     onSuccess: async (data) => {
       cartStore.send({ type: "clearCart" });
-      if (data.totals && typeof data.totals.total === "number") {
-        setServerTotals({
-          subtotal: data.totals.subtotal,
-          shippingCost: data.totals.shippingCost,
-          tax: data.totals.tax,
-          discount: data.totals.discount,
-          total: data.totals.total,
-        });
-      }
-      setConfirmationOrderId(data.orderId);
+      router.push(`/order-confirmation/${data.orderId}`);
       setIsSubmitting(false);
     },
     onError: (error) => {
@@ -468,86 +443,6 @@ function CheckoutContent() {
 
   return (
     <div className="min-h-screen bg-transparent">
-      <Dialog
-        open={!!confirmationOrderId}
-        onOpenChange={(open) => {
-          if (!open) {
-            setConfirmationOrderId(null);
-            setServerTotals(null);
-          }
-        }}
-      >
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="font-display text-ink-1 text-xl">
-              Order placed
-            </DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <p className="text-muted-1 text-sm">
-              We&apos;ve verified your total on the server.
-            </p>
-            {serverTotals && (
-              <div className="space-y-2 rounded-2xl border border-black/5 bg-white/80 p-4 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-1">Subtotal</span>
-                  <span>{formatPrice(serverTotals.subtotal)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-1">Shipping</span>
-                  <span>{formatPrice(serverTotals.shippingCost)}</span>
-                </div>
-                {serverTotals.discount > 0 && (
-                  <div className="text-success-1 flex justify-between">
-                    <span>Discount</span>
-                    <span>-{formatPrice(serverTotals.discount)}</span>
-                  </div>
-                )}
-                {serverTotals.tax > 0 && (
-                  <>
-                    <div className="flex justify-between">
-                      <span className="text-muted-1">IGST (2.5%)</span>
-                      <span>{formatPrice(serverTotals.tax / 2)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-1">CGST (2.5%)</span>
-                      <span>{formatPrice(serverTotals.tax / 2)}</span>
-                    </div>
-                  </>
-                )}
-                <div className="text-ink-1 flex justify-between border-t pt-2 font-semibold">
-                  <span>Total</span>
-                  <span className="text-brand-1">
-                    {formatPrice(serverTotals.total)}
-                  </span>
-                </div>
-              </div>
-            )}
-            <div className="flex gap-3">
-              <Button
-                className="bg-brand-1 hover:bg-brand-2 flex-1 rounded-full"
-                onClick={() =>
-                  confirmationOrderId &&
-                  router.push(`/order-confirmation/${confirmationOrderId}`)
-                }
-              >
-                View Order
-              </Button>
-              <Button
-                variant="outline"
-                className="text-ink-1 flex-1 rounded-full border-black/10 bg-white/80 hover:bg-white"
-                onClick={() => {
-                  setConfirmationOrderId(null);
-                  setServerTotals(null);
-                  router.push("/products");
-                }}
-              >
-                Continue Shopping
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
       {/* Breadcrumb */}
       <div className="border-b border-black/5 bg-white/70">
         <div className="container mx-auto px-4 py-3">
