@@ -93,6 +93,20 @@ const INDIAN_STATES = [
   "Puducherry",
 ];
 
+const normalizeStateValue = (value: string) => {
+  const trimmed = value.trim();
+  const lower = trimmed.toLowerCase();
+  const exact = INDIAN_STATES.find((state) => state.toLowerCase() === lower);
+  if (exact) return exact;
+
+  const fuzzy = INDIAN_STATES.find((state) => {
+    const stateLower = state.toLowerCase();
+    return lower.includes(stateLower) || stateLower.includes(lower);
+  });
+
+  return fuzzy ?? trimmed;
+};
+
 const GST_REGEX = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/;
 
 const checkoutSchema = z.object({
@@ -218,13 +232,18 @@ function CheckoutContent() {
 
   const fillFormWithAddress = useCallback(
     (address: NonNullable<typeof savedAddresses>[0]) => {
-      form.setValue("name", address.name);
-      form.setValue("phone", address.phone);
-      form.setValue("addressLineOne", address.addressLineOne);
-      form.setValue("addressLineTwo", address.addressLineTwo ?? "");
-      form.setValue("city", address.city);
-      form.setValue("state", address.state);
-      form.setValue("pincode", address.pincode);
+      const current = form.getValues();
+      form.reset({
+        ...current,
+        name: address.name,
+        phone: address.phone,
+        addressLineOne: address.addressLineOne,
+        addressLineTwo: address.addressLineTwo ?? "",
+        city: address.city,
+        state: normalizeStateValue(address.state),
+        pincode: address.pincode,
+        saveAddress: false,
+      });
     },
     [form]
   );
@@ -269,7 +288,6 @@ function CheckoutContent() {
       const addr = savedAddresses?.find((a) => a.id === addressId);
       if (addr) {
         fillFormWithAddress(addr);
-        form.setValue("saveAddress", false);
       }
     }
   };
