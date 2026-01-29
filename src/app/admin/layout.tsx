@@ -20,6 +20,7 @@ import {
   Shield,
   Tag,
   Star,
+  Image as ImageIcon,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -55,6 +56,11 @@ const adminNavItems = [
     href: "/admin/coupons",
     label: "Coupons",
     icon: Tag,
+  },
+  {
+    href: "/admin/banners",
+    label: "Banners",
+    icon: ImageIcon,
   },
   {
     href: "/admin/reviews",

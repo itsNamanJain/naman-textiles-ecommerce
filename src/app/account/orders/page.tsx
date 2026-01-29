@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/motion";
 import { formatPrice } from "@/lib/utils";
 import { api } from "@/trpc/react";
+import { toast } from "sonner";
 
 const statusColors: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-800",
@@ -21,8 +22,20 @@ const statusColors: Record<string, string> = {
 };
 
 export default function OrdersPage() {
+  const utils = api.useUtils();
+
   const { data, isLoading } = api.order.getUserOrders.useQuery({
     limit: 20,
+  });
+  const cancelMutation = api.order.cancel.useMutation({
+    onSuccess: () => {
+      toast.success("Order cancelled");
+      utils.order.getUserOrders.invalidate();
+      utils.order.getCount.invalidate();
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to cancel order");
+    },
   });
 
   if (isLoading) {
@@ -116,13 +129,33 @@ export default function OrdersPage() {
                             : "Paid Online"}
                         </p>
                       </div>
-                      <Button variant="outline" size="sm" asChild>
-                        <Link href={`/order-confirmation/${order.id}`}>
-                          <Eye className="mr-2 h-4 w-4" />
-                          View
-                          <ChevronRight className="ml-1 h-4 w-4" />
-                        </Link>
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        {order.status === "pending" && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="text-red-600 hover:text-red-700"
+                            disabled={cancelMutation.isPending}
+                            onClick={() => {
+                              const confirmed = window.confirm(
+                                "Cancel this order? This can't be undone."
+                              );
+                              if (confirmed) {
+                                cancelMutation.mutate({ orderId: order.id });
+                              }
+                            }}
+                          >
+                            Cancel
+                          </Button>
+                        )}
+                        <Button variant="outline" size="sm" asChild>
+                          <Link href={`/order-confirmation/${order.id}`}>
+                            <Eye className="mr-2 h-4 w-4" />
+                            View
+                            <ChevronRight className="ml-1 h-4 w-4" />
+                          </Link>
+                        </Button>
+                      </div>
                     </div>
                   </div>
 
