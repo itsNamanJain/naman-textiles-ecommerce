@@ -111,13 +111,13 @@ export function Header() {
                   <Menu className="h-6 w-6" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-80">
+              <SheetContent side="left" className="w-80 px-6 py-6">
                 <SheetHeader>
                   <SheetTitle className="font-display text-ink-1 text-left text-xl">
                     Naman Textiles
                   </SheetTitle>
                 </SheetHeader>
-                <nav className="mt-8 flex flex-col gap-4">
+                <nav className="mt-6 flex flex-col gap-4">
                   <Link
                     href="/"
                     className="text-ink-1 hover:text-brand-1 text-lg font-medium"
