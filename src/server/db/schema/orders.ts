@@ -77,8 +77,6 @@ export const orders = createTable(
   ]
 );
 
-// ==================== ORDER ITEMS TABLE ====================
-
 export const orderItems = createTable(
   "order_item",
   {
@@ -113,29 +111,6 @@ export const orderItems = createTable(
     index("order_item_product_id_idx").on(t.productId),
   ]
 );
-
-// ==================== RELATIONS ====================
-
-export const ordersRelations = relations(orders, ({ one, many }) => ({
-  user: one(users, {
-    fields: [orders.userId],
-    references: [users.id],
-  }),
-  items: many(orderItems),
-}));
-
-export const orderItemsRelations = relations(orderItems, ({ one }) => ({
-  order: one(orders, {
-    fields: [orderItems.orderId],
-    references: [orders.id],
-  }),
-  product: one(products, {
-    fields: [orderItems.productId],
-    references: [products.id],
-  }),
-}));
-
-// ==================== TYPE EXPORTS ====================
 
 export type Order = typeof orders.$inferSelect;
 export type NewOrder = typeof orders.$inferInsert;

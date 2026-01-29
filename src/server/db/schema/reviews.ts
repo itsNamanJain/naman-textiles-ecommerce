@@ -11,8 +11,6 @@ import { users } from "./users";
 import { products } from "./inventory";
 import { createTable } from "./table-creator";
 
-// ==================== REVIEW TABLE ====================
-
 export const reviews = createTable(
   "review",
   {
@@ -44,19 +42,6 @@ export const reviews = createTable(
     index("review_rating_idx").on(t.rating),
   ]
 );
-
-// ==================== RELATIONS ====================
-
-export const reviewsRelations = relations(reviews, ({ one }) => ({
-  user: one(users, {
-    fields: [reviews.userId],
-    references: [users.id],
-  }),
-  product: one(products, {
-    fields: [reviews.productId],
-    references: [products.id],
-  }),
-}));
 
 // ==================== TYPE EXPORTS ====================
 

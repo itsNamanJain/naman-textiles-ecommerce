@@ -12,8 +12,6 @@ import type { AdapterAccountType } from "next-auth/adapters";
 import { userRoleEnum } from "./enums";
 import { createTable } from "./table-creator";
 
-// ==================== USER TABLE ====================
-
 export const users = createTable(
   "user",
   {
@@ -38,8 +36,6 @@ export const users = createTable(
     index("user_role_idx").on(t.role),
   ]
 );
-
-// ==================== AUTH TABLES ====================
 
 export const accounts = createTable(
   "account",
@@ -96,8 +92,6 @@ export const verificationTokens = createTable(
   (t) => [primaryKey({ columns: [t.identifier, t.token] })]
 );
 
-// ==================== ADDRESS TABLE ====================
-
 export const addresses = createTable(
   "address",
   {
@@ -124,37 +118,6 @@ export const addresses = createTable(
   },
   (t) => [index("address_user_id_idx").on(t.userId)]
 );
-
-// ==================== RELATIONS ====================
-
-export const usersRelations = relations(users, ({ many }) => ({
-  accounts: many(accounts),
-  sessions: many(sessions),
-  addresses: many(addresses),
-}));
-
-export const accountsRelations = relations(accounts, ({ one }) => ({
-  user: one(users, {
-    fields: [accounts.userId],
-    references: [users.id],
-  }),
-}));
-
-export const sessionsRelations = relations(sessions, ({ one }) => ({
-  user: one(users, {
-    fields: [sessions.userId],
-    references: [users.id],
-  }),
-}));
-
-export const addressesRelations = relations(addresses, ({ one }) => ({
-  user: one(users, {
-    fields: [addresses.userId],
-    references: [users.id],
-  }),
-}));
-
-// ==================== TYPE EXPORTS ====================
 
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;

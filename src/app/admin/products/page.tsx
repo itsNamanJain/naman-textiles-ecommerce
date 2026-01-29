@@ -15,8 +15,6 @@ import {
   ToggleLeft,
   ToggleRight,
   ImageIcon,
-  Check,
-  X,
   Copy,
   Zap,
 } from "lucide-react";
@@ -32,14 +30,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/motion";
 import { formatPrice } from "@/lib/utils";
 import { api } from "@/trpc/react";
@@ -147,7 +137,7 @@ export default function AdminProductsPage() {
               <div className="relative flex-1">
                 <Search className="text-muted-2 absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                 <Input
-                  placeholder="Search products by name, SKU..."
+                  placeholder="Search products by name..."
                   className="rounded-2xl border-black/10 bg-white/80 pl-10"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}

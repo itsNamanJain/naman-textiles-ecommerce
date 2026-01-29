@@ -296,27 +296,6 @@ export const adminRouter = createTRPCRouter({
         updateData.paymentStatus = "paid";
       }
 
-      // Restore stock if order is cancelled (and wasn't already cancelled)
-      if (input.status === "cancelled" && order.status !== "cancelled") {
-        for (const item of order.items ?? []) {
-          const product = await ctx.db
-            .selectFrom("product")
-            .select(["stockQuantity"])
-            .where("product.id", "=", item.productId)
-            .executeTakeFirst();
-
-          if (product) {
-            const currentStock = Number(product.stockQuantity);
-            const restoredStock = currentStock + Number(item.quantity);
-            await ctx.db
-              .updateTable("product")
-              .set({ stockQuantity: restoredStock.toString() })
-              .where("product.id", "=", item.productId)
-              .execute();
-          }
-        }
-      }
-
       await ctx.db
         .updateTable("order")
         .set(updateData)

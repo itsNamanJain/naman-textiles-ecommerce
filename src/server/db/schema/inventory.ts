@@ -45,9 +45,6 @@ export const products = createTable(
     minOrderQuantity: numeric("min_order_quantity", { precision: 10, scale: 2 })
       .default("1")
       .notNull(),
-    material: varchar("material", { length: 255 }),
-    width: varchar("width", { length: 50 }),
-    color: varchar("color", { length: 100 }),
     isActive: boolean("is_active").default(true).notNull(),
     isFeatured: boolean("is_featured").default(false).notNull(),
     categoryId: varchar("category_id", { length: 255 })
@@ -100,14 +97,9 @@ export const productVariants = createTable(
       .notNull()
       .references(() => products.id, { onDelete: "cascade" }),
     name: varchar("name", { length: 255 }).notNull(),
-    sku: varchar("sku", { length: 100 }).unique(),
     price: numeric("price", { precision: 10, scale: 2 }).notNull(),
-    stockQuantity: numeric("stock_quantity", { precision: 10, scale: 2 })
-      .default("0")
-      .notNull(),
 
     size: varchar("size", { length: 50 }),
-    color: varchar("color", { length: 100 }),
     length: varchar("length", { length: 50 }),
 
     createdAt: timestamp("created_at", { withTimezone: true })
@@ -118,36 +110,6 @@ export const productVariants = createTable(
     ),
   },
   (t) => [index("product_variant_product_id_idx").on(t.productId)]
-);
-
-export const categoriesRelations = relations(categories, ({ one, many }) => ({
-  products: many(products),
-}));
-
-export const productsRelations = relations(products, ({ one, many }) => ({
-  category: one(categories, {
-    fields: [products.categoryId],
-    references: [categories.id],
-  }),
-  images: many(productImages),
-  variants: many(productVariants),
-}));
-
-export const productImagesRelations = relations(productImages, ({ one }) => ({
-  product: one(products, {
-    fields: [productImages.productId],
-    references: [products.id],
-  }),
-}));
-
-export const productVariantsRelations = relations(
-  productVariants,
-  ({ one }) => ({
-    product: one(products, {
-      fields: [productVariants.productId],
-      references: [products.id],
-    }),
-  })
 );
 
 export type Category = typeof categories.$inferSelect;

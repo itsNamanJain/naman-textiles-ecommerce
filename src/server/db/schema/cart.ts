@@ -119,42 +119,6 @@ export const cartsRelations = relations(carts, ({ one, many }) => ({
   items: many(cartItems),
 }));
 
-export const cartItemsRelations = relations(cartItems, ({ one }) => ({
-  cart: one(carts, {
-    fields: [cartItems.cartId],
-    references: [carts.id],
-  }),
-  product: one(products, {
-    fields: [cartItems.productId],
-    references: [products.id],
-  }),
-  variant: one(productVariants, {
-    fields: [cartItems.variantId],
-    references: [productVariants.id],
-  }),
-}));
-
-export const wishlistsRelations = relations(wishlists, ({ one, many }) => ({
-  user: one(users, {
-    fields: [wishlists.userId],
-    references: [users.id],
-  }),
-  items: many(wishlistItems),
-}));
-
-export const wishlistItemsRelations = relations(wishlistItems, ({ one }) => ({
-  wishlist: one(wishlists, {
-    fields: [wishlistItems.wishlistId],
-    references: [wishlists.id],
-  }),
-  product: one(products, {
-    fields: [wishlistItems.productId],
-    references: [products.id],
-  }),
-}));
-
-// ==================== TYPE EXPORTS ====================
-
 export type Cart = typeof carts.$inferSelect;
 export type NewCart = typeof carts.$inferInsert;
 

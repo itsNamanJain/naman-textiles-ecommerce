@@ -242,23 +242,13 @@ export const orderRouter = createTRPCRouter({
             orderId: order.id,
             productId: item.productId,
             productName: item.productName,
-            productSku: item.productSku ?? null,
+            productSku: null,
             price: item.unitPrice.toFixed(2),
             quantity: item.quantity.toFixed(2),
             unit: item.unit,
             total: (item.unitPrice * item.quantity).toFixed(2),
           })
           .execute();
-
-        if (item.trackQuantity) {
-          const currentStock = stockMap.get(item.productId)?.stock ?? 0;
-          const newStock = Math.max(0, currentStock - item.quantity);
-          await ctx.db
-            .updateTable("product")
-            .set({ stockQuantity: newStock.toString() })
-            .where("id", "=", item.productId)
-            .execute();
-        }
       }
 
       if (appliedCouponCode) {
@@ -442,25 +432,6 @@ export const orderRouter = createTRPCRouter({
           code: "BAD_REQUEST",
           message: "Only pending orders can be cancelled",
         });
-      }
-
-      // Restore stock for each item
-      for (const item of order.items ?? []) {
-        const product = await ctx.db
-          .selectFrom("product")
-          .select(["stockQuantity"])
-          .where("id", "=", item.productId)
-          .executeTakeFirst();
-
-        if (product) {
-          const currentStock = Number(product.stockQuantity);
-          const restoredStock = currentStock + Number(item.quantity);
-          await ctx.db
-            .updateTable("product")
-            .set({ stockQuantity: restoredStock.toString() })
-            .where("id", "=", item.productId)
-            .execute();
-        }
       }
 
       await ctx.db

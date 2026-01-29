@@ -7,11 +7,8 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
-// Newsletter table removed - feature not needed
 import { discountTypeEnum } from "./enums";
 import { createTable } from "./table-creator";
-
-// ==================== COUPON TABLE ====================
 
 export const coupons = createTable(
   "coupon",
@@ -46,8 +43,6 @@ export const coupons = createTable(
   ]
 );
 
-// ==================== BANNER TABLE ====================
-
 export const banners = createTable(
   "banner",
   {
@@ -74,8 +69,6 @@ export const banners = createTable(
     index("banner_position_idx").on(t.position),
   ]
 );
-
-// ==================== TYPE EXPORTS ====================
 
 export type Coupon = typeof coupons.$inferSelect;
 export type NewCoupon = typeof coupons.$inferInsert;

@@ -284,41 +284,9 @@ export default function AdminDashboard() {
               </Button>
             </CardHeader>
             <CardContent>
-              {lowStockProducts && lowStockProducts.length > 0 ? (
-                <div className="space-y-4">
-                  {lowStockProducts.map((product) => (
-                    <div
-                      key={product.id}
-                      className="flex items-center justify-between rounded-2xl border border-black/5 bg-white/70 p-3"
-                    >
-                      <div>
-                        <p className="text-ink-1 font-medium">{product.name}</p>
-                        <p className="text-muted-2 text-sm">
-                          SKU: {product.sku ?? "N/A"}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p
-                          className={`font-medium ${
-                            Number(product.stockQuantity) <= 5
-                              ? "text-danger-1"
-                              : "text-brand-1"
-                          }`}
-                        >
-                          {product.stockQuantity} in stock
-                        </p>
-                        <p className="text-muted-2 text-sm">
-                          Min: {product.lowStockThreshold}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-muted-2 py-8 text-center">
-                  All products are well stocked
-                </div>
-              )}
+              <div className="text-muted-2 py-8 text-center">
+                Inventory tracking is disabled
+              </div>
             </CardContent>
           </Card>
         </FadeIn>

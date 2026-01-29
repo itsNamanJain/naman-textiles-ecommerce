@@ -1,8 +1,6 @@
 import { text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createTable } from "./table-creator";
 
-// ==================== SETTINGS TABLE ====================
-
 export const settings = createTable("setting", {
   id: varchar("id", { length: 255 })
     .primaryKey()
