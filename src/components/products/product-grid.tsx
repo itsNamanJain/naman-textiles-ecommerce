@@ -70,10 +70,10 @@ export function ProductGrid({
   if (isError) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
-        <p className="text-lg font-medium text-gray-900">
+        <p className="text-lg font-medium text-[#2d1c12]">
           Something went wrong
         </p>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm text-[#6b5645]">
           Failed to load products. Please try again later.
         </p>
       </div>
@@ -85,8 +85,8 @@ export function ProductGrid({
   if (products.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
-        <p className="text-lg font-medium text-gray-900">No products found</p>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="text-lg font-medium text-[#2d1c12]">No products found</p>
+        <p className="mt-1 text-sm text-[#6b5645]">
           Try adjusting your filters or search terms
         </p>
       </div>
@@ -106,10 +106,10 @@ export function ProductGrid({
       {/* Infinite scroll trigger */}
       <div ref={ref} className="flex justify-center py-8">
         {isFetchingNextPage && (
-          <Loader2 className="h-6 w-6 animate-spin text-amber-600" />
+          <Loader2 className="h-6 w-6 animate-spin text-[#b8743a]" />
         )}
         {!hasNextPage && products.length > 0 && (
-          <p className="text-sm text-gray-500">No more products to load</p>
+          <p className="text-sm text-[#9c826a]">No more products to load</p>
         )}
       </div>
     </>
@@ -120,7 +120,10 @@ function ProductGridSkeleton() {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {Array.from({ length: 8 }).map((_, i) => (
-        <div key={i} className="overflow-hidden rounded-lg bg-white shadow-sm">
+        <div
+          key={i}
+          className="overflow-hidden rounded-2xl border border-black/5 bg-white/80 shadow-[0_10px_30px_rgba(15,15,15,0.06)]"
+        >
           <Skeleton className="aspect-square w-full" />
           <div className="space-y-2 p-4">
             <Skeleton className="h-4 w-20" />

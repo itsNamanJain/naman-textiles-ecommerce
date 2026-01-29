@@ -28,10 +28,7 @@ export const bannerRouter = createTRPCRouter({
       .selectAll()
       .where("isActive", "=", true)
       .where((eb) =>
-        eb.or([
-          eb("startDate", "is", null),
-          eb("startDate", "<=", now),
-        ])
+        eb.or([eb("startDate", "is", null), eb("startDate", "<=", now)])
       )
       .where((eb) =>
         eb.or([eb("endDate", "is", null), eb("endDate", ">=", now)])
@@ -53,7 +50,11 @@ export const bannerRouter = createTRPCRouter({
   create: adminProcedure
     .input(bannerSchema)
     .mutation(async ({ ctx, input }) => {
-      if (input.startDate && input.endDate && input.endDate <= input.startDate) {
+      if (
+        input.startDate &&
+        input.endDate &&
+        input.endDate <= input.startDate
+      ) {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "End date must be after start date",
@@ -82,7 +83,11 @@ export const bannerRouter = createTRPCRouter({
   update: adminProcedure
     .input(bannerSchema.extend({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      if (input.startDate && input.endDate && input.endDate <= input.startDate) {
+      if (
+        input.startDate &&
+        input.endDate &&
+        input.endDate <= input.startDate
+      ) {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "End date must be after start date",

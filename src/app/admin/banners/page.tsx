@@ -121,7 +121,9 @@ export default function AdminBannersPage() {
       link: banner.link ?? "",
       position: String(banner.position ?? 0),
       isActive: banner.isActive ?? true,
-      startDate: banner.startDate ? dayjs(banner.startDate).format("YYYY-MM-DD") : "",
+      startDate: banner.startDate
+        ? dayjs(banner.startDate).format("YYYY-MM-DD")
+        : "",
       endDate: banner.endDate ? dayjs(banner.endDate).format("YYYY-MM-DD") : "",
     });
     setIsDialogOpen(true);
@@ -228,9 +230,10 @@ export default function AdminBannersPage() {
                   </TableHeader>
                   <TableBody>
                     {banners.map((banner) => {
-                      const scheduleLabel = banner.startDate || banner.endDate
-                        ? `${banner.startDate ? dayjs(banner.startDate).format("MMM D, YYYY") : "Anytime"} → ${banner.endDate ? dayjs(banner.endDate).format("MMM D, YYYY") : "Ongoing"}`
-                        : "Always";
+                      const scheduleLabel =
+                        banner.startDate || banner.endDate
+                          ? `${banner.startDate ? dayjs(banner.startDate).format("MMM D, YYYY") : "Anytime"} → ${banner.endDate ? dayjs(banner.endDate).format("MMM D, YYYY") : "Ongoing"}`
+                          : "Always";
 
                       return (
                         <TableRow key={banner.id}>
@@ -424,10 +427,7 @@ export default function AdminBannersPage() {
           </div>
 
           <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setIsDialogOpen(false)}
-            >
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
               Cancel
             </Button>
             <Button
@@ -444,9 +444,7 @@ export default function AdminBannersPage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Delete banner?</DialogTitle>
-            <DialogDescription>
-              This action cannot be undone.
-            </DialogDescription>
+            <DialogDescription>This action cannot be undone.</DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button

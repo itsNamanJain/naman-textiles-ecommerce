@@ -14,7 +14,10 @@ interface RelatedProductsProps {
   categoryId: string;
 }
 
-export function RelatedProducts({ productId, categoryId }: RelatedProductsProps) {
+export function RelatedProducts({
+  productId,
+  categoryId,
+}: RelatedProductsProps) {
   const { data: products, isLoading } = api.product.getRelated.useQuery({
     productId,
     categoryId,
@@ -26,9 +29,9 @@ export function RelatedProducts({ productId, categoryId }: RelatedProductsProps)
   }
 
   return (
-    <section className="container mx-auto px-4 py-8">
+    <section className="container mx-auto px-4 py-10">
       <FadeIn>
-        <h2 className="mb-6 text-2xl font-bold text-gray-900">
+        <h2 className="font-display mb-6 text-2xl text-[#2d1c12]">
           You May Also Like
         </h2>
       </FadeIn>
@@ -47,10 +50,10 @@ export function RelatedProducts({ productId, categoryId }: RelatedProductsProps)
             <StaggerItem key={product.id} className="h-full">
               <Link
                 href={`/product/${product.slug}`}
-                className="group flex h-full flex-col overflow-hidden rounded-lg bg-white shadow-sm transition-shadow hover:shadow-md"
+                className="group flex h-full flex-col overflow-hidden rounded-2xl border border-black/5 bg-white/90 shadow-[0_10px_30px_rgba(15,15,15,0.06)] transition-all hover:-translate-y-1 hover:shadow-[0_25px_60px_rgba(15,15,15,0.12)]"
               >
                 {/* Image */}
-                <div className="relative aspect-[4/5] overflow-hidden bg-gray-100">
+                <div className="relative aspect-[4/5] overflow-hidden bg-[#f5efe7]">
                   {product.images[0]?.url ? (
                     <Image
                       src={product.images[0].url}
@@ -65,7 +68,7 @@ export function RelatedProducts({ productId, categoryId }: RelatedProductsProps)
                     </div>
                   )}
                   {discount > 0 && (
-                    <Badge className="absolute left-2 top-2 bg-red-500 text-xs text-white">
+                    <Badge className="absolute top-2 left-2 bg-[#b3474d] text-xs text-white">
                       -{discount}%
                     </Badge>
                   )}
@@ -73,23 +76,23 @@ export function RelatedProducts({ productId, categoryId }: RelatedProductsProps)
 
                 {/* Info */}
                 <div className="flex flex-1 flex-col p-4">
-                  <h3 className="line-clamp-2 h-12 font-medium text-gray-900 group-hover:text-amber-600">
+                  <h3 className="line-clamp-2 h-12 font-semibold text-[#2d1c12] group-hover:text-[#b8743a]">
                     {product.name}
                   </h3>
                   <div className="h-5">
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-[#9c826a]">
                       {product.category?.name}
                     </p>
                   </div>
                   <div className="mt-auto flex items-baseline gap-2 pt-2">
-                    <span className="font-bold text-amber-600">
+                    <span className="font-semibold text-[#b8743a]">
                       {formatPrice(Number(product.price))}
                     </span>
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-[#9c826a]">
                       /{product.unit}
                     </span>
                     {product.comparePrice && (
-                      <span className="text-sm text-gray-400 line-through">
+                      <span className="text-sm text-[#9c826a] line-through">
                         {formatPrice(Number(product.comparePrice))}
                       </span>
                     )}

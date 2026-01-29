@@ -103,10 +103,12 @@ export default function SignUpPage() {
   return (
     <div className="flex min-h-[calc(100vh-200px)] items-center justify-center px-4 py-12">
       <FadeIn className="w-full max-w-md">
-        <Card className="border-0 shadow-xl">
+        <Card className="border border-black/5 bg-white/85 shadow-[0_30px_80px_rgba(15,15,15,0.12)]">
           <CardHeader className="space-y-1 text-center">
-            <h1 className="text-2xl font-bold text-gray-900">Create Account</h1>
-            <p className="text-sm text-gray-600">
+            <h1 className="font-display text-2xl text-[#2d1c12]">
+              Create Account
+            </h1>
+            <p className="text-sm text-[#6b5645]">
               Join Naman Textiles for exclusive deals and offers
             </p>
           </CardHeader>
@@ -115,7 +117,7 @@ export default function SignUpPage() {
             <Button
               type="button"
               variant="outline"
-              className="w-full"
+              className="w-full rounded-full border-black/10 bg-white/80 text-[#2d1c12] hover:bg-white"
               onClick={handleGoogleSignIn}
               disabled={isGoogleLoading}
             >
@@ -146,7 +148,7 @@ export default function SignUpPage() {
 
             <div className="relative">
               <Separator />
-              <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-2 text-xs text-gray-500">
+              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-2 text-xs text-[#9c826a]">
                 or register with email
               </span>
             </div>
@@ -165,10 +167,10 @@ export default function SignUpPage() {
                       <FormLabel>Full Name</FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                          <User className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                           <Input
                             placeholder="John Doe"
-                            className="pl-10"
+                            className="rounded-2xl border-black/10 bg-white/80 pl-10"
                             {...field}
                           />
                         </div>
@@ -186,11 +188,11 @@ export default function SignUpPage() {
                       <FormLabel>Email</FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                          <Mail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                           <Input
                             type="email"
                             placeholder="you@example.com"
-                            className="pl-10"
+                            className="rounded-2xl border-black/10 bg-white/80 pl-10"
                             {...field}
                           />
                         </div>
@@ -208,11 +210,11 @@ export default function SignUpPage() {
                       <FormLabel>Phone (Optional)</FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                          <Phone className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                           <Input
                             type="tel"
                             placeholder="+91 98765 43210"
-                            className="pl-10"
+                            className="rounded-2xl border-black/10 bg-white/80 pl-10"
                             {...field}
                           />
                         </div>
@@ -230,17 +232,17 @@ export default function SignUpPage() {
                       <FormLabel>Password</FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                          <Lock className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                           <Input
                             type={showPassword ? "text" : "password"}
                             placeholder="••••••••"
-                            className="pl-10 pr-10"
+                            className="rounded-2xl border-black/10 bg-white/80 pr-10 pl-10"
                             {...field}
                           />
                           <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                            className="absolute top-1/2 right-3 -translate-y-1/2 text-[#9c826a] hover:text-[#6b5645]"
                           >
                             {showPassword ? (
                               <EyeOff className="h-4 w-4" />
@@ -263,11 +265,11 @@ export default function SignUpPage() {
                       <FormLabel>Confirm Password</FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                          <Lock className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                           <Input
                             type={showConfirmPassword ? "text" : "password"}
                             placeholder="••••••••"
-                            className="pl-10 pr-10"
+                            className="rounded-2xl border-black/10 bg-white/80 pr-10 pl-10"
                             {...field}
                           />
                           <button
@@ -275,7 +277,7 @@ export default function SignUpPage() {
                             onClick={() =>
                               setShowConfirmPassword(!showConfirmPassword)
                             }
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                            className="absolute top-1/2 right-3 -translate-y-1/2 text-[#9c826a] hover:text-[#6b5645]"
                           >
                             {showConfirmPassword ? (
                               <EyeOff className="h-4 w-4" />
@@ -292,7 +294,7 @@ export default function SignUpPage() {
 
                 <Button
                   type="submit"
-                  className="w-full bg-amber-600 hover:bg-amber-700"
+                  className="w-full rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
                   disabled={signUpMutation.isPending}
                 >
                   {signUpMutation.isPending ? (
@@ -307,23 +309,23 @@ export default function SignUpPage() {
               </form>
             </Form>
 
-            <p className="text-center text-sm text-gray-600">
+            <p className="text-center text-sm text-[#6b5645]">
               Already have an account?{" "}
               <Link
                 href="/auth/signin"
-                className="font-medium text-amber-600 hover:underline"
+                className="font-medium text-[#b8743a] hover:underline"
               >
                 Sign in
               </Link>
             </p>
 
-            <p className="text-center text-xs text-gray-500">
+            <p className="text-center text-xs text-[#9c826a]">
               By creating an account, you agree to our{" "}
-              <Link href="/terms" className="underline hover:text-amber-600">
+              <Link href="/terms" className="underline hover:text-[#b8743a]">
                 Terms of Service
               </Link>{" "}
               and{" "}
-              <Link href="/privacy" className="underline hover:text-amber-600">
+              <Link href="/privacy" className="underline hover:text-[#b8743a]">
                 Privacy Policy
               </Link>
             </p>

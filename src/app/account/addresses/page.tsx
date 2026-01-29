@@ -174,20 +174,20 @@ export default function AddressesPage() {
 
   return (
     <FadeIn>
-      <Card>
+      <Card className="border border-black/5 bg-white/80">
         <CardHeader>
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="font-display flex items-center gap-2 text-xl text-[#2d1c12]">
                 <MapPin className="h-5 w-5" />
                 Saved Addresses
               </CardTitle>
-              <CardDescription className="mt-1">
+              <CardDescription className="mt-1 text-[#6b5645]">
                 Manage your shipping addresses
               </CardDescription>
             </div>
             <Button
-              className="bg-amber-600 hover:bg-amber-700"
+              className="rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
               onClick={openCreateDialog}
             >
               <Plus className="mr-2 h-4 w-4" />
@@ -198,17 +198,17 @@ export default function AddressesPage() {
         <CardContent>
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-amber-600" />
+              <Loader2 className="h-8 w-8 animate-spin text-[#b8743a]" />
             </div>
           ) : addressList.length === 0 ? (
             <div className="py-16 text-center">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
-                <MapPin className="h-8 w-8 text-gray-400" />
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#f7efe7]">
+                <MapPin className="h-8 w-8 text-[#b0896d]" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900">
+              <h3 className="font-display text-lg text-[#2d1c12]">
                 No addresses saved
               </h3>
-              <p className="mt-1 text-gray-500">
+              <p className="mt-1 text-[#6b5645]">
                 Add an address to make checkout faster
               </p>
             </div>
@@ -216,29 +216,29 @@ export default function AddressesPage() {
             <StaggerContainer className="grid gap-4 sm:grid-cols-2">
               {addressList.map((address) => (
                 <StaggerItem key={address.id}>
-                  <div className="rounded-lg border p-4">
+                  <div className="rounded-2xl border border-black/5 bg-white/80 p-4">
                     <div className="flex items-start justify-between gap-2">
                       <div>
                         <div className="flex items-center gap-2">
-                          <p className="font-medium text-gray-900">
+                          <p className="font-medium text-[#2d1c12]">
                             {address.name}
                           </p>
                           {address.isDefault && (
-                            <span className="rounded bg-amber-100 px-2 py-0.5 text-xs text-amber-700">
+                            <span className="rounded-full bg-[#f7efe7] px-2 py-0.5 text-xs font-semibold text-[#8a6642]">
                               Default
                             </span>
                           )}
                         </div>
-                        <p className="mt-1 text-sm text-gray-600">
+                        <p className="mt-1 text-sm text-[#6b5645]">
                           {address.addressLine1}
                           {address.addressLine2
                             ? `, ${address.addressLine2}`
                             : ""}
                         </p>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-[#6b5645]">
                           {address.city}, {address.state} - {address.pincode}
                         </p>
-                        <p className="mt-1 text-sm text-gray-500">
+                        <p className="mt-1 text-sm text-[#9c826a]">
                           +91 {address.phone}
                         </p>
                       </div>
@@ -247,7 +247,7 @@ export default function AddressesPage() {
                           <Button
                             variant="outline"
                             size="icon"
-                            className="h-8 w-8"
+                            className="h-8 w-8 rounded-full border-black/10"
                             onClick={() =>
                               setDefaultMutation.mutate({ id: address.id })
                             }
@@ -259,7 +259,7 @@ export default function AddressesPage() {
                         <Button
                           variant="outline"
                           size="icon"
-                          className="h-8 w-8"
+                          className="h-8 w-8 rounded-full border-black/10"
                           onClick={() => openEditDialog(address)}
                           title="Edit"
                         >
@@ -270,7 +270,7 @@ export default function AddressesPage() {
                             <Button
                               variant="outline"
                               size="icon"
-                              className="h-8 w-8 text-red-600 hover:text-red-700"
+                              className="h-8 w-8 rounded-full border-black/10 text-[#b3474d] hover:text-[#9a3a40]"
                               title="Delete"
                             >
                               <Trash2 className="h-4 w-4" />
@@ -292,7 +292,7 @@ export default function AddressesPage() {
                                 onClick={() =>
                                   deleteMutation.mutate({ id: address.id })
                                 }
-                                className="bg-red-600 hover:bg-red-700"
+                                className="bg-[#b3474d] hover:bg-[#9a3a40]"
                               >
                                 Delete
                               </AlertDialogAction>
@@ -312,15 +312,12 @@ export default function AddressesPage() {
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="font-display text-xl text-[#2d1c12]">
               {editingAddressId ? "Edit Address" : "Add Address"}
             </DialogTitle>
           </DialogHeader>
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-4"
-            >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
                 <FormField
                   control={form.control}
@@ -329,7 +326,11 @@ export default function AddressesPage() {
                     <FormItem>
                       <FormLabel>Full Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="John Doe" {...field} />
+                        <Input
+                          placeholder="John Doe"
+                          className="rounded-2xl border-black/10 bg-white/80"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -346,6 +347,7 @@ export default function AddressesPage() {
                           placeholder="9876543210"
                           inputMode="numeric"
                           maxLength={10}
+                          className="rounded-2xl border-black/10 bg-white/80"
                           {...field}
                           onChange={(e) => {
                             const value = e.target.value.replace(/\D/g, "");
@@ -368,6 +370,7 @@ export default function AddressesPage() {
                     <FormControl>
                       <Input
                         placeholder="House/Flat No., Building Name"
+                        className="rounded-2xl border-black/10 bg-white/80"
                         {...field}
                       />
                     </FormControl>
@@ -383,7 +386,11 @@ export default function AddressesPage() {
                   <FormItem>
                     <FormLabel>Address Line 2 (Optional)</FormLabel>
                     <FormControl>
-                      <Input placeholder="Street, Landmark" {...field} />
+                      <Input
+                        placeholder="Street, Landmark"
+                        className="rounded-2xl border-black/10 bg-white/80"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -398,7 +405,11 @@ export default function AddressesPage() {
                     <FormItem>
                       <FormLabel>City</FormLabel>
                       <FormControl>
-                        <Input placeholder="Delhi" {...field} />
+                        <Input
+                          placeholder="Delhi"
+                          className="rounded-2xl border-black/10 bg-white/80"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -411,7 +422,11 @@ export default function AddressesPage() {
                     <FormItem>
                       <FormLabel>State</FormLabel>
                       <FormControl>
-                        <Input placeholder="Delhi" {...field} />
+                        <Input
+                          placeholder="Delhi"
+                          className="rounded-2xl border-black/10 bg-white/80"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -428,6 +443,7 @@ export default function AddressesPage() {
                           placeholder="110031"
                           inputMode="numeric"
                           maxLength={6}
+                          className="rounded-2xl border-black/10 bg-white/80"
                           {...field}
                           onChange={(e) => {
                             const value = e.target.value.replace(/\D/g, "");
@@ -445,10 +461,12 @@ export default function AddressesPage() {
                 control={form.control}
                 name="isDefault"
                 render={({ field }) => (
-                  <FormItem className="flex items-center justify-between rounded-lg border p-4">
+                  <FormItem className="flex items-center justify-between rounded-2xl border border-black/10 bg-white/80 p-4">
                     <div className="space-y-0.5">
-                      <FormLabel>Set as default</FormLabel>
-                      <p className="text-sm text-gray-500">
+                      <FormLabel className="text-[#2d1c12]">
+                        Set as default
+                      </FormLabel>
+                      <p className="text-sm text-[#6b5645]">
                         Use this address by default at checkout
                       </p>
                     </div>
@@ -467,12 +485,13 @@ export default function AddressesPage() {
                   type="button"
                   variant="outline"
                   onClick={() => setDialogOpen(false)}
+                  className="rounded-full border-black/10 bg-white/80 text-[#2d1c12] hover:bg-white"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
-                  className="bg-amber-600 hover:bg-amber-700"
+                  className="rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
                   disabled={
                     createMutation.isPending || updateMutation.isPending
                   }

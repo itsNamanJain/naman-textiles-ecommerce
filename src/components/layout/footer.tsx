@@ -90,26 +90,26 @@ export function Footer() {
   }
 
   return (
-    <footer className="bg-gray-900 text-gray-300">
+    <footer className="bg-[#1c120c] text-[#f4ede4]">
       {/* Main Footer */}
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+      <div className="container mx-auto px-4 py-14">
+        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           {/* Company Info */}
           <div>
-            <h2 className="mb-4 text-xl font-bold text-white">
+            <h2 className="font-display mb-4 text-2xl font-semibold text-white">
               {STORE_INFO.name}
             </h2>
-            <p className="mb-4 text-sm leading-relaxed">
+            <p className="mb-6 text-sm leading-relaxed text-[#d8cabc]">
               {STORE_INFO.description}
             </p>
-            <div className="space-y-2">
+            <div className="space-y-3">
               <a
                 href={STORE_INFO.address.googleMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-start gap-2 transition-colors hover:text-amber-500"
+                className="flex items-start gap-2 text-sm transition-colors hover:text-[#e2b377]"
               >
-                <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500" />
+                <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-[#e2b377]" />
                 <span className="text-sm">
                   {STORE_INFO.address.line1}
                   <br />
@@ -117,11 +117,11 @@ export function Footer() {
                 </span>
               </a>
               <div className="flex items-center gap-2">
-                <Phone className="h-4 w-4 text-amber-500" />
+                <Phone className="h-4 w-4 text-[#e2b377]" />
                 <span className="text-sm">{STORE_INFO.phone}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Mail className="h-4 w-4 text-amber-500" />
+                <Mail className="h-4 w-4 text-[#e2b377]" />
                 <span className="text-sm">{STORE_INFO.email}</span>
               </div>
             </div>
@@ -137,7 +137,7 @@ export function Footer() {
                 <li key={category.slug}>
                   <Link
                     href={`/category/${category.slug}`}
-                    className="text-sm transition-colors hover:text-amber-500"
+                    className="text-sm text-[#d8cabc] transition-colors hover:text-[#e2b377]"
                   >
                     {category.name}
                   </Link>
@@ -156,7 +156,7 @@ export function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm transition-colors hover:text-amber-500"
+                    className="text-sm text-[#d8cabc] transition-colors hover:text-[#e2b377]"
                   >
                     {link.name}
                   </Link>
@@ -175,7 +175,7 @@ export function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm transition-colors hover:text-amber-500"
+                    className="text-sm text-[#d8cabc] transition-colors hover:text-[#e2b377]"
                   >
                     {link.name}
                   </Link>
@@ -185,11 +185,11 @@ export function Footer() {
           </div>
         </div>
 
-        <Separator className="my-8 bg-gray-700" />
+        <Separator className="my-10 bg-white/10" />
 
         {/* Bottom Footer */}
-        <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-          <p className="text-sm">
+        <div className="flex flex-col items-center justify-between gap-4 text-sm text-[#d8cabc] md:flex-row">
+          <p>
             &copy; {new Date().getFullYear()} {STORE_INFO.name}. All rights
             reserved.
           </p>
@@ -199,7 +199,7 @@ export function Footer() {
             <Link
               href="https://facebook.com"
               target="_blank"
-              className="transition-colors hover:text-amber-500"
+              className="transition-colors hover:text-[#e2b377]"
               aria-label="Facebook"
             >
               <FacebookIcon />
@@ -207,7 +207,7 @@ export function Footer() {
             <Link
               href="https://instagram.com"
               target="_blank"
-              className="transition-colors hover:text-amber-500"
+              className="transition-colors hover:text-[#e2b377]"
               aria-label="Instagram"
             >
               <InstagramIcon />
@@ -215,7 +215,7 @@ export function Footer() {
             <Link
               href="https://x.com"
               target="_blank"
-              className="transition-colors hover:text-amber-500"
+              className="transition-colors hover:text-[#e2b377]"
               aria-label="X (Twitter)"
             >
               <XIcon />
@@ -223,7 +223,7 @@ export function Footer() {
             <Link
               href="https://youtube.com"
               target="_blank"
-              className="transition-colors hover:text-amber-500"
+              className="transition-colors hover:text-[#e2b377]"
               aria-label="YouTube"
             >
               <YoutubeIcon />
@@ -232,7 +232,7 @@ export function Footer() {
 
           {/* Payment Methods */}
           {paymentMethods.length > 0 && (
-            <div className="flex flex-wrap items-center justify-center gap-2 text-sm md:justify-end">
+            <div className="flex flex-wrap items-center justify-center gap-2 text-xs tracking-[0.2em] text-[#c6b19b] uppercase md:justify-end">
               <span>We Accept:</span>
               {paymentMethods.map((method, index) => (
                 <span key={method} className="flex items-center">

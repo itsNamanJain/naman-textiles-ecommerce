@@ -40,7 +40,7 @@ export default async function ProductPage({ params }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-12">
+    <div className="min-h-screen bg-transparent pb-12">
       {/* Product Details */}
       <Suspense fallback={<ProductDetailsSkeleton />}>
         <ProductDetails product={product} />
@@ -59,18 +59,18 @@ export default async function ProductPage({ params }: Props) {
 
 function ProductDetailsSkeleton() {
   return (
-    <div className="bg-white">
+    <div className="bg-transparent">
       <div className="container mx-auto px-4 py-8">
         <div className="grid gap-8 lg:grid-cols-2">
-          <Skeleton className="aspect-square w-full rounded-lg" />
+          <Skeleton className="aspect-square w-full rounded-2xl" />
           <div className="space-y-4">
             <Skeleton className="h-8 w-3/4" />
             <Skeleton className="h-6 w-1/2" />
             <Skeleton className="h-10 w-1/3" />
             <Skeleton className="h-24 w-full" />
             <div className="flex gap-4">
-              <Skeleton className="h-12 w-40" />
-              <Skeleton className="h-12 flex-1" />
+              <Skeleton className="h-12 w-40 rounded-full" />
+              <Skeleton className="h-12 flex-1 rounded-full" />
             </div>
           </div>
         </div>
@@ -85,7 +85,10 @@ function RelatedProductsSkeleton() {
       <Skeleton className="mb-6 h-8 w-48" />
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="overflow-hidden rounded-lg bg-white shadow-sm">
+          <div
+            key={i}
+            className="overflow-hidden rounded-2xl border border-black/5 bg-white/80 shadow-[0_10px_30px_rgba(15,15,15,0.06)]"
+          >
             <Skeleton className="aspect-square w-full" />
             <div className="space-y-2 p-4">
               <Skeleton className="h-5 w-full" />

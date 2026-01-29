@@ -57,7 +57,10 @@ export const cartStore = createStore({
     },
 
     // Add item to cart
-    addItem: (context, event: { item: Omit<CartItem, "quantity">; quantity: number }) => {
+    addItem: (
+      context,
+      event: { item: Omit<CartItem, "quantity">; quantity: number }
+    ) => {
       const existingIndex = context.items.findIndex(
         (i) => i.productId === event.item.productId
       );
@@ -80,7 +83,10 @@ export const cartStore = createStore({
         });
       } else {
         // Add new item
-        newItems = [...context.items, { ...event.item, quantity: event.quantity }];
+        newItems = [
+          ...context.items,
+          { ...event.item, quantity: event.quantity },
+        ];
       }
 
       saveCartToStorage(newItems);
@@ -88,12 +94,18 @@ export const cartStore = createStore({
     },
 
     // Update item quantity
-    updateQuantity: (context, event: { productId: string; quantity: number }) => {
+    updateQuantity: (
+      context,
+      event: { productId: string; quantity: number }
+    ) => {
       const newItems = context.items.map((item) => {
         if (item.productId === event.productId) {
           // Validate quantity against constraints
           const minQty = item.minOrderQuantity;
-          const maxQty = Math.min(item.maxOrderQuantity ?? Infinity, item.stockQuantity);
+          const maxQty = Math.min(
+            item.maxOrderQuantity ?? Infinity,
+            item.stockQuantity
+          );
           const quantity = Math.max(minQty, Math.min(event.quantity, maxQty));
           return { ...item, quantity };
         }
@@ -109,7 +121,10 @@ export const cartStore = createStore({
       const newItems = context.items.map((item) => {
         if (item.productId === event.productId) {
           const newQuantity = item.quantity + item.quantityStep;
-          const maxQty = Math.min(item.maxOrderQuantity ?? Infinity, item.stockQuantity);
+          const maxQty = Math.min(
+            item.maxOrderQuantity ?? Infinity,
+            item.stockQuantity
+          );
           return { ...item, quantity: Math.min(newQuantity, maxQty) };
         }
         return item;

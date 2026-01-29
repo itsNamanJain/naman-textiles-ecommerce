@@ -5,34 +5,34 @@ import { Button } from "@/components/ui/button";
 
 export default function NotFound() {
   return (
-    <div className="flex min-h-[calc(100vh-200px)] flex-col items-center justify-center bg-gray-50 px-4">
+    <div className="flex min-h-[calc(100vh-200px)] flex-col items-center justify-center bg-transparent px-4">
       {/* Decorative fabric pattern */}
       <div className="absolute inset-0 overflow-hidden opacity-5">
-        <div className="absolute -left-4 top-0 h-72 w-72 rounded-full bg-amber-500 blur-3xl" />
-        <div className="absolute -right-4 bottom-0 h-72 w-72 rounded-full bg-amber-600 blur-3xl" />
+        <div className="absolute top-0 -left-4 h-72 w-72 rounded-full bg-[#b8743a] blur-3xl" />
+        <div className="absolute -right-4 bottom-0 h-72 w-72 rounded-full bg-[#d8a56b] blur-3xl" />
       </div>
 
       <div className="relative text-center">
         {/* 404 Number */}
         <div className="relative">
-          <h1 className="text-[150px] font-bold leading-none text-gray-200 sm:text-[200px]">
+          <h1 className="text-[150px] leading-none font-semibold text-[#efe6da] sm:text-[200px]">
             404
           </h1>
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="rounded-full bg-amber-100 p-6">
-              <ShoppingBag className="h-16 w-16 text-amber-600 sm:h-20 sm:w-20" />
+            <div className="rounded-full bg-[#f7efe7] p-6">
+              <ShoppingBag className="h-16 w-16 text-[#b8743a] sm:h-20 sm:w-20" />
             </div>
           </div>
         </div>
 
         {/* Message */}
         <div className="mt-4">
-          <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">
+          <h2 className="font-display text-2xl text-[#2d1c12] sm:text-3xl">
             Page Not Found
           </h2>
-          <p className="mx-auto mt-3 max-w-md text-gray-500">
-            Oops! The page you&apos;re looking for seems to have unraveled. 
-            It might have been moved, deleted, or perhaps never existed.
+          <p className="mx-auto mt-3 max-w-md text-[#6b5645]">
+            Oops! The page you&apos;re looking for seems to have unraveled. It
+            might have been moved, deleted, or perhaps never existed.
           </p>
         </div>
 
@@ -40,7 +40,7 @@ export default function NotFound() {
         <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
           <Button
             size="lg"
-            className="w-full bg-amber-600 hover:bg-amber-700 sm:w-auto"
+            className="w-full rounded-full bg-[#b8743a] hover:bg-[#a4632f] sm:w-auto"
             asChild
           >
             <Link href="/">
@@ -51,7 +51,7 @@ export default function NotFound() {
           <Button
             size="lg"
             variant="outline"
-            className="w-full sm:w-auto"
+            className="w-full rounded-full border-black/10 bg-white/80 text-[#2d1c12] hover:bg-white sm:w-auto"
             asChild
           >
             <Link href="/products">
@@ -65,7 +65,7 @@ export default function NotFound() {
         <div className="mt-8">
           <Link
             href="javascript:history.back()"
-            className="inline-flex items-center text-sm text-gray-500 hover:text-amber-600"
+            className="inline-flex items-center text-sm text-[#6b5645] hover:text-[#b8743a]"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Go back to previous page
@@ -73,8 +73,8 @@ export default function NotFound() {
         </div>
 
         {/* Popular Links */}
-        <div className="mt-12 rounded-xl border bg-white p-6 shadow-sm">
-          <h3 className="text-sm font-medium text-gray-900">
+        <div className="mt-12 rounded-2xl border border-black/5 bg-white/80 p-6 shadow-[0_20px_50px_rgba(15,15,15,0.08)]">
+          <h3 className="text-sm font-medium text-[#2d1c12]">
             Popular Categories
           </h3>
           <div className="mt-4 flex flex-wrap justify-center gap-2">
@@ -88,7 +88,7 @@ export default function NotFound() {
               <Link
                 key={category.slug}
                 href={`/category/${category.slug}`}
-                className="rounded-full border border-gray-200 px-4 py-2 text-sm text-gray-600 transition-colors hover:border-amber-500 hover:bg-amber-50 hover:text-amber-700"
+                className="rounded-full border border-black/10 bg-white/80 px-4 py-2 text-sm text-[#6b5645] transition-colors hover:border-[#b8743a] hover:bg-[#f7efe7] hover:text-[#8a6642]"
               >
                 {category.name}
               </Link>
@@ -97,11 +97,11 @@ export default function NotFound() {
         </div>
 
         {/* Help Text */}
-        <p className="mt-8 text-sm text-gray-400">
+        <p className="mt-8 text-sm text-[#9c826a]">
           Need help? Contact us at{" "}
           <a
             href="mailto:support@namantextiles.com"
-            className="text-amber-600 hover:underline"
+            className="text-[#b8743a] hover:underline"
           >
             support@namantextiles.com
           </a>

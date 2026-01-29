@@ -71,11 +71,11 @@ export function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full bg-white shadow-sm">
+      <header className="sticky top-0 z-50 w-full border-b border-black/5 bg-white/80 shadow-[0_8px_30px_rgba(15,15,15,0.04)] backdrop-blur">
         {/* Top Bar */}
-        <div className="hidden border-b bg-amber-50 md:block">
-          <div className="container mx-auto flex items-center justify-between px-4 py-2 text-sm">
-            <div className="flex items-center gap-6 text-gray-600">
+        <div className="hidden border-b border-black/5 bg-gradient-to-r from-[#fff8ee] via-white to-[#fff4e3] md:block">
+          <div className="container mx-auto flex items-center justify-between px-4 py-2 text-xs font-medium tracking-wide text-[#7a5c3a] uppercase">
+            <div className="flex items-center gap-6">
               <div className="flex items-center gap-2">
                 <Phone className="h-4 w-4" />
                 <span>{STORE_INFO.phone}</span>
@@ -84,17 +84,17 @@ export function Header() {
                 href={STORE_INFO.address.googleMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 transition-colors hover:text-amber-600"
+                className="flex items-center gap-2 transition-colors hover:text-[#b8743a]"
               >
                 <MapPin className="h-4 w-4" />
                 <span>{STORE_INFO.address.city}</span>
               </a>
             </div>
             <div className="flex items-center gap-4">
-              <Link href="/track-order" className="hover:text-amber-600">
+              <Link href="/track-order" className="hover:text-[#b8743a]">
                 Track Order
               </Link>
-              <Link href="/contact" className="hover:text-amber-600">
+              <Link href="/contact" className="hover:text-[#b8743a]">
                 Contact Us
               </Link>
             </div>
@@ -113,34 +113,34 @@ export function Header() {
               </SheetTrigger>
               <SheetContent side="left" className="w-80">
                 <SheetHeader>
-                  <SheetTitle className="text-left text-xl font-bold text-amber-600">
+                  <SheetTitle className="font-display text-left text-xl text-[#2d1c12]">
                     Naman Textiles
                   </SheetTitle>
                 </SheetHeader>
                 <nav className="mt-8 flex flex-col gap-4">
                   <Link
                     href="/"
-                    className="text-lg font-medium hover:text-amber-600"
+                    className="text-lg font-medium text-[#2d1c12] hover:text-[#b8743a]"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Home
                   </Link>
                   <Link
                     href="/products"
-                    className="text-lg font-medium hover:text-amber-600"
+                    className="text-lg font-medium text-[#2d1c12] hover:text-[#b8743a]"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     All Products
                   </Link>
                   <div className="border-t pt-4">
-                    <span className="mb-3 block text-sm font-semibold text-gray-500">
+                    <span className="mb-3 block text-xs font-semibold tracking-[0.2em] text-[#9c826a] uppercase">
                       Categories
                     </span>
                     {displayCategories.map((category) => (
                       <Link
                         key={category.slug}
                         href={`/category/${category.slug}`}
-                        className="block py-2 hover:text-amber-600"
+                        className="block py-2 text-sm text-[#2d1c12] hover:text-[#b8743a]"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         {category.name}
@@ -156,7 +156,7 @@ export function Header() {
                         {isAdmin && (
                           <Link
                             href="/admin"
-                            className="flex items-center gap-2 py-2 font-medium text-amber-600 hover:text-amber-700"
+                            className="flex items-center gap-2 py-2 font-medium text-[#b8743a] hover:text-[#a4632f]"
                             onClick={() => setIsMobileMenuOpen(false)}
                           >
                             <Shield className="h-4 w-4" />
@@ -165,21 +165,21 @@ export function Header() {
                         )}
                         <Link
                           href="/account"
-                          className="block py-2 hover:text-amber-600"
+                          className="block py-2 text-sm text-[#2d1c12] hover:text-[#b8743a]"
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
                           My Account
                         </Link>
                         <Link
                           href="/account/orders"
-                          className="block py-2 hover:text-amber-600"
+                          className="block py-2 text-sm text-[#2d1c12] hover:text-[#b8743a]"
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
                           My Orders
                         </Link>
                         <Link
                           href="/account/wishlist"
-                          className="block py-2 hover:text-amber-600"
+                          className="block py-2 text-sm text-[#2d1c12] hover:text-[#b8743a]"
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
                           Wishlist
@@ -189,7 +189,7 @@ export function Header() {
                             setIsMobileMenuOpen(false);
                             signOut({ callbackUrl: "/" });
                           }}
-                          className="block w-full py-2 text-left text-red-600 hover:text-red-700"
+                          className="block w-full py-2 text-left text-[#b3474d] hover:text-[#9a3a40]"
                         >
                           Sign Out
                         </button>
@@ -198,14 +198,14 @@ export function Header() {
                       <>
                         <Link
                           href="/auth/signin"
-                          className="block py-2 hover:text-amber-600"
+                          className="block py-2 text-sm text-[#2d1c12] hover:text-[#b8743a]"
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
                           Sign In
                         </Link>
                         <Link
                           href="/auth/signup"
-                          className="block py-2 hover:text-amber-600"
+                          className="block py-2 text-sm text-[#2d1c12] hover:text-[#b8743a]"
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
                           Create Account
@@ -221,7 +221,7 @@ export function Header() {
             <Link href="/" className="flex items-center gap-2">
               <motion.div
                 whileHover={{ scale: 1.05 }}
-                className="text-xl font-bold text-amber-600 md:text-2xl"
+                className="font-display text-xl font-semibold tracking-wide text-[#2d1c12] md:text-2xl"
               >
                 Naman Textiles
               </motion.div>
@@ -233,8 +233,8 @@ export function Header() {
                 onClick={() => setIsSearchOpen(true)}
                 className="relative w-full max-w-xl"
               >
-                <div className="flex w-full items-center rounded-full border border-gray-300 bg-white py-2.5 pr-4 pl-12 text-left text-gray-500 transition-colors hover:border-amber-400">
-                  Search fabrics, categories...
+                <div className="flex w-full items-center rounded-full border border-black/10 bg-white/90 py-2.5 pr-4 pl-12 text-left text-sm text-gray-500 shadow-[0_10px_30px_rgba(15,15,15,0.05)] transition-all hover:border-black/20 hover:bg-white">
+                  Search fabrics, categories, styles...
                 </div>
                 <Search className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
               </button>
@@ -255,7 +255,11 @@ export function Header() {
               {/* Wishlist - Only show when logged in */}
               {isAuthenticated && (
                 <Link href="/account/wishlist">
-                  <Button variant="ghost" size="icon" className="relative">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="relative hover:bg-black/5"
+                  >
                     <Heart className="h-5 w-5" />
                     {wishlistCount && wishlistCount > 0 && (
                       <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
@@ -270,12 +274,12 @@ export function Header() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="relative"
+                className="relative hover:bg-black/5"
                 onClick={handleCartClick}
               >
                 <ShoppingCart className="h-5 w-5" />
                 {cartItemCount > 0 && (
-                  <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-amber-600 text-xs text-white">
+                  <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#b8743a] text-xs text-white">
                     {cartItemCount > 99 ? "99+" : cartItemCount}
                   </span>
                 )}
@@ -284,7 +288,11 @@ export function Header() {
               {/* User Menu */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="hover:bg-black/5"
+                  >
                     <User className="h-5 w-5" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -298,7 +306,7 @@ export function Header() {
                       {isAdmin && (
                         <>
                           <DropdownMenuItem asChild>
-                            <Link href="/admin" className="text-amber-600">
+                            <Link href="/admin" className="text-[#b8743a]">
                               <Shield className="mr-2 h-4 w-4" />
                               Admin Dashboard
                             </Link>
@@ -341,15 +349,15 @@ export function Header() {
         </div>
 
         {/* Category Navigation - Desktop */}
-        <nav className="hidden border-t bg-gray-50 md:block">
+        <nav className="hidden border-t border-black/5 bg-white/70 md:block">
           <div className="container mx-auto px-4">
-            <ul className="flex items-center justify-center gap-1">
+            <ul className="flex items-center justify-center gap-2 py-1.5">
               <li>
                 <Link
                   href="/products"
                   className={cn(
-                    "block px-4 py-3 text-sm font-medium text-gray-700 transition-colors",
-                    "hover:bg-amber-50 hover:text-amber-600"
+                    "rounded-full px-4 py-2 text-xs font-semibold tracking-wide text-gray-700 uppercase transition-colors",
+                    "hover:bg-[#f7efe7] hover:text-[#b8743a]"
                   )}
                 >
                   All Products
@@ -360,8 +368,8 @@ export function Header() {
                   <Link
                     href={`/category/${category.slug}`}
                     className={cn(
-                      "block px-4 py-3 text-sm font-medium text-gray-700 transition-colors",
-                      "hover:bg-amber-50 hover:text-amber-600"
+                      "rounded-full px-4 py-2 text-xs font-semibold tracking-wide text-gray-700 uppercase transition-colors",
+                      "hover:bg-[#f7efe7] hover:text-[#b8743a]"
                     )}
                   >
                     {category.name}

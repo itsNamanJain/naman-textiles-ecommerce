@@ -33,33 +33,33 @@ export default async function NewArrivalsPage({ searchParams }: Props) {
   const sellingMode = mode === "meter" || mode === "piece" ? mode : undefined;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-transparent">
       {/* Breadcrumb */}
-      <div className="border-b bg-white">
+      <div className="border-b border-black/5 bg-white/70">
         <div className="container mx-auto px-4 py-3">
           <nav className="flex items-center gap-2 text-sm">
             <Link
               href="/"
-              className="flex items-center text-gray-500 hover:text-amber-600"
+              className="flex items-center text-[#9c826a] hover:text-[#b8743a]"
             >
               <Home className="h-4 w-4" />
             </Link>
             <ChevronRight className="h-4 w-4 text-gray-400" />
-            <span className="font-medium text-gray-900">New Arrivals</span>
+            <span className="font-medium text-[#2d1c12]">New Arrivals</span>
           </nav>
         </div>
       </div>
 
       {/* Header */}
-      <div className="bg-gradient-to-r from-violet-600 to-purple-700 py-12">
+      <div className="bg-[radial-gradient(circle_at_top,rgba(255,248,238,0.9),rgba(255,255,255,0.7)),linear-gradient(120deg,#2d1c12,#6b3f24,#b8743a)] py-12">
         <div className="container mx-auto px-4 text-center text-white">
           <div className="mb-4 flex justify-center">
             <div className="rounded-full bg-white/20 p-3">
               <Sparkles className="h-8 w-8" />
             </div>
           </div>
-          <h1 className="text-3xl font-bold md:text-4xl">New Arrivals</h1>
-          <p className="mx-auto mt-3 max-w-xl text-white/80">
+          <h1 className="font-display text-3xl md:text-4xl">New Arrivals</h1>
+          <p className="mx-auto mt-3 max-w-xl text-sm text-white/80 md:text-base">
             Discover our latest fabric collections. Fresh patterns, vibrant
             colors, and premium quality textiles just for you.
           </p>
@@ -67,7 +67,7 @@ export default async function NewArrivalsPage({ searchParams }: Props) {
       </div>
 
       {/* Filters and Products */}
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto px-4 py-8">
         {/* Filters Bar */}
         <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
           <Suspense fallback={<Skeleton className="h-10 w-[300px]" />}>
@@ -94,7 +94,10 @@ function ProductGridSkeleton() {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {Array.from({ length: 8 }).map((_, i) => (
-        <div key={i} className="overflow-hidden rounded-lg bg-white shadow-sm">
+        <div
+          key={i}
+          className="overflow-hidden rounded-2xl border border-black/5 bg-white/80 shadow-[0_10px_30px_rgba(15,15,15,0.06)]"
+        >
           <Skeleton className="aspect-square w-full" />
           <div className="space-y-2 p-4">
             <Skeleton className="h-4 w-20" />

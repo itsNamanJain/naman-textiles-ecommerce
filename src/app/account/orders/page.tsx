@@ -12,13 +12,13 @@ import { api } from "@/trpc/react";
 import { toast } from "sonner";
 
 const statusColors: Record<string, string> = {
-  pending: "bg-yellow-100 text-yellow-800",
-  confirmed: "bg-blue-100 text-blue-800",
-  processing: "bg-purple-100 text-purple-800",
-  shipped: "bg-indigo-100 text-indigo-800",
-  delivered: "bg-green-100 text-green-800",
-  cancelled: "bg-red-100 text-red-800",
-  refunded: "bg-gray-100 text-gray-800",
+  pending: "bg-[#f7efe7] text-[#8a6642]",
+  confirmed: "bg-[#e8f0ff] text-[#2c4a7a]",
+  processing: "bg-[#efe7ff] text-[#4a2b7a]",
+  shipped: "bg-[#e7f0ff] text-[#2b3f7a]",
+  delivered: "bg-[#eaf4ea] text-[#2f6b3b]",
+  cancelled: "bg-[#f7e6e6] text-[#8a2f35]",
+  refunded: "bg-[#f0f0f0] text-[#5c5c5c]",
 };
 
 export default function OrdersPage() {
@@ -41,8 +41,8 @@ export default function OrdersPage() {
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-16">
-        <Loader2 className="h-12 w-12 animate-spin text-amber-600" />
-        <p className="mt-4 text-gray-500">Loading orders...</p>
+        <Loader2 className="h-12 w-12 animate-spin text-[#b8743a]" />
+        <p className="mt-4 text-[#6b5645]">Loading orders...</p>
       </div>
     );
   }
@@ -52,20 +52,20 @@ export default function OrdersPage() {
   if (orders.length === 0) {
     return (
       <FadeIn>
-        <Card>
+        <Card className="border border-black/5 bg-white/80">
           <CardContent className="py-16">
             <div className="flex flex-col items-center justify-center text-center">
-              <div className="rounded-full bg-gray-100 p-6">
-                <Package className="h-12 w-12 text-gray-400" />
+              <div className="rounded-full bg-[#f7efe7] p-6">
+                <Package className="h-12 w-12 text-[#b0896d]" />
               </div>
-              <h2 className="mt-4 text-xl font-semibold text-gray-900">
+              <h2 className="font-display mt-4 text-xl text-[#2d1c12]">
                 No orders yet
               </h2>
-              <p className="mt-2 text-gray-500">
+              <p className="mt-2 text-[#6b5645]">
                 When you place your first order, it will appear here.
               </p>
               <Button
-                className="mt-6 bg-amber-600 hover:bg-amber-700"
+                className="mt-6 rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
                 asChild
               >
                 <Link href="/products">
@@ -82,9 +82,9 @@ export default function OrdersPage() {
 
   return (
     <FadeIn>
-      <Card>
+      <Card className="border border-black/5 bg-white/80">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="font-display flex items-center gap-2 text-xl text-[#2d1c12]">
             <Package className="h-5 w-5" />
             My Orders ({orders.length})
           </CardTitle>
@@ -93,37 +93,38 @@ export default function OrdersPage() {
           <StaggerContainer className="space-y-4">
             {orders.map((order) => (
               <StaggerItem key={order.id}>
-                <div className="rounded-lg border p-4 transition-colors hover:bg-gray-50">
+                <div className="rounded-2xl border border-black/5 bg-white/70 p-4 transition-colors hover:bg-white">
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     {/* Order Info */}
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <p className="font-semibold text-amber-600">
+                        <p className="font-semibold text-[#b8743a]">
                           #{order.orderNumber}
                         </p>
                         <Badge className={statusColors[order.status]}>
                           {order.status.replace("_", " ")}
                         </Badge>
                       </div>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-[#6b5645]">
                         {new Date(order.createdAt).toLocaleDateString("en-IN", {
                           year: "numeric",
                           month: "long",
                           day: "numeric",
                         })}
                       </p>
-                      <p className="text-sm text-gray-600">
-                        {order.items.length} item{order.items.length > 1 ? "s" : ""}
+                      <p className="text-sm text-[#6b5645]">
+                        {order.items.length} item
+                        {order.items.length > 1 ? "s" : ""}
                       </p>
                     </div>
 
                     {/* Order Total & Actions */}
                     <div className="flex items-center gap-4">
                       <div className="text-right">
-                        <p className="text-lg font-bold">
+                        <p className="text-lg font-semibold text-[#2d1c12]">
                           {formatPrice(Number(order.total))}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-[#9c826a]">
                           {order.paymentMethod === "cod"
                             ? "Cash on Delivery"
                             : "Paid Online"}
@@ -134,7 +135,7 @@ export default function OrdersPage() {
                           <Button
                             variant="outline"
                             size="sm"
-                            className="text-red-600 hover:text-red-700"
+                            className="rounded-full border-black/10 text-[#b3474d] hover:text-[#9a3a40]"
                             disabled={cancelMutation.isPending}
                             onClick={() => {
                               const confirmed = window.confirm(
@@ -148,7 +149,12 @@ export default function OrdersPage() {
                             Cancel
                           </Button>
                         )}
-                        <Button variant="outline" size="sm" asChild>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          asChild
+                          className="rounded-full border-black/10 text-[#2d1c12] hover:bg-white"
+                        >
                           <Link href={`/order-confirmation/${order.id}`}>
                             <Eye className="mr-2 h-4 w-4" />
                             View
@@ -160,21 +166,23 @@ export default function OrdersPage() {
                   </div>
 
                   {/* Order Items Preview */}
-                  <div className="mt-4 border-t pt-4">
+                  <div className="mt-4 border-t border-black/5 pt-4">
                     <div className="flex flex-wrap gap-2">
                       {order.items.slice(0, 3).map((item) => (
                         <div
                           key={item.id}
-                          className="flex items-center gap-2 rounded-full bg-gray-100 px-3 py-1 text-xs"
+                          className="flex items-center gap-2 rounded-full bg-[#f7efe7] px-3 py-1 text-xs text-[#5c4a3d]"
                         >
-                          <span className="font-medium">{item.productName}</span>
-                          <span className="text-gray-500">
+                          <span className="font-medium">
+                            {item.productName}
+                          </span>
+                          <span className="text-[#9c826a]">
                             x{Number(item.quantity)}
                           </span>
                         </div>
                       ))}
                       {order.items.length > 3 && (
-                        <div className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-500">
+                        <div className="rounded-full bg-[#f7efe7] px-3 py-1 text-xs text-[#9c826a]">
                           +{order.items.length - 3} more
                         </div>
                       )}

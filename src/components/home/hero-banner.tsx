@@ -76,27 +76,28 @@ interface Banner {
 const staticBanners: Banner[] = [
   {
     id: "static-1",
-    title: "Premium Fabric Collection",
-    subtitle: "Discover our finest quality fabrics for all your needs",
+    title: "Crafted Textiles for Modern Indian Fashion",
+    subtitle:
+      "Premium cottons, brocades, and velvets curated for designers and boutiques.",
     image: null,
     link: "/products",
-    tag: "Best Sellers",
+    tag: "Editor's Pick",
   },
   {
     id: "static-2",
-    title: "New Arrivals",
-    subtitle: "Check out the latest fabrics in our collection",
+    title: "New Season. New Textures.",
+    subtitle: "Fresh weaves and rare blends - now in stock.",
     image: null,
     link: "/products",
-    tag: "Fresh Stock",
+    tag: "New Drop",
   },
   {
     id: "static-3",
-    title: "Shop All Products",
-    subtitle: "Browse our complete range of premium textiles",
+    title: "Wholesale-Ready, Retail-Beautiful",
+    subtitle: "Explore the full collection with reliable supply.",
     image: null,
     link: "/products",
-    tag: "Explore",
+    tag: "B2B Friendly",
   },
 ];
 
@@ -156,7 +157,8 @@ export function HeroBanner() {
   );
 
   return (
-    <section className="relative">
+    <section className="relative overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(184,116,58,0.12),transparent_45%),radial-gradient(circle_at_80%_0%,rgba(255,210,160,0.2),transparent_40%)]" />
       <Carousel
         opts={{
           align: "start",
@@ -168,7 +170,7 @@ export function HeroBanner() {
         <CarouselContent>
           {banners.map((banner, index) => (
             <CarouselItem key={banner.id}>
-              <div className="relative h-[400px] w-full overflow-hidden sm:h-[450px] md:h-[500px]">
+              <div className="relative h-[430px] w-full overflow-hidden sm:h-[480px] md:h-[560px]">
                 {/* Background Image or Gradient */}
                 {banner.image ? (
                   <Image
@@ -179,20 +181,20 @@ export function HeroBanner() {
                     priority={index === 0}
                   />
                 ) : (
-                  <div className="absolute inset-0 bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100" />
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,248,238,1),rgba(255,255,255,0.8)),linear-gradient(120deg,#fff5e6,#f4e7d8,#fff2dd)]" />
                 )}
 
                 {/* Overlay for images */}
                 {banner.image && (
-                  <div className="absolute inset-0 bg-black/30" />
+                  <div className="absolute inset-0 bg-black/35" />
                 )}
 
                 {/* Decorative circles (only for non-image banners) */}
                 {!banner.image && (
                   <>
-                    <div className="absolute -top-20 -right-20 h-80 w-80 rounded-full bg-amber-200/40 blur-3xl" />
-                    <div className="absolute -bottom-20 -left-20 h-60 w-60 rounded-full bg-orange-200/40 blur-3xl" />
-                    <div className="absolute top-1/4 right-1/4 h-40 w-40 rounded-full bg-yellow-200/30 blur-2xl" />
+                    <div className="absolute -top-24 -right-28 h-96 w-96 rounded-full bg-[#f2cf9d]/40 blur-3xl" />
+                    <div className="absolute -bottom-28 -left-28 h-72 w-72 rounded-full bg-[#d8b28c]/40 blur-3xl" />
+                    <div className="absolute top-1/4 right-1/4 h-40 w-40 rounded-full bg-[#f7e5cd]/50 blur-2xl" />
                   </>
                 )}
 
@@ -205,14 +207,14 @@ export function HeroBanner() {
                       className="text-center md:text-left"
                     >
                       {banner.tag && (
-                        <span className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-amber-600 px-4 py-1.5 text-sm font-medium text-white">
+                        <span className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-[#b8743a] px-4 py-1.5 text-xs font-semibold tracking-[0.2em] text-white uppercase">
                           <Sparkles className="h-3.5 w-3.5" />
                           {banner.tag}
                         </span>
                       )}
                       <h1
-                        className={`mb-4 text-4xl leading-tight font-bold sm:text-5xl lg:text-6xl ${
-                          banner.image ? "text-white" : "text-gray-900"
+                        className={`font-display mb-4 text-4xl leading-tight sm:text-5xl lg:text-6xl ${
+                          banner.image ? "text-white" : "text-[#2d1c12]"
                         }`}
                       >
                         <TypewriterText
@@ -222,23 +224,33 @@ export function HeroBanner() {
                       </h1>
                       {banner.subtitle && (
                         <p
-                          className={`mb-8 text-lg md:text-xl ${
-                            banner.image ? "text-white/90" : "text-gray-600"
+                          className={`mb-8 text-base leading-relaxed sm:text-lg ${
+                            banner.image ? "text-white/90" : "text-[#5c4a3d]"
                           }`}
                         >
                           {banner.subtitle}
                         </p>
                       )}
-                      <Button
-                        asChild
-                        size="lg"
-                        className="bg-amber-600 hover:bg-amber-700"
-                      >
-                        <Link href={banner.link}>
-                          Shop Now
-                          <ArrowRight className="ml-2 h-4 w-4" />
-                        </Link>
-                      </Button>
+                      <div className="flex flex-col gap-3 sm:flex-row sm:justify-center md:justify-start">
+                        <Button
+                          asChild
+                          size="lg"
+                          className="rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
+                        >
+                          <Link href={banner.link}>
+                            Shop Now
+                            <ArrowRight className="ml-2 h-4 w-4" />
+                          </Link>
+                        </Button>
+                        <Button
+                          variant="outline"
+                          asChild
+                          size="lg"
+                          className="rounded-full border-black/10 bg-white/70 text-[#2d1c12] hover:bg-white"
+                        >
+                          <Link href="/products">View Collection</Link>
+                        </Button>
+                      </div>
                     </FadeIn>
 
                     {/* Right side - Decorative (only for non-image banners) */}
@@ -246,15 +258,15 @@ export function HeroBanner() {
                       <div className="hidden md:block">
                         <div className="relative">
                           <div className="relative mx-auto w-fit">
-                            <div className="absolute -top-4 -left-4 h-48 w-48 rotate-[-8deg] rounded-2xl bg-gradient-to-br from-rose-200 to-rose-300 shadow-lg lg:h-56 lg:w-56" />
-                            <div className="absolute -top-2 -right-4 h-48 w-48 rotate-[5deg] rounded-2xl bg-gradient-to-br from-amber-200 to-amber-300 shadow-lg lg:h-56 lg:w-56" />
-                            <div className="relative h-52 w-52 rounded-2xl bg-gradient-to-br from-orange-100 to-amber-200 shadow-xl lg:h-64 lg:w-64">
-                              <div className="absolute inset-4 rounded-xl border-2 border-dashed border-amber-400/50" />
+                            <div className="absolute -top-4 -left-4 h-48 w-48 rotate-[-8deg] rounded-2xl bg-gradient-to-br from-[#e8c4a0] to-[#f4d9bf] shadow-lg lg:h-56 lg:w-56" />
+                            <div className="absolute -top-2 -right-4 h-48 w-48 rotate-[5deg] rounded-2xl bg-gradient-to-br from-[#f2cf9d] to-[#f7e2c8] shadow-lg lg:h-56 lg:w-56" />
+                            <div className="relative h-52 w-52 rounded-2xl bg-gradient-to-br from-[#fdf6ee] to-[#f2dfc6] shadow-xl lg:h-64 lg:w-64">
+                              <div className="absolute inset-4 rounded-xl border-2 border-dashed border-[#b8743a]/40" />
                               <div className="flex h-full flex-col items-center justify-center p-4 text-center">
-                                <span className="text-4xl font-bold text-amber-700 lg:text-5xl">
+                                <span className="text-4xl font-semibold text-[#b8743a] lg:text-5xl">
                                   500+
                                 </span>
-                                <span className="mt-1 text-sm font-medium text-amber-600">
+                                <span className="mt-1 text-sm font-medium text-[#8a6642]">
                                   Fabric Varieties
                                 </span>
                               </div>
@@ -262,12 +274,12 @@ export function HeroBanner() {
                           </div>
 
                           <div className="absolute top-1/2 -left-8 rounded-full bg-white px-4 py-2 shadow-lg">
-                            <span className="text-sm font-semibold text-gray-800">
+                            <span className="text-sm font-semibold text-[#2d1c12]">
                               100% Quality
                             </span>
                           </div>
                           <div className="absolute -right-4 bottom-4 rounded-full bg-white px-4 py-2 shadow-lg">
-                            <span className="text-sm font-semibold text-gray-800">
+                            <span className="text-sm font-semibold text-[#2d1c12]">
                               Best Prices
                             </span>
                           </div>
@@ -280,8 +292,8 @@ export function HeroBanner() {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="left-4 hidden md:flex" />
-        <CarouselNext className="right-4 hidden md:flex" />
+        <CarouselPrevious className="left-4 hidden border-none bg-white/80 shadow-sm hover:bg-white md:flex" />
+        <CarouselNext className="right-4 hidden border-none bg-white/80 shadow-sm hover:bg-white md:flex" />
       </Carousel>
 
       {/* Dots Indicator */}
@@ -290,8 +302,8 @@ export function HeroBanner() {
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`h-2 w-2 rounded-full transition-all hover:bg-amber-600 ${
-              currentSlide === index ? "w-6 bg-amber-600" : "bg-amber-600/50"
+            className={`h-2 w-2 rounded-full transition-all hover:bg-[#b8743a] ${
+              currentSlide === index ? "w-7 bg-[#b8743a]" : "bg-[#e2c7ab]"
             }`}
             aria-label={`Go to slide ${index + 1}`}
           />

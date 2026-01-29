@@ -37,7 +37,10 @@ export const users = createTable(
       () => new Date()
     ),
   },
-  (t) => [index("user_email_idx").on(t.email), index("user_role_idx").on(t.role)]
+  (t) => [
+    index("user_email_idx").on(t.email),
+    index("user_role_idx").on(t.role),
+  ]
 );
 
 // ==================== AUTH TABLES ====================

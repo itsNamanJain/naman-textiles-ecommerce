@@ -22,12 +22,12 @@ import { formatPrice } from "@/lib/utils";
 import { api } from "@/trpc/react";
 
 const statusColors: Record<string, string> = {
-  pending: "bg-yellow-100 text-yellow-800",
-  confirmed: "bg-blue-100 text-blue-800",
-  processing: "bg-purple-100 text-purple-800",
-  shipped: "bg-indigo-100 text-indigo-800",
-  delivered: "bg-green-100 text-green-800",
-  cancelled: "bg-red-100 text-red-800",
+  pending: "bg-[#f7efe7] text-[#8a6642]",
+  confirmed: "bg-[#e8f0ff] text-[#2c4a7a]",
+  processing: "bg-[#efe7ff] text-[#4a2b7a]",
+  shipped: "bg-[#e7f0ff] text-[#2b3f7a]",
+  delivered: "bg-[#eaf4ea] text-[#2f6b3b]",
+  cancelled: "bg-[#f7e6e6] text-[#8a2f35]",
 };
 
 const statusIcons: Record<string, React.ReactNode> = {
@@ -60,8 +60,8 @@ export default function AdminDashboard() {
       {/* Page Header */}
       <FadeIn>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="mt-1 text-gray-500">
+          <h1 className="font-display text-2xl text-[#2d1c12]">Dashboard</h1>
+          <p className="mt-1 text-[#6b5645]">
             Welcome back! Here&apos;s what&apos;s happening with your store.
           </p>
         </div>
@@ -70,99 +70,99 @@ export default function AdminDashboard() {
       {/* Stats Cards */}
       <StaggerContainer className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StaggerItem>
-          <Card>
+          <Card className="border border-black/5 bg-white/80">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-500">
+                  <p className="text-sm font-medium text-[#6b5645]">
                     Total Revenue
                   </p>
-                  <p className="mt-1 text-2xl font-bold text-gray-900">
+                  <p className="mt-1 text-2xl font-semibold text-[#2d1c12]">
                     {formatPrice(stats?.totalRevenue ?? 0)}
                   </p>
                 </div>
-                <div className="rounded-full bg-green-100 p-3">
-                  <IndianRupee className="h-6 w-6 text-green-600" />
+                <div className="rounded-full bg-[#eaf4ea] p-3">
+                  <IndianRupee className="h-6 w-6 text-[#2f6b3b]" />
                 </div>
               </div>
               <div className="mt-4 flex items-center text-sm">
                 {(stats?.revenueGrowth ?? 0) >= 0 ? (
                   <>
-                    <TrendingUp className="mr-1 h-4 w-4 text-green-500" />
-                    <span className="text-green-600">
+                    <TrendingUp className="mr-1 h-4 w-4 text-emerald-600" />
+                    <span className="text-emerald-600">
                       +{(stats?.revenueGrowth ?? 0).toFixed(1)}%
                     </span>
                   </>
                 ) : (
                   <>
-                    <TrendingUp className="mr-1 h-4 w-4 rotate-180 text-red-500" />
-                    <span className="text-red-600">
+                    <TrendingUp className="mr-1 h-4 w-4 rotate-180 text-[#b3474d]" />
+                    <span className="text-[#b3474d]">
                       {(stats?.revenueGrowth ?? 0).toFixed(1)}%
                     </span>
                   </>
                 )}
-                <span className="ml-2 text-gray-500">from last month</span>
+                <span className="ml-2 text-[#9c826a]">from last month</span>
               </div>
             </CardContent>
           </Card>
         </StaggerItem>
 
         <StaggerItem>
-          <Card>
+          <Card className="border border-black/5 bg-white/80">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-500">
+                  <p className="text-sm font-medium text-[#6b5645]">
                     Total Orders
                   </p>
-                  <p className="mt-1 text-2xl font-bold text-gray-900">
+                  <p className="mt-1 text-2xl font-semibold text-[#2d1c12]">
                     {stats?.totalOrders ?? 0}
                   </p>
                 </div>
-                <div className="rounded-full bg-blue-100 p-3">
-                  <ShoppingCart className="h-6 w-6 text-blue-600" />
+                <div className="rounded-full bg-[#e7f0ff] p-3">
+                  <ShoppingCart className="h-6 w-6 text-[#2b3f7a]" />
                 </div>
               </div>
               <div className="mt-4 flex items-center text-sm">
                 {(stats?.ordersGrowth ?? 0) >= 0 ? (
                   <>
-                    <TrendingUp className="mr-1 h-4 w-4 text-green-500" />
-                    <span className="text-green-600">
+                    <TrendingUp className="mr-1 h-4 w-4 text-emerald-600" />
+                    <span className="text-emerald-600">
                       +{(stats?.ordersGrowth ?? 0).toFixed(1)}%
                     </span>
                   </>
                 ) : (
                   <>
-                    <TrendingUp className="mr-1 h-4 w-4 rotate-180 text-red-500" />
-                    <span className="text-red-600">
+                    <TrendingUp className="mr-1 h-4 w-4 rotate-180 text-[#b3474d]" />
+                    <span className="text-[#b3474d]">
                       {(stats?.ordersGrowth ?? 0).toFixed(1)}%
                     </span>
                   </>
                 )}
-                <span className="ml-2 text-gray-500">from last month</span>
+                <span className="ml-2 text-[#9c826a]">from last month</span>
               </div>
             </CardContent>
           </Card>
         </StaggerItem>
 
         <StaggerItem>
-          <Card>
+          <Card className="border border-black/5 bg-white/80">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-500">
+                  <p className="text-sm font-medium text-[#6b5645]">
                     Total Products
                   </p>
-                  <p className="mt-1 text-2xl font-bold text-gray-900">
+                  <p className="mt-1 text-2xl font-semibold text-[#2d1c12]">
                     {stats?.totalProducts ?? 0}
                   </p>
                 </div>
-                <div className="rounded-full bg-purple-100 p-3">
-                  <Package className="h-6 w-6 text-purple-600" />
+                <div className="rounded-full bg-[#efe7ff] p-3">
+                  <Package className="h-6 w-6 text-[#4a2b7a]" />
                 </div>
               </div>
               <div className="mt-4 flex items-center text-sm">
-                <span className="text-amber-600">
+                <span className="text-[#b8743a]">
                   {stats?.lowStockCount ?? 0} low stock
                 </span>
               </div>
@@ -171,38 +171,38 @@ export default function AdminDashboard() {
         </StaggerItem>
 
         <StaggerItem>
-          <Card>
+          <Card className="border border-black/5 bg-white/80">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-500">
+                  <p className="text-sm font-medium text-[#6b5645]">
                     Total Customers
                   </p>
-                  <p className="mt-1 text-2xl font-bold text-gray-900">
+                  <p className="mt-1 text-2xl font-semibold text-[#2d1c12]">
                     {stats?.totalCustomers ?? 0}
                   </p>
                 </div>
-                <div className="rounded-full bg-amber-100 p-3">
-                  <Users className="h-6 w-6 text-amber-600" />
+                <div className="rounded-full bg-[#f7efe7] p-3">
+                  <Users className="h-6 w-6 text-[#b8743a]" />
                 </div>
               </div>
               <div className="mt-4 flex items-center text-sm">
                 {(stats?.customersGrowth ?? 0) >= 0 ? (
                   <>
-                    <TrendingUp className="mr-1 h-4 w-4 text-green-500" />
-                    <span className="text-green-600">
+                    <TrendingUp className="mr-1 h-4 w-4 text-emerald-600" />
+                    <span className="text-emerald-600">
                       +{(stats?.customersGrowth ?? 0).toFixed(1)}%
                     </span>
                   </>
                 ) : (
                   <>
-                    <TrendingUp className="mr-1 h-4 w-4 rotate-180 text-red-500" />
-                    <span className="text-red-600">
+                    <TrendingUp className="mr-1 h-4 w-4 rotate-180 text-[#b3474d]" />
+                    <span className="text-[#b3474d]">
                       {(stats?.customersGrowth ?? 0).toFixed(1)}%
                     </span>
                   </>
                 )}
-                <span className="ml-2 text-gray-500">from last month</span>
+                <span className="ml-2 text-[#9c826a]">from last month</span>
               </div>
             </CardContent>
           </Card>
@@ -213,10 +213,17 @@ export default function AdminDashboard() {
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Recent Orders */}
         <FadeIn delay={0.2}>
-          <Card>
+          <Card className="border border-black/5 bg-white/80">
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-lg">Recent Orders</CardTitle>
-              <Button variant="ghost" size="sm" asChild>
+              <CardTitle className="font-display text-lg text-[#2d1c12]">
+                Recent Orders
+              </CardTitle>
+              <Button
+                variant="ghost"
+                size="sm"
+                asChild
+                className="text-[#2d1c12]"
+              >
                 <Link href="/admin/orders">
                   View All
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -229,21 +236,23 @@ export default function AdminDashboard() {
                   {recentOrders.map((order) => (
                     <div
                       key={order.id}
-                      className="flex items-center justify-between rounded-lg border p-3"
+                      className="flex items-center justify-between rounded-2xl border border-black/5 bg-white/70 p-3"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#f7efe7] text-[#b8743a]">
                           {statusIcons[order.status]}
                         </div>
                         <div>
-                          <p className="font-medium">#{order.orderNumber}</p>
-                          <p className="text-sm text-gray-500">
+                          <p className="font-medium text-[#2d1c12]">
+                            #{order.orderNumber}
+                          </p>
+                          <p className="text-sm text-[#9c826a]">
                             {new Date(order.createdAt).toLocaleDateString()}
                           </p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="font-medium">
+                        <p className="font-medium text-[#2d1c12]">
                           {formatPrice(Number(order.total))}
                         </p>
                         <Badge
@@ -257,7 +266,7 @@ export default function AdminDashboard() {
                   ))}
                 </div>
               ) : (
-                <div className="py-8 text-center text-gray-500">
+                <div className="py-8 text-center text-[#9c826a]">
                   No orders yet
                 </div>
               )}
@@ -267,10 +276,17 @@ export default function AdminDashboard() {
 
         {/* Low Stock Alert */}
         <FadeIn delay={0.3}>
-          <Card>
+          <Card className="border border-black/5 bg-white/80">
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-lg">Low Stock Alert</CardTitle>
-              <Button variant="ghost" size="sm" asChild>
+              <CardTitle className="font-display text-lg text-[#2d1c12]">
+                Low Stock Alert
+              </CardTitle>
+              <Button
+                variant="ghost"
+                size="sm"
+                asChild
+                className="text-[#2d1c12]"
+              >
                 <Link href="/admin/products">
                   View All
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -283,11 +299,13 @@ export default function AdminDashboard() {
                   {lowStockProducts.map((product) => (
                     <div
                       key={product.id}
-                      className="flex items-center justify-between rounded-lg border p-3"
+                      className="flex items-center justify-between rounded-2xl border border-black/5 bg-white/70 p-3"
                     >
                       <div>
-                        <p className="font-medium">{product.name}</p>
-                        <p className="text-sm text-gray-500">
+                        <p className="font-medium text-[#2d1c12]">
+                          {product.name}
+                        </p>
+                        <p className="text-sm text-[#9c826a]">
                           SKU: {product.sku ?? "N/A"}
                         </p>
                       </div>
@@ -295,13 +313,13 @@ export default function AdminDashboard() {
                         <p
                           className={`font-medium ${
                             Number(product.stockQuantity) <= 5
-                              ? "text-red-600"
-                              : "text-amber-600"
+                              ? "text-[#b3474d]"
+                              : "text-[#b8743a]"
                           }`}
                         >
                           {product.stockQuantity} in stock
                         </p>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-[#9c826a]">
                           Min: {product.lowStockThreshold}
                         </p>
                       </div>
@@ -309,7 +327,7 @@ export default function AdminDashboard() {
                   ))}
                 </div>
               ) : (
-                <div className="py-8 text-center text-gray-500">
+                <div className="py-8 text-center text-[#9c826a]">
                   All products are well stocked
                 </div>
               )}
@@ -320,47 +338,49 @@ export default function AdminDashboard() {
 
       {/* Order Status Overview */}
       <FadeIn delay={0.4}>
-        <Card>
+        <Card className="border border-black/5 bg-white/80">
           <CardHeader>
-            <CardTitle className="text-lg">Order Status Overview</CardTitle>
+            <CardTitle className="font-display text-lg text-[#2d1c12]">
+              Order Status Overview
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
               {[
-                { status: "pending", label: "Pending", color: "bg-yellow-500" },
+                { status: "pending", label: "Pending", color: "bg-[#b8743a]" },
                 {
                   status: "confirmed",
                   label: "Confirmed",
-                  color: "bg-blue-500",
+                  color: "bg-[#2c4a7a]",
                 },
                 {
                   status: "processing",
                   label: "Processing",
-                  color: "bg-purple-500",
+                  color: "bg-[#4a2b7a]",
                 },
-                { status: "shipped", label: "Shipped", color: "bg-indigo-500" },
+                { status: "shipped", label: "Shipped", color: "bg-[#2b3f7a]" },
                 {
                   status: "delivered",
                   label: "Delivered",
-                  color: "bg-green-500",
+                  color: "bg-[#2f6b3b]",
                 },
                 {
                   status: "cancelled",
                   label: "Cancelled",
-                  color: "bg-red-500",
+                  color: "bg-[#b3474d]",
                 },
               ].map((item) => (
                 <div
                   key={item.status}
-                  className="rounded-lg border p-4 text-center"
+                  className="rounded-2xl border border-black/5 bg-white/70 p-4 text-center"
                 >
                   <div
                     className={`mx-auto mb-2 h-3 w-3 rounded-full ${item.color}`}
                   />
-                  <p className="text-2xl font-bold">
+                  <p className="text-2xl font-semibold text-[#2d1c12]">
                     {stats?.ordersByStatus?.[item.status] ?? 0}
                   </p>
-                  <p className="text-sm text-gray-500">{item.label}</p>
+                  <p className="text-sm text-[#9c826a]">{item.label}</p>
                 </div>
               ))}
             </div>

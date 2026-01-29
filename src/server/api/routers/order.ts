@@ -55,7 +55,8 @@ export const orderRouter = createTRPCRouter({
         settingsMap[setting.key] = setting.value;
       });
       const freeShippingThreshold = Number(
-        settingsMap.shippingFreeThreshold ?? DEFAULT_SETTINGS.shippingFreeThreshold
+        settingsMap.shippingFreeThreshold ??
+          DEFAULT_SETTINGS.shippingFreeThreshold
       );
       const shippingRate = Number(
         settingsMap.shippingBaseRate ?? DEFAULT_SETTINGS.shippingBaseRate
@@ -176,7 +177,7 @@ export const orderRouter = createTRPCRouter({
 
       // Calculate totals
       const validItems = normalizedItems.filter(Boolean) as NonNullable<
-        typeof normalizedItems[number]
+        (typeof normalizedItems)[number]
       >[];
       const subtotal = validItems.reduce(
         (sum, item) => sum + item.unitPrice * item.quantity,
@@ -194,7 +195,9 @@ export const orderRouter = createTRPCRouter({
       let discount = 0;
       let appliedCouponCode: string | null = null;
       if (input.couponCode) {
-        const normalizedCode = input.couponCode.toUpperCase().replace(/\s/g, "");
+        const normalizedCode = input.couponCode
+          .toUpperCase()
+          .replace(/\s/g, "");
         const now = new Date();
         const coupon = await ctx.db
           .selectFrom("coupon")

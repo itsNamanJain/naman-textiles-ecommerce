@@ -80,7 +80,7 @@ export default function ProfilePage() {
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <Card>
+        <Card className="border border-black/5 bg-white/80">
           <CardHeader>
             <Skeleton className="h-6 w-48" />
             <Skeleton className="h-4 w-64" />
@@ -106,13 +106,15 @@ export default function ProfilePage() {
   return (
     <div className="space-y-6">
       <FadeIn>
-        <Card>
+        <Card className="border border-black/5 bg-white/80">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="font-display flex items-center gap-2 text-xl text-[#2d1c12]">
               <User className="h-5 w-5" />
               Profile Information
             </CardTitle>
-            <CardDescription>Update your personal information</CardDescription>
+            <CardDescription className="text-[#6b5645]">
+              Update your personal information
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Form {...form}>
@@ -131,7 +133,7 @@ export default function ProfilePage() {
                           <div className="relative">
                             <User className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                             <Input
-                              className="pl-10"
+                              className="rounded-2xl border-black/10 bg-white/80 pl-10"
                               placeholder="Your name"
                               {...field}
                             />
@@ -151,7 +153,7 @@ export default function ProfilePage() {
                           <div className="relative">
                             <Mail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                             <Input
-                              className="pl-10"
+                              className="rounded-2xl border-black/10 bg-white/80 pl-10"
                               type="email"
                               placeholder="your@email.com"
                               disabled
@@ -175,7 +177,7 @@ export default function ProfilePage() {
                         <div className="relative">
                           <Phone className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                           <Input
-                            className="pl-10"
+                            className="rounded-2xl border-black/10 bg-white/80 pl-10"
                             placeholder="+91 98765 43210"
                             {...field}
                           />
@@ -188,7 +190,7 @@ export default function ProfilePage() {
 
                 <Button
                   type="submit"
-                  className="bg-amber-600 hover:bg-amber-700"
+                  className="rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
                   disabled={updateProfile.isPending}
                 >
                   {updateProfile.isPending ? (
@@ -217,33 +219,33 @@ export default function ProfilePage() {
       {/* Account Statistics */}
       <FadeIn delay={0.2}>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <Card>
+          <Card className="border border-black/5 bg-white/80">
             <CardContent className="pt-6">
               <div className="text-center">
-                <p className="text-3xl font-bold text-amber-600">
+                <p className="text-3xl font-semibold text-[#b8743a]">
                   {profile?.stats.totalOrders ?? 0}
                 </p>
-                <p className="mt-1 text-sm text-gray-500">Total Orders</p>
+                <p className="mt-1 text-sm text-[#6b5645]">Total Orders</p>
               </div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="border border-black/5 bg-white/80">
             <CardContent className="pt-6">
               <div className="text-center">
-                <p className="text-3xl font-bold text-amber-600">
+                <p className="text-3xl font-semibold text-[#b8743a]">
                   {profile?.stats.wishlistItems ?? 0}
                 </p>
-                <p className="mt-1 text-sm text-gray-500">Wishlist Items</p>
+                <p className="mt-1 text-sm text-[#6b5645]">Wishlist Items</p>
               </div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="border border-black/5 bg-white/80">
             <CardContent className="pt-6">
               <div className="text-center">
-                <p className="text-3xl font-bold text-amber-600">
+                <p className="text-3xl font-semibold text-[#b8743a]">
                   {profile?.stats.savedAddresses ?? 0}
                 </p>
-                <p className="mt-1 text-sm text-gray-500">Saved Addresses</p>
+                <p className="mt-1 text-sm text-[#6b5645]">Saved Addresses</p>
               </div>
             </CardContent>
           </Card>

@@ -2,10 +2,7 @@ import { pgEnum } from "drizzle-orm/pg-core";
 
 // ==================== ENUMS ====================
 
-export const userRoleEnum = pgEnum("user_role", [
-  "customer",
-  "admin",
-]);
+export const userRoleEnum = pgEnum("user_role", ["customer", "admin"]);
 
 export const orderStatusEnum = pgEnum("order_status", [
   "pending",
@@ -34,10 +31,4 @@ export const sellingModeEnum = pgEnum("selling_mode", [
   "piece", // Sold by piece (ready items, accessories)
 ]);
 
-export const unitEnum = pgEnum("unit", [
-  "meter",
-  "piece",
-  "kg",
-  "yard",
-  "set",
-]);
+export const unitEnum = pgEnum("unit", ["meter", "piece", "kg", "yard", "set"]);

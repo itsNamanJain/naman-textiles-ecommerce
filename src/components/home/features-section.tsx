@@ -43,19 +43,21 @@ export function FeaturesSection() {
   ];
 
   return (
-    <section className="border-y bg-white py-8 md:py-12">
+    <section className="border-y border-black/5 bg-white/80 py-8 md:py-12">
       <div className="container mx-auto px-4">
         <StaggerContainer className="grid grid-cols-2 gap-6 md:grid-cols-4">
           {features.map((feature, index) => (
             <StaggerItem key={index}>
               <div className="flex flex-col items-center text-center">
-                <div className="mb-4 rounded-full bg-amber-100 p-4">
-                  <feature.icon className="h-6 w-6 text-amber-600 md:h-8 md:w-8" />
+                <div className="mb-4 rounded-2xl bg-[#f7efe7] p-4">
+                  <feature.icon className="h-6 w-6 text-[#b8743a] md:h-7 md:w-7" />
                 </div>
-                <h3 className="mb-1 font-semibold text-gray-900">
+                <h3 className="mb-1 font-semibold text-[#2d1c12]">
                   {feature.title}
                 </h3>
-                <p className="text-sm text-gray-600">{feature.description}</p>
+                <p className="text-xs text-[#6b5645] md:text-sm">
+                  {feature.description}
+                </p>
               </div>
             </StaggerItem>
           ))}

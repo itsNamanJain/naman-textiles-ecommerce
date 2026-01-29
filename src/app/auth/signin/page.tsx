@@ -7,7 +7,7 @@ export default function SignInPage() {
     <Suspense
       fallback={
         <div className="flex min-h-[calc(100vh-200px)] items-center justify-center px-4 py-12">
-          <Skeleton className="h-[500px] w-full max-w-md rounded-lg" />
+          <Skeleton className="h-[500px] w-full max-w-md rounded-2xl" />
         </div>
       }
     >

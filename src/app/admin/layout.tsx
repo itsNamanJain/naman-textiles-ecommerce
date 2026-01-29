@@ -76,10 +76,10 @@ const adminNavItems = [
 
 function LoadingState() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
+    <div className="flex min-h-screen items-center justify-center bg-[#f6efe6]">
       <div className="text-center">
-        <Loader2 className="mx-auto h-12 w-12 animate-spin text-amber-600" />
-        <p className="mt-4 text-gray-500">Loading admin panel...</p>
+        <Loader2 className="mx-auto h-12 w-12 animate-spin text-[#b8743a]" />
+        <p className="mt-4 text-[#6b5645]">Loading admin panel...</p>
       </div>
     </div>
   );
@@ -87,14 +87,19 @@ function LoadingState() {
 
 function AccessDenied() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
+    <div className="flex min-h-screen items-center justify-center bg-[#f6efe6]">
       <div className="text-center">
-        <Shield className="mx-auto h-16 w-16 text-red-500" />
-        <h1 className="mt-4 text-2xl font-bold text-gray-900">Access Denied</h1>
-        <p className="mt-2 text-gray-500">
+        <Shield className="mx-auto h-16 w-16 text-[#b3474d]" />
+        <h1 className="font-display mt-4 text-2xl text-[#2d1c12]">
+          Access Denied
+        </h1>
+        <p className="mt-2 text-[#6b5645]">
           You don&apos;t have permission to access the admin panel.
         </p>
-        <Button className="mt-6" asChild>
+        <Button
+          className="mt-6 rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
+          asChild
+        >
           <Link href="/">Go to Homepage</Link>
         </Button>
       </div>
@@ -132,7 +137,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-100">
+    <div className="flex h-screen overflow-hidden bg-[#f6efe6]">
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div
@@ -144,18 +149,18 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
       {/* Sidebar - Fixed on desktop */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-gray-900 transition-transform duration-300 ease-in-out lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-[#1c120c] transition-transform duration-300 ease-in-out lg:translate-x-0",
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         {/* Logo */}
-        <div className="flex h-16 shrink-0 items-center justify-between border-b border-gray-800 px-4">
+        <div className="flex h-16 shrink-0 items-center justify-between border-b border-white/10 px-4">
           <Link href="/admin" className="flex items-center gap-2">
-            <Store className="h-8 w-8 text-amber-500" />
-            <span className="text-lg font-bold text-white">Naman Admin</span>
+            <Store className="h-8 w-8 text-[#e2b377]" />
+            <span className="font-display text-lg text-white">Naman Admin</span>
           </Link>
           <button
-            className="text-gray-400 hover:text-white lg:hidden"
+            className="text-[#c4b1a2] hover:text-white lg:hidden"
             onClick={() => setSidebarOpen(false)}
           >
             <X className="h-6 w-6" />
@@ -178,8 +183,8 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
                     className={cn(
                       "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                       isActive
-                        ? "bg-amber-600 text-white"
-                        : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                        ? "bg-[#b8743a] text-white"
+                        : "text-[#d9c8b8] hover:bg-white/10 hover:text-white"
                     )}
                   >
                     <item.icon className="h-5 w-5" />
@@ -191,10 +196,10 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
           </ul>
 
           {/* Bottom section */}
-          <div className="mt-auto space-y-2 border-t border-gray-800 pt-4">
+          <div className="mt-auto space-y-2 border-t border-white/10 pt-4">
             <Link
               href="/"
-              className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-300 hover:bg-gray-800 hover:text-white"
+              className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-[#d9c8b8] hover:bg-white/10 hover:text-white"
             >
               <Store className="h-5 w-5" />
               View Store
@@ -202,7 +207,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
             </Link>
             <button
               onClick={handleSignOut}
-              className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-red-400 hover:bg-gray-800 hover:text-red-300"
+              className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-[#e08a8f] hover:bg-white/10 hover:text-[#f0b5b8]"
             >
               <LogOut className="h-5 w-5" />
               Sign Out
@@ -214,9 +219,9 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
       {/* Main content - offset by sidebar width on desktop */}
       <div className="flex flex-1 flex-col lg:pl-64">
         {/* Top header - sticky within main content area */}
-        <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-4 border-b bg-white px-4 shadow-sm">
+        <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-4 border-b border-black/5 bg-white/80 px-4 shadow-[0_8px_30px_rgba(15,15,15,0.04)] backdrop-blur">
           <button
-            className="text-gray-600 hover:text-gray-900 lg:hidden"
+            className="text-[#6b5645] hover:text-[#2d1c12] lg:hidden"
             onClick={() => setSidebarOpen(true)}
           >
             <Menu className="h-6 w-6" />
@@ -227,12 +232,12 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
           {/* User info */}
           <div className="flex items-center gap-3">
             <div className="text-right">
-              <p className="text-sm font-medium text-gray-900">
+              <p className="text-sm font-medium text-[#2d1c12]">
                 {session?.user?.name}
               </p>
-              <p className="text-xs text-gray-500">{session?.user?.email}</p>
+              <p className="text-xs text-[#9c826a]">{session?.user?.email}</p>
             </div>
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-100 text-amber-600">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#f7efe7] text-[#b8743a]">
               {session?.user?.name?.[0]?.toUpperCase() ?? "A"}
             </div>
           </div>

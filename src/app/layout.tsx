@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
 
 import { type Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
 
 import { TRPCReactProvider } from "@/trpc/react";
 import { Toaster } from "@/components/ui/sonner";
@@ -40,16 +40,23 @@ export const metadata: Metadata = {
   },
 };
 
-const geist = Geist({
+const displayFont = Playfair_Display({
   subsets: ["latin"],
-  variable: "--font-geist-sans",
+  variable: "--font-display",
+  weight: ["400", "500", "600", "700"],
+});
+
+const bodyFont = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-body",
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geist.variable}`}>
+    <html lang="en" className={`${bodyFont.variable} ${displayFont.variable}`}>
       <body className="min-h-screen bg-white font-sans antialiased">
         <SessionProvider>
           <TRPCReactProvider>

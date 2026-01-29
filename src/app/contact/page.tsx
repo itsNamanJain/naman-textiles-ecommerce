@@ -42,19 +42,19 @@ const getWorkingDays = () => {
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-transparent">
       {/* Breadcrumb */}
-      <div className="border-b bg-white">
+      <div className="border-b border-black/5 bg-white/70">
         <div className="container mx-auto px-4 py-3">
           <nav className="flex items-center gap-2 text-sm">
             <Link
               href="/"
-              className="flex items-center text-gray-500 hover:text-amber-600"
+              className="flex items-center text-[#9c826a] hover:text-[#b8743a]"
             >
               <Home className="h-4 w-4" />
             </Link>
             <ChevronRight className="h-4 w-4 text-gray-400" />
-            <span className="font-medium text-gray-900">Contact Us</span>
+            <span className="font-medium text-[#2d1c12]">Contact Us</span>
           </nav>
         </div>
       </div>
@@ -63,10 +63,10 @@ export default function ContactPage() {
         <div className="mx-auto max-w-5xl">
           {/* Header */}
           <div className="animate-fade-in-up text-center">
-            <h1 className="text-3xl font-bold text-gray-900 md:text-4xl">
+            <h1 className="font-display text-3xl text-[#2d1c12] md:text-4xl">
               Get in Touch
             </h1>
-            <p className="mt-3 text-lg text-gray-500">
+            <p className="mt-3 text-base text-[#6b5645] md:text-lg">
               We&apos;d love to hear from you. Reach out to us for any queries.
             </p>
           </div>
@@ -74,14 +74,14 @@ export default function ContactPage() {
           <div className="mt-12 grid gap-8 lg:grid-cols-2">
             {/* Contact Info Cards */}
             <div className="animate-fade-in-up animation-delay-100 space-y-4">
-              <Card className="card-hover">
+              <Card className="card-hover border border-black/5 bg-white/80">
                 <CardContent className="flex items-start gap-4 pt-6">
-                  <div className="rounded-full bg-amber-100 p-3">
-                    <MapPin className="h-6 w-6 text-amber-600" />
+                  <div className="rounded-2xl bg-[#f7efe7] p-3">
+                    <MapPin className="h-6 w-6 text-[#b8743a]" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">Visit Us</h3>
-                    <p className="mt-1 text-sm text-gray-500">
+                    <h3 className="font-semibold text-[#2d1c12]">Visit Us</h3>
+                    <p className="mt-1 text-sm text-[#6b5645]">
                       {STORE_INFO.address.line1}
                       <br />
                       {STORE_INFO.address.line2}
@@ -92,7 +92,7 @@ export default function ContactPage() {
                       href={STORE_INFO.address.googleMapsUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-2 inline-block text-sm text-amber-600 hover:text-amber-700"
+                      className="mt-2 inline-block text-sm text-[#b8743a] hover:text-[#a4632f]"
                     >
                       View on Google Maps →
                     </a>
@@ -100,47 +100,47 @@ export default function ContactPage() {
                 </CardContent>
               </Card>
 
-              <Card className="card-hover">
+              <Card className="card-hover border border-black/5 bg-white/80">
                 <CardContent className="flex items-start gap-4 pt-6">
-                  <div className="rounded-full bg-amber-100 p-3">
-                    <Phone className="h-6 w-6 text-amber-600" />
+                  <div className="rounded-2xl bg-[#f7efe7] p-3">
+                    <Phone className="h-6 w-6 text-[#b8743a]" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">Call Us</h3>
-                    <p className="mt-1 text-sm text-gray-500">
+                    <h3 className="font-semibold text-[#2d1c12]">Call Us</h3>
+                    <p className="mt-1 text-sm text-[#6b5645]">
                       {STORE_INFO.phone}
                     </p>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="card-hover">
+              <Card className="card-hover border border-black/5 bg-white/80">
                 <CardContent className="flex items-start gap-4 pt-6">
-                  <div className="rounded-full bg-amber-100 p-3">
-                    <Mail className="h-6 w-6 text-amber-600" />
+                  <div className="rounded-2xl bg-[#f7efe7] p-3">
+                    <Mail className="h-6 w-6 text-[#b8743a]" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">Email Us</h3>
-                    <p className="mt-1 text-sm text-gray-500">
+                    <h3 className="font-semibold text-[#2d1c12]">Email Us</h3>
+                    <p className="mt-1 text-sm text-[#6b5645]">
                       {STORE_INFO.email}
                     </p>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="card-hover">
+              <Card className="card-hover border border-black/5 bg-white/80">
                 <CardContent className="flex items-start gap-4 pt-6">
-                  <div className="rounded-full bg-amber-100 p-3">
-                    <Clock className="h-6 w-6 text-amber-600" />
+                  <div className="rounded-2xl bg-[#f7efe7] p-3">
+                    <Clock className="h-6 w-6 text-[#b8743a]" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">
+                    <h3 className="font-semibold text-[#2d1c12]">
                       Business Hours
                     </h3>
-                    <p className="mt-1 text-sm text-gray-500">
+                    <p className="mt-1 text-sm text-[#6b5645]">
                       {getWorkingDays()}: {STORE_INFO.businessHours.open}
                       <br />
-                      <span className="text-red-500">
+                      <span className="text-[#b3474d]">
                         {STORE_INFO.businessHours.closedDay}: Closed
                       </span>
                     </p>
@@ -151,7 +151,7 @@ export default function ContactPage() {
 
             {/* Google Map */}
             <div className="animate-fade-in-up animation-delay-200">
-              <Card className="overflow-hidden">
+              <Card className="overflow-hidden border border-black/5 bg-white/80">
                 <CardContent className="p-0">
                   <div className="relative h-72 w-full">
                     <iframe
@@ -166,15 +166,15 @@ export default function ContactPage() {
                       className="absolute inset-0"
                     />
                   </div>
-                  <div className="flex flex-col gap-2 border-t bg-gray-50 p-3 sm:flex-row sm:items-center sm:justify-between">
-                    <p className="text-sm text-gray-600">
+                  <div className="flex flex-col gap-2 border-t border-black/5 bg-white/80 p-3 sm:flex-row sm:items-center sm:justify-between">
+                    <p className="text-sm text-[#6b5645]">
                       {STORE_INFO.address.line1}, {STORE_INFO.address.city}
                     </p>
                     <Button
                       variant="outline"
                       size="sm"
                       asChild
-                      className="w-full sm:w-auto"
+                      className="w-full rounded-full border-black/10 bg-white/80 text-[#2d1c12] hover:bg-white sm:w-auto"
                     >
                       <a
                         href={STORE_INFO.address.googleMapsUrl}
@@ -192,13 +192,15 @@ export default function ContactPage() {
           </div>
 
           {/* WhatsApp CTA */}
-          <div className="animate-fade-in-up animation-delay-300 mt-12 rounded-xl bg-gradient-to-r from-green-500 to-green-600 p-8 text-center text-white">
-            <h2 className="text-2xl font-bold">Quick Support via WhatsApp</h2>
-            <p className="mt-2 text-green-100">
+          <div className="animate-fade-in-up animation-delay-300 mt-12 rounded-3xl bg-gradient-to-r from-[#2d1c12] via-[#6b3f24] to-[#b8743a] p-8 text-center text-white shadow-[0_30px_70px_rgba(45,28,18,0.35)]">
+            <h2 className="font-display text-2xl">
+              Quick Support via WhatsApp
+            </h2>
+            <p className="mt-2 text-sm text-white/80 md:text-base">
               Get instant responses to your queries
             </p>
             <Button
-              className="mt-6 bg-white text-green-600 hover:bg-green-50"
+              className="mt-6 rounded-full bg-white text-[#2d1c12] hover:bg-white/90"
               size="lg"
               asChild
             >

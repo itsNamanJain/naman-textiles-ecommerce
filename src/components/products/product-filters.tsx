@@ -108,7 +108,7 @@ export function ProductFilters({ categorySlug }: ProductFiltersProps) {
     <div className="flex flex-wrap items-center gap-3">
       {/* Sort Dropdown */}
       <Select value={currentSort} onValueChange={handleSortChange}>
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-[200px] rounded-full border-black/10 bg-white/80 text-sm">
           <SelectValue placeholder="Sort by" />
         </SelectTrigger>
         <SelectContent>
@@ -123,7 +123,7 @@ export function ProductFilters({ categorySlug }: ProductFiltersProps) {
       {/* Selling Mode Filter (Desktop) */}
       <div className="hidden md:block">
         <Select value={currentMode} onValueChange={handleModeChange}>
-          <SelectTrigger className="w-[140px]">
+          <SelectTrigger className="w-[160px] rounded-full border-black/10 bg-white/80 text-sm">
             <SelectValue placeholder="Selling Mode" />
           </SelectTrigger>
           <SelectContent>
@@ -139,11 +139,14 @@ export function ProductFilters({ categorySlug }: ProductFiltersProps) {
       {/* Filters Sheet (Mobile + Advanced) */}
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetTrigger asChild>
-          <Button variant="outline" className="gap-2">
+          <Button
+            variant="outline"
+            className="gap-2 rounded-full border-black/10 bg-white/80 text-[#2d1c12] hover:bg-white"
+          >
             <SlidersHorizontal className="h-4 w-4" />
             Filters
             {hasActiveFilters && (
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-600 text-xs text-white">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#b8743a] text-xs text-white">
                 !
               </span>
             )}
@@ -151,20 +154,24 @@ export function ProductFilters({ categorySlug }: ProductFiltersProps) {
         </SheetTrigger>
         <SheetContent side="right" className="w-full sm:max-w-md">
           <SheetHeader>
-            <SheetTitle>Filters</SheetTitle>
+            <SheetTitle className="font-display text-xl text-[#2d1c12]">
+              Filters
+            </SheetTitle>
           </SheetHeader>
 
           <div className="mt-6 space-y-6">
             {/* Price Range */}
             <div>
-              <Label className="text-sm font-medium">Price Range</Label>
+              <Label className="text-sm font-semibold text-[#2d1c12]">
+                Price Range
+              </Label>
               <div className="mt-2 flex items-center gap-2">
                 <Input
                   type="number"
                   placeholder="Min"
                   value={minPrice}
                   onChange={(e) => setMinPrice(e.target.value)}
-                  className="w-full"
+                  className="w-full rounded-2xl border-black/10 bg-white/80"
                 />
                 <span className="text-gray-400">-</span>
                 <Input
@@ -172,7 +179,7 @@ export function ProductFilters({ categorySlug }: ProductFiltersProps) {
                   placeholder="Max"
                   value={maxPrice}
                   onChange={(e) => setMaxPrice(e.target.value)}
-                  className="w-full"
+                  className="w-full rounded-2xl border-black/10 bg-white/80"
                 />
               </div>
             </div>
@@ -181,7 +188,9 @@ export function ProductFilters({ categorySlug }: ProductFiltersProps) {
 
             {/* Selling Mode (Mobile) */}
             <div className="md:hidden">
-              <Label className="text-sm font-medium">Selling Mode</Label>
+              <Label className="text-sm font-semibold text-[#2d1c12]">
+                Selling Mode
+              </Label>
               <div className="mt-2 flex flex-wrap gap-2">
                 {sellingModes.map((mode) => (
                   <Button
@@ -191,8 +200,8 @@ export function ProductFilters({ categorySlug }: ProductFiltersProps) {
                     onClick={() => handleModeChange(mode.value)}
                     className={
                       currentMode === mode.value
-                        ? "bg-amber-600 hover:bg-amber-700"
-                        : ""
+                        ? "rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
+                        : "rounded-full border-black/10 bg-white/80"
                     }
                   >
                     {mode.label}
@@ -207,13 +216,13 @@ export function ProductFilters({ categorySlug }: ProductFiltersProps) {
             <div className="flex gap-3">
               <Button
                 variant="outline"
-                className="flex-1"
+                className="flex-1 rounded-full border-black/10 bg-white/80 text-[#2d1c12] hover:bg-white"
                 onClick={clearFilters}
               >
                 Clear All
               </Button>
               <Button
-                className="flex-1 bg-amber-600 hover:bg-amber-700"
+                className="flex-1 rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
                 onClick={handlePriceFilter}
               >
                 Apply Filters
@@ -230,7 +239,7 @@ export function ProductFilters({ categorySlug }: ProductFiltersProps) {
             <Button
               variant="secondary"
               size="sm"
-              className="h-7 gap-1 text-xs"
+              className="h-7 gap-1 rounded-full bg-[#f7efe7] text-xs text-[#5c4a3d]"
               onClick={() => {
                 setMinPrice("");
                 updateFilters({ minPrice: null });
@@ -244,7 +253,7 @@ export function ProductFilters({ categorySlug }: ProductFiltersProps) {
             <Button
               variant="secondary"
               size="sm"
-              className="h-7 gap-1 text-xs"
+              className="h-7 gap-1 rounded-full bg-[#f7efe7] text-xs text-[#5c4a3d]"
               onClick={() => {
                 setMaxPrice("");
                 updateFilters({ maxPrice: null });
@@ -258,7 +267,7 @@ export function ProductFilters({ categorySlug }: ProductFiltersProps) {
             <Button
               variant="secondary"
               size="sm"
-              className="h-7 gap-1 text-xs"
+              className="h-7 gap-1 rounded-full bg-[#f7efe7] text-xs text-[#5c4a3d]"
               onClick={() => handleModeChange("all")}
             >
               {currentMode === "meter" ? "By Meter" : "By Piece"}

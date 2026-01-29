@@ -49,11 +49,11 @@ export default function CartPage() {
   // Show loading state until mounted to avoid hydration mismatch
   if (!isMounted) {
     return (
-      <div className="min-h-[calc(100vh-200px)] bg-gray-50">
+      <div className="min-h-[calc(100vh-200px)] bg-transparent">
         <div className="container mx-auto px-4 py-12">
           <div className="flex flex-col items-center justify-center py-16">
-            <Loader2 className="h-12 w-12 animate-spin text-amber-600" />
-            <p className="mt-4 text-gray-500">Loading cart...</p>
+            <Loader2 className="h-12 w-12 animate-spin text-[#b8743a]" />
+            <p className="mt-4 text-[#6b5645]">Loading cart...</p>
           </div>
         </div>
       </div>
@@ -81,20 +81,20 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-[calc(100vh-200px)] bg-gray-50">
+      <div className="min-h-[calc(100vh-200px)] bg-transparent">
         <div className="container mx-auto px-4 py-12">
           <FadeIn className="flex flex-col items-center justify-center py-16">
-            <div className="rounded-full bg-gray-100 p-8">
-              <ShoppingCart className="h-16 w-16 text-gray-400" />
+            <div className="rounded-full bg-[#f7efe7] p-8">
+              <ShoppingCart className="h-16 w-16 text-[#b0896d]" />
             </div>
-            <h1 className="mt-6 text-2xl font-bold text-gray-900">
+            <h1 className="font-display mt-6 text-2xl text-[#2d1c12]">
               Your cart is empty
             </h1>
-            <p className="mt-2 text-gray-500">
+            <p className="mt-2 text-[#6b5645]">
               Looks like you haven&apos;t added anything to your cart yet
             </p>
             <Button
-              className="mt-8 bg-amber-600 hover:bg-amber-700"
+              className="mt-8 rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
               size="lg"
               asChild
             >
@@ -110,26 +110,26 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-transparent">
       {/* Breadcrumb */}
-      <div className="border-b bg-white">
+      <div className="border-b border-black/5 bg-white/70">
         <div className="container mx-auto px-4 py-3">
           <nav className="flex items-center gap-2 text-sm">
             <Link
               href="/"
-              className="flex items-center text-gray-500 hover:text-amber-600"
+              className="flex items-center text-[#9c826a] hover:text-[#b8743a]"
             >
               <Home className="h-4 w-4" />
             </Link>
             <ChevronRight className="h-4 w-4 text-gray-400" />
-            <span className="font-medium text-gray-900">Shopping Cart</span>
+            <span className="font-medium text-[#2d1c12]">Shopping Cart</span>
           </nav>
         </div>
       </div>
 
       <div className="container mx-auto px-4 py-8">
         <FadeIn>
-          <h1 className="mb-8 text-3xl font-bold text-gray-900">
+          <h1 className="font-display mb-8 text-3xl text-[#2d1c12]">
             Shopping Cart ({items.length}{" "}
             {items.length === 1 ? "item" : "items"})
           </h1>
@@ -138,7 +138,7 @@ export default function CartPage() {
         <div className="grid gap-8 lg:grid-cols-3">
           {/* Cart Items */}
           <div className="lg:col-span-2">
-            <Card>
+            <Card className="border border-black/5 bg-white/80">
               <CardContent className="p-0">
                 <StaggerContainer className="divide-y">
                   {items.map((item) => (
@@ -149,7 +149,7 @@ export default function CartPage() {
                       {/* Product Image */}
                       <Link
                         href={`/product/${item.slug}`}
-                        className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg bg-gray-100 md:h-32 md:w-32"
+                        className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-2xl border border-black/5 bg-[#f5efe7] md:h-32 md:w-32"
                       >
                         {item.image ? (
                           <Image
@@ -172,11 +172,11 @@ export default function CartPage() {
                           <div>
                             <Link
                               href={`/product/${item.slug}`}
-                              className="font-medium text-gray-900 hover:text-amber-600"
+                              className="font-medium text-[#2d1c12] hover:text-[#b8743a]"
                             >
                               {item.name}
                             </Link>
-                            <p className="mt-1 text-sm text-gray-500">
+                            <p className="mt-1 text-sm text-[#9c826a]">
                               {formatPrice(item.price)} /{" "}
                               {formatUnit(item.unit)}
                             </p>
@@ -184,7 +184,7 @@ export default function CartPage() {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8 text-gray-400 hover:text-red-500"
+                            className="h-8 w-8 text-[#9c826a] hover:text-[#b3474d]"
                             onClick={() => handleRemove(item.productId)}
                           >
                             <Trash2 className="h-4 w-4" />
@@ -194,7 +194,7 @@ export default function CartPage() {
                         <div className="mt-auto flex flex-col gap-3 pt-4 sm:flex-row sm:items-center sm:justify-between">
                           {/* Quantity Controls */}
                           <div className="flex items-center gap-2">
-                            <div className="flex items-center rounded-lg border">
+                            <div className="flex items-center rounded-full border border-black/10 bg-white/80">
                               <Button
                                 variant="ghost"
                                 size="icon"
@@ -203,7 +203,7 @@ export default function CartPage() {
                               >
                                 <Minus className="h-3 w-3 sm:h-4 sm:w-4" />
                               </Button>
-                              <div className="flex h-8 w-12 items-center justify-center text-sm font-medium sm:h-9 sm:w-16">
+                              <div className="flex h-8 w-12 items-center justify-center text-sm font-medium text-[#2d1c12] sm:h-9 sm:w-16">
                                 {formatQuantity(item.quantity, item.unit)}
                               </div>
                               <Button
@@ -219,7 +219,7 @@ export default function CartPage() {
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-8 w-8 text-red-500 hover:bg-red-50 hover:text-red-600 sm:hidden"
+                              className="h-8 w-8 text-[#b3474d] hover:bg-[#f7e6e6] hover:text-[#9a3a40] sm:hidden"
                               onClick={() => handleRemove(item.productId)}
                             >
                               <Trash2 className="h-4 w-4" />
@@ -227,7 +227,7 @@ export default function CartPage() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="hidden text-red-500 hover:bg-red-50 hover:text-red-600 sm:inline-flex"
+                              className="hidden text-[#b3474d] hover:bg-[#f7e6e6] hover:text-[#9a3a40] sm:inline-flex"
                               onClick={() => handleRemove(item.productId)}
                             >
                               <Trash2 className="mr-1 h-4 w-4" />
@@ -236,7 +236,7 @@ export default function CartPage() {
                           </div>
 
                           {/* Item Total */}
-                          <span className="text-base font-bold text-gray-900 sm:text-lg">
+                          <span className="text-base font-semibold text-[#2d1c12] sm:text-lg">
                             {formatPrice(item.price * item.quantity)}
                           </span>
                         </div>
@@ -249,7 +249,7 @@ export default function CartPage() {
 
             {/* Continue Shopping */}
             <div className="mt-4">
-              <Button variant="ghost" asChild>
+              <Button variant="ghost" asChild className="text-[#2d1c12]">
                 <Link href="/products">
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Continue Shopping
@@ -261,41 +261,45 @@ export default function CartPage() {
           {/* Order Summary */}
           <div className="lg:col-span-1">
             <FadeIn delay={0.2}>
-              <Card className="sticky top-24">
+              <Card className="sticky top-24 border border-black/5 bg-white/80">
                 <CardHeader>
-                  <CardTitle>Order Summary</CardTitle>
+                  <CardTitle className="font-display text-xl text-[#2d1c12]">
+                    Order Summary
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Subtotal</span>
+                    <span className="text-[#6b5645]">Subtotal</span>
                     <span className="font-medium">{formatPrice(subtotal)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Shipping</span>
+                    <span className="text-[#6b5645]">Shipping</span>
                     <span className="font-medium">
                       {shipping === 0 ? (
-                        <span className="text-green-600">FREE</span>
+                        <span className="text-emerald-600">FREE</span>
                       ) : (
                         formatPrice(shipping)
                       )}
                     </span>
                   </div>
                   {subtotal < freeShippingThreshold && (
-                    <p className="text-xs text-amber-600">
+                    <p className="text-xs text-[#b8743a]">
                       Add {formatPrice(freeShippingThreshold - subtotal)} more
                       for free shipping!
                     </p>
                   )}
                   <Separator />
                   <div className="flex justify-between">
-                    <span className="text-lg font-bold">Total</span>
-                    <span className="text-lg font-bold text-amber-600">
+                    <span className="text-lg font-semibold text-[#2d1c12]">
+                      Total
+                    </span>
+                    <span className="text-lg font-semibold text-[#b8743a]">
                       {formatPrice(total)}
                     </span>
                   </div>
 
                   <Button
-                    className="w-full bg-amber-600 hover:bg-amber-700"
+                    className="w-full rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
                     size="lg"
                     asChild
                   >
@@ -304,14 +308,14 @@ export default function CartPage() {
 
                   {/* Trust Badges */}
                   <div className="grid grid-cols-2 gap-3 pt-4">
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
-                      <Truck className="h-4 w-4 text-amber-600" />
+                    <div className="flex items-center gap-2 text-xs text-[#6b5645]">
+                      <Truck className="h-4 w-4 text-[#b8743a]" />
                       <span>
                         Free shipping above {formatPrice(freeShippingThreshold)}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
-                      <Shield className="h-4 w-4 text-amber-600" />
+                    <div className="flex items-center gap-2 text-xs text-[#6b5645]">
+                      <Shield className="h-4 w-4 text-[#b8743a]" />
                       <span>Secure checkout</span>
                     </div>
                   </div>

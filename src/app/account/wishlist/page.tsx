@@ -64,9 +64,9 @@ export default function WishlistPage() {
   if (!isMounted || isLoading) {
     return (
       <FadeIn>
-        <Card>
+        <Card className="border border-black/5 bg-white/80">
           <CardContent className="flex items-center justify-center py-16">
-            <Loader2 className="h-8 w-8 animate-spin text-amber-600" />
+            <Loader2 className="h-8 w-8 animate-spin text-[#b8743a]" />
           </CardContent>
         </Card>
       </FadeIn>
@@ -76,14 +76,17 @@ export default function WishlistPage() {
   if (error?.data?.code === "UNAUTHORIZED") {
     return (
       <FadeIn>
-        <Card>
+        <Card className="border border-black/5 bg-white/80">
           <CardContent className="py-16 text-center">
-            <Heart className="mx-auto mb-4 h-12 w-12 text-gray-300" />
-            <h3 className="text-lg font-medium text-gray-900">
+            <Heart className="mx-auto mb-4 h-12 w-12 text-[#b0896d]" />
+            <h3 className="font-display text-lg text-[#2d1c12]">
               Sign in to view your wishlist
             </h3>
-            <p className="mt-1 text-gray-500">Save items you love for later</p>
-            <Button className="mt-6 bg-amber-600 hover:bg-amber-700" asChild>
+            <p className="mt-1 text-[#6b5645]">Save items you love for later</p>
+            <Button
+              className="mt-6 rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
+              asChild
+            >
               <Link href="/auth/signin?callbackUrl=/account/wishlist">
                 Sign In
               </Link>
@@ -98,15 +101,15 @@ export default function WishlistPage() {
 
   return (
     <FadeIn>
-      <Card className="overflow-hidden rounded-xl border-0 shadow-sm">
+      <Card className="overflow-hidden rounded-2xl border border-black/5 bg-white/80 shadow-[0_20px_50px_rgba(15,15,15,0.08)]">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="flex items-center gap-2 text-gray-800">
-                <Heart className="h-5 w-5 text-rose-500" />
+              <CardTitle className="font-display flex items-center gap-2 text-xl text-[#2d1c12]">
+                <Heart className="h-5 w-5 text-[#b3474d]" />
                 My Wishlist
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-[#6b5645]">
                 {items.length} item{items.length !== 1 ? "s" : ""} saved for
                 later
               </CardDescription>
@@ -118,6 +121,7 @@ export default function WishlistPage() {
                     variant="outline"
                     size="sm"
                     disabled={clearMutation.isPending}
+                    className="rounded-full border-black/10 bg-white/80 text-[#2d1c12] hover:bg-white"
                   >
                     Clear All
                   </Button>
@@ -135,7 +139,7 @@ export default function WishlistPage() {
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                     <AlertDialogAction
                       onClick={handleClear}
-                      className="bg-rose-500 hover:bg-rose-600"
+                      className="bg-[#b3474d] hover:bg-[#9a3a40]"
                     >
                       Clear All
                     </AlertDialogAction>
@@ -148,16 +152,19 @@ export default function WishlistPage() {
         <CardContent className="p-4">
           {items.length === 0 ? (
             <div className="py-12 text-center">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
-                <Heart className="h-8 w-8 text-gray-400" />
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#f7efe7]">
+                <Heart className="h-8 w-8 text-[#b0896d]" />
               </div>
-              <h3 className="text-lg font-medium text-gray-800">
+              <h3 className="font-display text-lg text-[#2d1c12]">
                 Your wishlist is empty
               </h3>
-              <p className="mt-1 text-gray-500">
+              <p className="mt-1 text-[#6b5645]">
                 Save items you like for later
               </p>
-              <Button className="mt-4 bg-amber-500 hover:bg-amber-600" asChild>
+              <Button
+                className="mt-4 rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
+                asChild
+              >
                 <Link href="/products">
                   <ShoppingBag className="mr-2 h-4 w-4" />
                   Browse Products

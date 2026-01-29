@@ -95,10 +95,7 @@ export function CartDrawer() {
             <ScrollArea className="flex-1">
               <div className="divide-y">
                 {items.map((item) => (
-                  <div
-                  key={item.productId}
-                    className="flex gap-3 p-4"
-                  >
+                  <div key={item.productId} className="flex gap-3 p-4">
                     {/* Product Image */}
                     <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-gray-100">
                       {item.image ? (
@@ -128,9 +125,7 @@ export function CartDrawer() {
                         </Link>
                         <button
                           className="flex-shrink-0 p-1 text-gray-400 hover:text-red-500"
-                          onClick={() =>
-                            handleRemove(item.productId)
-                          }
+                          onClick={() => handleRemove(item.productId)}
                         >
                           <X className="h-4 w-4" />
                         </button>
@@ -146,9 +141,7 @@ export function CartDrawer() {
                           <div className="flex items-center rounded border">
                             <button
                               className="flex h-7 w-7 items-center justify-center hover:bg-gray-100"
-                              onClick={() =>
-                                handleDecrement(item.productId)
-                              }
+                              onClick={() => handleDecrement(item.productId)}
                             >
                               <Minus className="h-3 w-3" />
                             </button>
@@ -157,18 +150,14 @@ export function CartDrawer() {
                             </span>
                             <button
                               className="flex h-7 w-7 items-center justify-center hover:bg-gray-100"
-                              onClick={() =>
-                                handleIncrement(item.productId)
-                              }
+                              onClick={() => handleIncrement(item.productId)}
                             >
                               <Plus className="h-3 w-3" />
                             </button>
                           </div>
                           <button
                             className="ml-2 rounded p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500"
-                            onClick={() =>
-                              handleRemove(item.productId)
-                            }
+                            onClick={() => handleRemove(item.productId)}
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>

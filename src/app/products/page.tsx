@@ -40,37 +40,37 @@ export default async function ProductsPage({ searchParams }: Props) {
   const sellingMode = mode === "meter" || mode === "piece" ? mode : undefined;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-transparent">
       {/* Breadcrumb */}
-      <div className="border-b bg-white">
+      <div className="border-b border-black/5 bg-white/70">
         <div className="container mx-auto px-4 py-3">
           <nav className="flex items-center gap-2 text-sm">
             <Link
               href="/"
-              className="flex items-center text-gray-500 hover:text-amber-600"
+              className="flex items-center text-[#9c826a] hover:text-[#b8743a]"
             >
               <Home className="h-4 w-4" />
             </Link>
             <ChevronRight className="h-4 w-4 text-gray-400" />
-            <span className="font-medium text-gray-900">All Products</span>
+            <span className="font-medium text-[#2d1c12]">All Products</span>
           </nav>
         </div>
       </div>
 
       {/* Header */}
-      <div className="bg-gradient-to-r from-amber-50 to-orange-50 py-8">
+      <div className="bg-[radial-gradient(circle_at_top,rgba(255,248,238,0.9),rgba(255,255,255,0.7)),linear-gradient(120deg,#fff5e6,#f4e7d8,#fff2dd)] py-10">
         <div className="animate-fade-in-up container mx-auto px-4">
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="font-display text-3xl text-[#2d1c12] md:text-4xl">
             {search ? `Search Results for "${search}"` : "All Products"}
           </h1>
-          <p className="mt-2 text-gray-600">
+          <p className="mt-2 text-sm text-[#6b5645] md:text-base">
             Explore our complete collection of premium fabrics
           </p>
         </div>
       </div>
 
       {/* Filters and Products */}
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto px-4 py-8">
         {/* Filters Bar */}
         <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
           <Suspense
@@ -99,7 +99,10 @@ function ProductGridSkeleton() {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {Array.from({ length: 8 }).map((_, i) => (
-        <div key={i} className="overflow-hidden rounded-lg bg-white shadow-sm">
+        <div
+          key={i}
+          className="overflow-hidden rounded-2xl border border-black/5 bg-white/80 shadow-[0_10px_30px_rgba(15,15,15,0.06)]"
+        >
           <Skeleton className="aspect-square w-full" />
           <div className="space-y-2 p-4">
             <Skeleton className="h-4 w-20" />

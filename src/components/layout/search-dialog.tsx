@@ -58,11 +58,11 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
         <DialogHeader className="border-b p-4">
           <DialogTitle className="sr-only">Search Products</DialogTitle>
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+            <Search className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-gray-400" />
             <Input
               type="search"
               placeholder="Search fabrics, materials, colors..."
-              className="pl-10 pr-10"
+              className="pr-10 pl-10"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               autoFocus
@@ -71,7 +71,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2"
+                className="absolute top-1/2 right-1 h-8 w-8 -translate-y-1/2"
                 onClick={() => setQuery("")}
               >
                 <X className="h-4 w-4" />

@@ -46,9 +46,15 @@ const getStatusIndex = (status: string): number => {
 
 export default function TrackOrderPage() {
   const [orderNumber, setOrderNumber] = useState("");
-  const [searchedOrderNumber, setSearchedOrderNumber] = useState<string | null>(null);
+  const [searchedOrderNumber, setSearchedOrderNumber] = useState<string | null>(
+    null
+  );
 
-  const { data: order, isLoading, error } = api.order.getByOrderNumber.useQuery(
+  const {
+    data: order,
+    isLoading,
+    error,
+  } = api.order.getByOrderNumber.useQuery(
     { orderNumber: searchedOrderNumber! },
     { enabled: !!searchedOrderNumber }
   );
@@ -63,19 +69,19 @@ export default function TrackOrderPage() {
   const currentStatusIndex = order ? getStatusIndex(order.status) : -1;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-transparent">
       {/* Breadcrumb */}
-      <div className="border-b bg-white">
+      <div className="border-b border-black/5 bg-white/70">
         <div className="container mx-auto px-4 py-3">
           <nav className="flex items-center gap-2 text-sm">
             <Link
               href="/"
-              className="flex items-center text-gray-500 hover:text-amber-600"
+              className="flex items-center text-[#9c826a] hover:text-[#b8743a]"
             >
               <Home className="h-4 w-4" />
             </Link>
             <ChevronRight className="h-4 w-4 text-gray-400" />
-            <span className="font-medium text-gray-900">Track Order</span>
+            <span className="font-medium text-[#2d1c12]">Track Order</span>
           </nav>
         </div>
       </div>
@@ -84,31 +90,31 @@ export default function TrackOrderPage() {
         <FadeIn>
           <div className="mx-auto max-w-2xl">
             <div className="text-center">
-              <Package className="mx-auto h-16 w-16 text-amber-600" />
-              <h1 className="mt-4 text-3xl font-bold text-gray-900">
+              <Package className="mx-auto h-16 w-16 text-[#b8743a]" />
+              <h1 className="font-display mt-4 text-3xl text-[#2d1c12]">
                 Track Your Order
               </h1>
-              <p className="mt-2 text-gray-500">
+              <p className="mt-2 text-[#6b5645]">
                 Enter your order number to check the delivery status
               </p>
             </div>
 
             {/* Search Form */}
-            <Card className="mt-8">
+            <Card className="mt-8 border border-black/5 bg-white/80">
               <CardContent className="pt-6">
                 <form onSubmit={handleSearch} className="flex gap-3">
                   <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                    <Search className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-[#9c826a]" />
                     <Input
                       placeholder="Enter order number (e.g., NT-20241224-XXXX)"
-                      className="pl-10"
+                      className="rounded-2xl border-black/10 bg-white/80 pl-10"
                       value={orderNumber}
                       onChange={(e) => setOrderNumber(e.target.value)}
                     />
                   </div>
                   <Button
                     type="submit"
-                    className="bg-amber-600 hover:bg-amber-700"
+                    className="rounded-full bg-[#b8743a] hover:bg-[#a4632f]"
                     disabled={isLoading}
                   >
                     {isLoading ? (
@@ -125,37 +131,37 @@ export default function TrackOrderPage() {
             {searchedOrderNumber && (
               <FadeIn delay={0.2}>
                 {isLoading ? (
-                  <Card className="mt-6">
+                  <Card className="mt-6 border border-black/5 bg-white/80">
                     <CardContent className="flex items-center justify-center py-12">
-                      <Loader2 className="h-8 w-8 animate-spin text-amber-600" />
+                      <Loader2 className="h-8 w-8 animate-spin text-[#b8743a]" />
                     </CardContent>
                   </Card>
                 ) : error ? (
-                  <Card className="mt-6">
+                  <Card className="mt-6 border border-black/5 bg-white/80">
                     <CardContent className="py-12 text-center">
-                      <Package className="mx-auto h-12 w-12 text-gray-400" />
-                      <p className="mt-4 text-lg font-medium text-gray-900">
+                      <Package className="mx-auto h-12 w-12 text-[#b0896d]" />
+                      <p className="mt-4 text-lg font-medium text-[#2d1c12]">
                         Order not found
                       </p>
-                      <p className="mt-1 text-gray-500">
+                      <p className="mt-1 text-[#6b5645]">
                         Please check your order number and try again
                       </p>
                     </CardContent>
                   </Card>
                 ) : order ? (
-                  <Card className="mt-6">
+                  <Card className="mt-6 border border-black/5 bg-white/80">
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle className="text-amber-600">
+                        <CardTitle className="font-display text-lg text-[#b8743a]">
                           #{order.orderNumber}
                         </CardTitle>
                         <Badge
                           className={
                             order.status === "delivered"
-                              ? "bg-green-100 text-green-800"
+                              ? "bg-[#eaf4ea] text-[#2f6b3b]"
                               : order.status === "cancelled"
-                              ? "bg-red-100 text-red-800"
-                              : "bg-amber-100 text-amber-800"
+                                ? "bg-[#f7e6e6] text-[#8a2f35]"
+                                : "bg-[#f7efe7] text-[#8a6642]"
                           }
                         >
                           {order.status}
@@ -164,75 +170,88 @@ export default function TrackOrderPage() {
                     </CardHeader>
                     <CardContent className="space-y-6">
                       {/* Status Timeline */}
-                      {order.status !== "cancelled" && order.status !== "refunded" && (
-                        <div className="relative">
-                          <div className="absolute left-5 top-0 h-full w-0.5 bg-gray-200" />
-                          <div className="space-y-6">
-                            {statusSteps.map((step, index) => {
-                              const isCompleted = index <= currentStatusIndex;
-                              const isCurrent = index === currentStatusIndex;
-                              const Icon = step.icon;
+                      {order.status !== "cancelled" &&
+                        order.status !== "refunded" && (
+                          <div className="relative">
+                            <div className="absolute top-0 left-5 h-full w-0.5 bg-black/10" />
+                            <div className="space-y-6">
+                              {statusSteps.map((step, index) => {
+                                const isCompleted = index <= currentStatusIndex;
+                                const isCurrent = index === currentStatusIndex;
+                                const Icon = step.icon;
 
-                              return (
-                                <div key={step.status} className="relative flex items-center gap-4">
+                                return (
                                   <div
-                                    className={`relative z-10 flex h-10 w-10 items-center justify-center rounded-full ${
-                                      isCompleted
-                                        ? "bg-amber-600 text-white"
-                                        : "bg-gray-200 text-gray-400"
-                                    } ${isCurrent ? "ring-4 ring-amber-100" : ""}`}
+                                    key={step.status}
+                                    className="relative flex items-center gap-4"
                                   >
-                                    <Icon className="h-5 w-5" />
-                                  </div>
-                                  <div>
-                                    <p
-                                      className={`font-medium ${
-                                        isCompleted ? "text-gray-900" : "text-gray-400"
-                                      }`}
+                                    <div
+                                      className={`relative z-10 flex h-10 w-10 items-center justify-center rounded-full ${
+                                        isCompleted
+                                          ? "bg-[#b8743a] text-white"
+                                          : "bg-[#f0f0f0] text-[#b0896d]"
+                                      } ${isCurrent ? "ring-4 ring-[#f7efe7]" : ""}`}
                                     >
-                                      {step.label}
-                                    </p>
-                                    {isCurrent && step.status === "shipped" && order.trackingNumber && (
-                                      <p className="text-sm text-gray-500">
-                                        Tracking: {order.trackingNumber}
+                                      <Icon className="h-5 w-5" />
+                                    </div>
+                                    <div>
+                                      <p
+                                        className={`font-medium ${
+                                          isCompleted
+                                            ? "text-[#2d1c12]"
+                                            : "text-[#9c826a]"
+                                        }`}
+                                      >
+                                        {step.label}
                                       </p>
-                                    )}
+                                      {isCurrent &&
+                                        step.status === "shipped" &&
+                                        order.trackingNumber && (
+                                          <p className="text-sm text-[#6b5645]">
+                                            Tracking: {order.trackingNumber}
+                                          </p>
+                                        )}
+                                    </div>
                                   </div>
-                                </div>
-                              );
-                            })}
+                                );
+                              })}
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
 
                       {/* Order Details */}
-                      <div className="rounded-lg bg-gray-50 p-4">
+                      <div className="rounded-2xl border border-black/5 bg-white/80 p-4">
                         <div className="grid gap-3 text-sm">
                           <div className="flex justify-between">
-                            <span className="text-gray-500">Order Date</span>
-                            <span className="font-medium">
-                              {new Date(order.createdAt).toLocaleDateString("en-IN", {
-                                day: "numeric",
-                                month: "long",
-                                year: "numeric",
-                              })}
+                            <span className="text-[#6b5645]">Order Date</span>
+                            <span className="font-medium text-[#2d1c12]">
+                              {new Date(order.createdAt).toLocaleDateString(
+                                "en-IN",
+                                {
+                                  day: "numeric",
+                                  month: "long",
+                                  year: "numeric",
+                                }
+                              )}
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-gray-500">Delivery Location</span>
-                            <span className="font-medium">
+                            <span className="text-[#6b5645]">
+                              Delivery Location
+                            </span>
+                            <span className="font-medium text-[#2d1c12]">
                               {order.shippingCity}, {order.shippingState}
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-gray-500">Total Amount</span>
-                            <span className="font-medium text-amber-600">
+                            <span className="text-[#6b5645]">Total Amount</span>
+                            <span className="font-medium text-[#b8743a]">
                               {formatPrice(Number(order.total))}
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-gray-500">Items</span>
-                            <span className="font-medium">
+                            <span className="text-[#6b5645]">Items</span>
+                            <span className="font-medium text-[#2d1c12]">
                               {order.items.length} item(s)
                             </span>
                           </div>

@@ -106,7 +106,9 @@ export const adminRouter = createTRPCRouter({
       .where("user.role", "=", "customer")
       .where("user.createdAt", ">=", currentMonthStart)
       .executeTakeFirst();
-    const currentMonthCustomers = Number(currentMonthCustomersResult?.count ?? 0);
+    const currentMonthCustomers = Number(
+      currentMonthCustomersResult?.count ?? 0
+    );
 
     // Last month new customers
     const lastMonthCustomersResult = await ctx.db
@@ -132,9 +134,15 @@ export const adminRouter = createTRPCRouter({
     });
 
     // Calculate growth percentages
-    const revenueGrowth = calculateGrowth(currentMonthRevenue, lastMonthRevenue);
+    const revenueGrowth = calculateGrowth(
+      currentMonthRevenue,
+      lastMonthRevenue
+    );
     const ordersGrowth = calculateGrowth(currentMonthOrders, lastMonthOrders);
-    const customersGrowth = calculateGrowth(currentMonthCustomers, lastMonthCustomers);
+    const customersGrowth = calculateGrowth(
+      currentMonthCustomers,
+      lastMonthCustomers
+    );
 
     return {
       totalRevenue,
@@ -811,14 +819,7 @@ export const adminRouter = createTRPCRouter({
 
       let query = ctx.db
         .selectFrom("user")
-        .select([
-          "id",
-          "name",
-          "email",
-          "phone",
-          "createdAt",
-          "emailVerified",
-        ])
+        .select(["id", "name", "email", "phone", "createdAt", "emailVerified"])
         .where("user.role", "=", "customer")
         .orderBy("user.createdAt", "desc");
 
@@ -837,14 +838,19 @@ export const adminRouter = createTRPCRouter({
       // Get order counts and totals for each customer
       const customerIds = allCustomers.map((c) => c.id);
 
-      let statsMap = new Map<string, { orderCount: number; totalSpent: number }>();
+      let statsMap = new Map<
+        string,
+        { orderCount: number; totalSpent: number }
+      >();
 
       if (customerIds.length > 0) {
         const orderStats = await ctx.db
           .selectFrom("order")
           .select(["userId"])
           .select(sql<number>`count(*)`.as("orderCount"))
-          .select(sql<number>`COALESCE(SUM("order"."total"), 0)`.as("totalSpent"))
+          .select(
+            sql<number>`COALESCE(SUM("order"."total"), 0)`.as("totalSpent")
+          )
           .where("order.userId", "in", customerIds)
           .groupBy("userId")
           .execute();
@@ -881,14 +887,7 @@ export const adminRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const customer = await ctx.db
         .selectFrom("user")
-        .select([
-          "id",
-          "name",
-          "email",
-          "phone",
-          "createdAt",
-          "emailVerified",
-        ])
+        .select(["id", "name", "email", "phone", "createdAt", "emailVerified"])
         .where("user.id", "=", input.id)
         .executeTakeFirst();
 

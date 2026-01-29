@@ -1,11 +1,5 @@
 import { relations } from "drizzle-orm";
-import {
-  index,
-  numeric,
-  text,
-  timestamp,
-  varchar,
-} from "drizzle-orm/pg-core";
+import { index, numeric, text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { orderStatusEnum, paymentStatusEnum } from "./enums";
 import { users } from "./users";
 import { products } from "./inventory";
@@ -103,7 +97,7 @@ export const orderItems = createTable(
     productName: varchar("product_name", { length: 255 }).notNull(),
     productSku: varchar("product_sku", { length: 100 }),
     variantName: varchar("variant_name", { length: 255 }),
-    
+
     // Pricing & quantity
     price: numeric("price", { precision: 10, scale: 2 }).notNull(), // Price per unit
     quantity: numeric("quantity", { precision: 10, scale: 2 }).notNull(), // Supports decimal for meters

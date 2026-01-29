@@ -47,16 +47,19 @@ export function generateOrderNumber(): string {
   return `NT-${timestamp}-${random}`;
 }
 
-export function formatQuantity(quantity: number | string, unit?: string): string {
+export function formatQuantity(
+  quantity: number | string,
+  unit?: string
+): string {
   const qty = typeof quantity === "string" ? parseFloat(quantity) : quantity;
-  
+
   // For meters/yards, show decimal if needed (e.g., 1.5m, 2.5m)
   // For pieces/sets/kg, always show as integer
   if (unit === "meter" || unit === "yard") {
     // Show one decimal place if not a whole number
     return qty % 1 === 0 ? qty.toString() : qty.toFixed(1);
   }
-  
+
   // For pieces and other units, round to integer
   return Math.round(qty).toString();
 }
