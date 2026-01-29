@@ -33,7 +33,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/motion";
+import { FadeIn } from "@/components/ui/motion";
 import { formatPrice } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
@@ -220,190 +220,170 @@ export default function AdminOrdersPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    <StaggerContainer>
-                      {filteredOrders.map((order) => {
-                        const currentTracking =
-                          trackingNumbers[order.id] ??
-                          order.trackingNumber ??
-                          "";
-                        const canSaveTracking =
-                          currentTracking.trim().length > 0 &&
-                          currentTracking !== (order.trackingNumber ?? "");
+                    {filteredOrders.map((order) => {
+                      const currentTracking =
+                        trackingNumbers[order.id] ?? order.trackingNumber ?? "";
+                      const canSaveTracking =
+                        currentTracking.trim().length > 0 &&
+                        currentTracking !== (order.trackingNumber ?? "");
 
-                        return (
-                          <StaggerItem
-                            key={order.id}
-                            className="border-b border-black/5 last:border-0"
-                          >
-                            <tr>
-                              <td className="py-4">
-                                <p className="text-brand-1 font-medium">
-                                  #{order.orderNumber}
-                                </p>
-                                <p className="text-muted-2 text-sm">
-                                  {order.items.length} item(s)
-                                </p>
-                              </td>
-                              <td className="py-4">
-                                <p className="text-ink-1 font-medium">
-                                  {order.user?.name ?? "Guest"}
-                                </p>
-                                <p className="text-muted-2 text-sm">
-                                  {order.user?.email}
-                                </p>
-                              </td>
-                              <td className="text-muted-1 py-4 text-sm">
-                                {new Date(order.createdAt).toLocaleDateString(
-                                  "en-IN",
-                                  {
-                                    day: "numeric",
-                                    month: "short",
-                                    year: "numeric",
-                                  }
-                                )}
-                              </td>
-                              <td className="text-ink-1 py-4 font-medium">
-                                {formatPrice(Number(order.total))}
-                              </td>
-                              <td className="py-4">
-                                <Badge
-                                  variant="secondary"
-                                  className={
-                                    order.paymentStatus === "paid"
-                                      ? "bg-success-2 text-success-1"
-                                      : "bg-paper-1 text-brand-3"
-                                  }
-                                >
-                                  {order.paymentStatus}
-                                </Badge>
-                              </td>
-                              <td className="py-4">
-                                <DropdownMenu>
-                                  <DropdownMenuTrigger asChild>
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      className={`${statusColors[order.status]} hover:opacity-80`}
-                                      disabled={updateStatusMutation.isPending}
-                                    >
-                                      {order.status}
-                                      <ChevronDown className="ml-1 h-4 w-4" />
-                                    </Button>
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent align="start">
-                                    <DropdownMenuItem
-                                      onClick={() =>
-                                        handleStatusChange(order.id, "pending")
-                                      }
-                                    >
-                                      <Clock className="mr-2 h-4 w-4" />
-                                      Pending
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                      onClick={() =>
-                                        handleStatusChange(
-                                          order.id,
-                                          "confirmed"
-                                        )
-                                      }
-                                    >
-                                      <CheckCircle2 className="mr-2 h-4 w-4" />
-                                      Confirmed
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                      onClick={() =>
-                                        handleStatusChange(
-                                          order.id,
-                                          "processing"
-                                        )
-                                      }
-                                    >
-                                      <Package className="mr-2 h-4 w-4" />
-                                      Processing
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                      onClick={() =>
-                                        handleStatusChange(order.id, "shipped")
-                                      }
-                                    >
-                                      <Truck className="mr-2 h-4 w-4" />
-                                      Shipped
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                      onClick={() =>
-                                        handleStatusChange(
-                                          order.id,
-                                          "delivered"
-                                        )
-                                      }
-                                    >
-                                      <CheckCircle2 className="text-success-1 mr-2 h-4 w-4" />
-                                      Delivered
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                      onClick={() =>
-                                        handleStatusChange(
-                                          order.id,
-                                          "cancelled"
-                                        )
-                                      }
-                                      className="text-danger-1"
-                                    >
-                                      <XCircle className="mr-2 h-4 w-4" />
-                                      Cancelled
-                                    </DropdownMenuItem>
-                                  </DropdownMenuContent>
-                                </DropdownMenu>
-                              </td>
-                              <td className="py-4">
-                                <div className="flex min-w-[220px] items-center gap-2">
-                                  <Input
-                                    placeholder="Tracking #"
-                                    value={currentTracking}
-                                    className="rounded-2xl border-black/10 bg-white/80"
-                                    onChange={(event) =>
-                                      setTrackingNumbers((prev) => ({
-                                        ...prev,
-                                        [order.id]: event.target.value,
-                                      }))
-                                    }
-                                  />
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    disabled={
-                                      updateStatusMutation.isPending ||
-                                      !canSaveTracking
-                                    }
-                                    className="text-ink-1 rounded-full border-black/10 bg-white/80 hover:bg-white"
-                                    onClick={() =>
-                                      handleTrackingSave(order.id, order.status)
-                                    }
-                                  >
-                                    Save
-                                  </Button>
-                                </div>
-                              </td>
-                              <td className="py-4">
+                      return (
+                        <tr
+                          key={order.id}
+                          className="border-b border-black/5 last:border-0"
+                        >
+                          <td className="py-4">
+                            <p className="text-brand-1 font-medium">
+                              #{order.orderNumber}
+                            </p>
+                            <p className="text-muted-2 text-sm">
+                              {order.items.length} item(s)
+                            </p>
+                          </td>
+                          <td className="py-4">
+                            <p className="text-ink-1 font-medium">
+                              {order.user?.name ?? "Guest"}
+                            </p>
+                            <p className="text-muted-2 text-sm">
+                              {order.user?.email}
+                            </p>
+                          </td>
+                          <td className="text-muted-1 py-4 text-sm">
+                            {new Date(order.createdAt).toLocaleDateString(
+                              "en-IN",
+                              {
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                              }
+                            )}
+                          </td>
+                          <td className="text-ink-1 py-4 font-medium">
+                            {formatPrice(Number(order.total))}
+                          </td>
+                          <td className="py-4">
+                            <Badge
+                              variant="secondary"
+                              className={
+                                order.paymentStatus === "paid"
+                                  ? "bg-success-2 text-success-1"
+                                  : "bg-paper-1 text-brand-3"
+                              }
+                            >
+                              {order.paymentStatus}
+                            </Badge>
+                          </td>
+                          <td className="py-4">
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  asChild
-                                  className="text-ink-1"
+                                  className={`${statusColors[order.status]} hover:opacity-80`}
+                                  disabled={updateStatusMutation.isPending}
                                 >
-                                  <Link
-                                    href={`/order-confirmation/${order.id}`}
-                                  >
-                                    <Eye className="mr-2 h-4 w-4" />
-                                    View
-                                  </Link>
+                                  {order.status}
+                                  <ChevronDown className="ml-1 h-4 w-4" />
                                 </Button>
-                              </td>
-                            </tr>
-                          </StaggerItem>
-                        );
-                      })}
-                    </StaggerContainer>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="start">
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    handleStatusChange(order.id, "pending")
+                                  }
+                                >
+                                  <Clock className="mr-2 h-4 w-4" />
+                                  Pending
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    handleStatusChange(order.id, "confirmed")
+                                  }
+                                >
+                                  <CheckCircle2 className="mr-2 h-4 w-4" />
+                                  Confirmed
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    handleStatusChange(order.id, "processing")
+                                  }
+                                >
+                                  <Package className="mr-2 h-4 w-4" />
+                                  Processing
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    handleStatusChange(order.id, "shipped")
+                                  }
+                                >
+                                  <Truck className="mr-2 h-4 w-4" />
+                                  Shipped
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    handleStatusChange(order.id, "delivered")
+                                  }
+                                >
+                                  <CheckCircle2 className="text-success-1 mr-2 h-4 w-4" />
+                                  Delivered
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    handleStatusChange(order.id, "cancelled")
+                                  }
+                                  className="text-danger-1"
+                                >
+                                  <XCircle className="mr-2 h-4 w-4" />
+                                  Cancelled
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </td>
+                          <td className="py-4">
+                            <div className="flex min-w-[220px] items-center gap-2">
+                              <Input
+                                placeholder="Tracking #"
+                                value={currentTracking}
+                                className="rounded-2xl border-black/10 bg-white/80"
+                                onChange={(event) =>
+                                  setTrackingNumbers((prev) => ({
+                                    ...prev,
+                                    [order.id]: event.target.value,
+                                  }))
+                                }
+                              />
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                disabled={
+                                  updateStatusMutation.isPending ||
+                                  !canSaveTracking
+                                }
+                                className="text-ink-1 rounded-full border-black/10 bg-white/80 hover:bg-white"
+                                onClick={() =>
+                                  handleTrackingSave(order.id, order.status)
+                                }
+                              >
+                                Save
+                              </Button>
+                            </div>
+                          </td>
+                          <td className="py-4">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              asChild
+                              className="text-ink-1"
+                            >
+                              <Link href={`/order-confirmation/${order.id}`}>
+                                <Eye className="mr-2 h-4 w-4" />
+                                View
+                              </Link>
+                            </Button>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
