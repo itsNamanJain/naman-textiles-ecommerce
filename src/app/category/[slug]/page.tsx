@@ -26,11 +26,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: "Category Not Found" };
   }
 
+  const description =
+    category.description ??
+    `Shop premium ${category.name} fabrics at Naman Textiles. Quality textiles from Gandhi Nagar, Delhi.`;
   return {
-    title: `${category.name} - Naman Textiles`,
-    description:
-      category.description ??
-      `Shop premium ${category.name} fabrics at Naman Textiles. Quality textiles from Gandhi Nagar, Delhi.`,
+    title: category.name,
+    description,
+    openGraph: {
+      title: `${category.name} Fabrics - Naman Textiles`,
+      description,
+    },
   };
 }
 

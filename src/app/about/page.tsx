@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import {
   ChevronRight,
@@ -12,6 +13,17 @@ import {
   Award,
   Heart,
 } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "About Us",
+  description:
+    "Learn about Naman Textiles — a trusted fabric shop in Seelampur, Delhi since 1990. Wholesale and retail Cotton, Rayon, Banarsi Brocade, Velvet, and more.",
+  openGraph: {
+    title: "About Naman Textiles - Premium Fabrics Since 1990",
+    description:
+      "Trusted fabric shop in Seelampur, Delhi offering wholesale and retail textiles since 1990.",
+  },
+};
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";

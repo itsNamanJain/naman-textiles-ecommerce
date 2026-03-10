@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import {
   ChevronRight,
@@ -10,6 +11,12 @@ import {
 
 import { Card, CardContent } from "@/components/ui/card";
 import { STORE_INFO } from "@/lib/constants";
+
+export const metadata: Metadata = {
+  title: "Return & Refund Policy",
+  description:
+    "Naman Textiles return and refund policy. 7-day return window, easy refund process, and exchange options for fabric purchases.",
+};
 
 export default function ReturnPolicyPage() {
   return (

@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SignInForm } from "./signin-form";
+
+export const metadata: Metadata = {
+  title: "Sign In",
+  description:
+    "Sign in to your Naman Textiles account to manage orders, track deliveries, and access your wishlist.",
+};
 
 export default function SignInPage() {
   return (

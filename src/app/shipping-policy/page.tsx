@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import {
   ChevronRight,
@@ -12,6 +13,12 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { STORE_INFO, DEFAULT_SETTINGS } from "@/lib/constants";
 import { formatPrice } from "@/lib/utils";
+
+export const metadata: Metadata = {
+  title: "Shipping Policy",
+  description:
+    "Naman Textiles shipping policy. Learn about delivery timelines, shipping charges, order tracking, and pan-India delivery for fabric orders.",
+};
 
 const shippingHighlights = [
   {

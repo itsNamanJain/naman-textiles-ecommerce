@@ -9,6 +9,7 @@ import { SessionProvider } from "@/components/providers";
 import { MainLayout } from "@/components/layout";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://namantextiles.com"),
   title: {
     default: "Naman Textiles - Premium Fabrics from Delhi",
     template: "%s | Naman Textiles",
@@ -29,11 +30,21 @@ export const metadata: Metadata = {
   authors: [{ name: "Naman Textiles" }],
   creator: "Naman Textiles",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
     type: "website",
     locale: "en_IN",
     url: "https://namantextiles.com",
     siteName: "Naman Textiles",
+    title: "Naman Textiles - Premium Fabrics from Delhi",
+    description:
+      "Shop premium quality fabrics at Naman Textiles. Cotton, Rayon, Banarsi Brocade, Velvet Work, and more.",
+  },
+  twitter: {
+    card: "summary_large_image",
     title: "Naman Textiles - Premium Fabrics from Delhi",
     description:
       "Shop premium quality fabrics at Naman Textiles. Cotton, Rayon, Banarsi Brocade, Velvet Work, and more.",

@@ -1,8 +1,15 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronRight, Home, AlertCircle } from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { STORE_INFO } from "@/lib/constants";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy",
+  description:
+    "Read the Naman Textiles privacy policy. Learn how we collect, use, and protect your personal information when you shop with us.",
+};
 
 export default function PrivacyPolicyPage() {
   return (

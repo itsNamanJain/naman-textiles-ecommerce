@@ -1,8 +1,15 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronRight, Home, AlertCircle } from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { STORE_INFO } from "@/lib/constants";
+
+export const metadata: Metadata = {
+  title: "Terms & Conditions",
+  description:
+    "Read the terms and conditions for shopping at Naman Textiles. Information about orders, payments, shipping, and returns.",
+};
 
 export default function TermsPage() {
   return (
