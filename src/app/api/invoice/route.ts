@@ -156,7 +156,7 @@ export async function GET(request: NextRequest) {
   doc.text(`Date: ${orderDate}`, rightX, ry, { align: "right" });
   ry += 5;
   doc.text(
-    `Status: ${order.paymentStatus === "paid" ? "PAID" : "PENDING"}`,
+    `Payment: ${order.paymentMethod === "upi" ? "UPI" : "COD"} | ${order.paymentStatus === "paid" ? "PAID" : "PENDING"}`,
     rightX,
     ry,
     { align: "right" }

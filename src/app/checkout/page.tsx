@@ -22,6 +22,8 @@ import {
   Tag,
   X,
   Check,
+  Banknote,
+  Smartphone,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -182,6 +184,7 @@ function CheckoutContent() {
     null
   );
   const [isNewAddress, setIsNewAddress] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<"cod" | "upi">("cod");
   const [couponCode, setCouponCode] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<{
     couponId: string;
@@ -341,7 +344,11 @@ function CheckoutContent() {
   const createOrderMutation = api.order.create.useMutation({
     onSuccess: async (data) => {
       cartStore.send({ type: "clearCart" });
-      router.push(`/order-confirmation/${data.orderId}`);
+      if (data.paymentMethod === "upi") {
+        router.push(`/payment/${data.orderId}`);
+      } else {
+        router.push(`/order-confirmation/${data.orderId}`);
+      }
       setIsSubmitting(false);
     },
     onError: (error) => {
@@ -402,6 +409,7 @@ function CheckoutContent() {
         pincode: data.pincode,
       },
       gstNumber: data.gstNumber ? data.gstNumber.toUpperCase() : undefined,
+      paymentMethod,
       customerNote: data.customerNote,
       couponCode: appliedCoupon?.code,
     });
@@ -829,13 +837,57 @@ function CheckoutContent() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="rounded-2xl border border-black/10 bg-white/80 p-4">
-                      <p className="text-ink-1 font-medium">
-                        Online Payment (PhonePe)
-                      </p>
-                      <p className="text-muted-1 text-sm">
-                        Pay securely using PhonePe, UPI, cards, or net banking.
-                      </p>
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <div
+                        onClick={() => setPaymentMethod("cod")}
+                        className={`flex cursor-pointer items-start gap-3 rounded-2xl border-2 p-4 transition-all ${
+                          paymentMethod === "cod"
+                            ? "border-brand-1 bg-paper-1"
+                            : "border-black/10 hover:border-brand-1"
+                        }`}
+                      >
+                        <div className="mt-0.5">
+                          <Banknote className={`h-5 w-5 ${paymentMethod === "cod" ? "text-brand-1" : "text-muted-2"}`} />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <p className="text-ink-1 font-medium">
+                              Cash on Delivery
+                            </p>
+                            {paymentMethod === "cod" && (
+                              <Check className="text-brand-1 h-4 w-4" />
+                            )}
+                          </div>
+                          <p className="text-muted-1 mt-1 text-sm">
+                            Pay when your order is delivered
+                          </p>
+                        </div>
+                      </div>
+                      <div
+                        onClick={() => setPaymentMethod("upi")}
+                        className={`flex cursor-pointer items-start gap-3 rounded-2xl border-2 p-4 transition-all ${
+                          paymentMethod === "upi"
+                            ? "border-brand-1 bg-paper-1"
+                            : "border-black/10 hover:border-brand-1"
+                        }`}
+                      >
+                        <div className="mt-0.5">
+                          <Smartphone className={`h-5 w-5 ${paymentMethod === "upi" ? "text-brand-1" : "text-muted-2"}`} />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <p className="text-ink-1 font-medium">
+                              Pay via UPI
+                            </p>
+                            {paymentMethod === "upi" && (
+                              <Check className="text-brand-1 h-4 w-4" />
+                            )}
+                          </div>
+                          <p className="text-muted-1 mt-1 text-sm">
+                            GPay, PhonePe, Paytm, or any UPI app
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>

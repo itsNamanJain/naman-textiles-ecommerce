@@ -52,6 +52,7 @@ export const orderRouter = createTRPCRouter({
           .refine((value) => !value || GST_REGEX.test(value), {
             message: "Invalid GST number",
           }),
+        paymentMethod: z.enum(["cod", "upi"]).default("cod"),
         customerNote: z.string().optional(),
         couponCode: z.string().optional(),
       })
@@ -249,6 +250,7 @@ export const orderRouter = createTRPCRouter({
           userId: userId,
           status: "pending",
           paymentStatus: "pending",
+          paymentMethod: input.paymentMethod,
           subtotal: subtotal.toString(),
           shippingCost: shippingCost.toString(),
           tax: tax.toString(),
@@ -373,6 +375,7 @@ export const orderRouter = createTRPCRouter({
         success: true,
         orderId: order.id,
         orderNumber: order.orderNumber,
+        paymentMethod: input.paymentMethod,
         totals: {
           subtotal,
           shippingCost,

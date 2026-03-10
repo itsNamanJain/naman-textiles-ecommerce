@@ -327,7 +327,9 @@ export default function OrderConfirmationPage() {
                   <div className="rounded-2xl border border-black/5 bg-white/80 p-4">
                     <p className="text-muted-1 text-sm">
                       <span className="font-medium">Payment Method:</span>{" "}
-                      Online Payment (PhonePe)
+                      {order.paymentMethod === "upi"
+                        ? "UPI"
+                        : "Cash on Delivery"}
                     </p>
                     <p className="text-muted-1 mt-1 text-sm">
                       <span className="font-medium">Payment Status:</span>{" "}

@@ -23,6 +23,7 @@ export const STORE_INFO = {
     open: "10:00 AM - 8:00 PM",
     closedDay: "Monday",
   },
+  upiId: "namantextiles@upi",
   social: {
     facebook: "https://www.facebook.com/Namostu.textiles/",
     instagram: "https://www.instagram.com/naman.textiles/",

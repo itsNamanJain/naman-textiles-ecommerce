@@ -14,6 +14,9 @@ import {
   Clock,
   XCircle,
   RefreshCw,
+  Banknote,
+  Smartphone,
+  IndianRupee,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -98,6 +101,17 @@ export default function AdminOrdersPage() {
       },
       onError: (error) => {
         toast.error(error.message || "Failed to update request");
+      },
+    });
+
+  const updatePaymentStatusMutation =
+    api.admin.updatePaymentStatus.useMutation({
+      onSuccess: () => {
+        toast.success("Payment status updated");
+        utils.admin.getOrders.invalidate();
+      },
+      onError: (error) => {
+        toast.error(error.message || "Failed to update payment status");
       },
     });
 
@@ -272,16 +286,45 @@ export default function AdminOrdersPage() {
                             {formatPrice(Number(order.total))}
                           </td>
                           <td className="py-4">
-                            <Badge
-                              variant="secondary"
-                              className={
-                                order.paymentStatus === "paid"
-                                  ? "bg-success-2 text-success-1"
-                                  : "bg-paper-1 text-brand-3"
-                              }
-                            >
-                              {order.paymentStatus}
-                            </Badge>
+                            <div className="flex flex-col gap-1">
+                              <div className="flex items-center gap-1.5">
+                                {order.paymentMethod === "upi" ? (
+                                  <Smartphone className="text-muted-2 h-3.5 w-3.5" />
+                                ) : (
+                                  <Banknote className="text-muted-2 h-3.5 w-3.5" />
+                                )}
+                                <span className="text-muted-1 text-xs uppercase">
+                                  {order.paymentMethod === "upi" ? "UPI" : "COD"}
+                                </span>
+                              </div>
+                              <Badge
+                                variant="secondary"
+                                className={
+                                  order.paymentStatus === "paid"
+                                    ? "bg-success-2 text-success-1"
+                                    : "bg-paper-1 text-brand-3"
+                                }
+                              >
+                                {order.paymentStatus}
+                              </Badge>
+                              {order.paymentStatus === "pending" && (
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="text-success-1 mt-1 h-7 rounded-full border-black/10 bg-white/80 text-xs hover:bg-white"
+                                  disabled={updatePaymentStatusMutation.isPending}
+                                  onClick={() =>
+                                    updatePaymentStatusMutation.mutate({
+                                      orderId: order.id,
+                                      paymentStatus: "paid",
+                                    })
+                                  }
+                                >
+                                  <IndianRupee className="mr-1 h-3 w-3" />
+                                  Mark Paid
+                                </Button>
+                              )}
+                            </div>
                           </td>
                           <td className="py-4">
                             <DropdownMenu>

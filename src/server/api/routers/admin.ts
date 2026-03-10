@@ -473,6 +473,46 @@ export const adminRouter = createTRPCRouter({
       return { success: true };
     }),
 
+  // Update payment status (for manual UPI verification)
+  updatePaymentStatus: adminProcedure
+    .input(
+      z.object({
+        orderId: z.string(),
+        paymentStatus: z.enum(["pending", "paid", "failed", "refunded"]),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const order = await ctx.db
+        .selectFrom("order")
+        .select(["id", "orderNumber"])
+        .where("order.id", "=", input.orderId)
+        .executeTakeFirst();
+
+      if (!order) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Order not found",
+        });
+      }
+
+      const updateData: Record<string, unknown> = {
+        paymentStatus: input.paymentStatus,
+      };
+
+      // Auto-confirm order when marked as paid
+      if (input.paymentStatus === "paid") {
+        updateData.status = "confirmed";
+      }
+
+      await ctx.db
+        .updateTable("order")
+        .set(updateData)
+        .where("order.id", "=", input.orderId)
+        .execute();
+
+      return { success: true };
+    }),
+
   // Get all products with pagination
   getProducts: adminProcedure
     .input(

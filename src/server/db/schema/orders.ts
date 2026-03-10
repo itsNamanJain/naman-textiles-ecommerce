@@ -44,6 +44,7 @@ export const orders = createTable(
     paymentStatus: paymentStatusEnum("payment_status")
       .default("pending")
       .notNull(),
+    paymentMethod: varchar("payment_method", { length: 50 }).default("cod").notNull(),
     paymentId: varchar("payment_id", { length: 255 }),
 
     // Shipping address (snapshot at time of order)

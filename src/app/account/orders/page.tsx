@@ -152,7 +152,9 @@ export default function OrdersPage() {
                           {formatPrice(Number(order.total))}
                         </p>
                         <p className="text-muted-2 text-xs">
-                          Online Payment (PhonePe)
+                          {order.paymentMethod === "upi"
+                            ? "UPI Payment"
+                            : "Cash on Delivery"}
                         </p>
                       </div>
                       <div className="flex flex-wrap items-center gap-2">
