@@ -2,7 +2,7 @@
 
 export const STORE_INFO = {
   name: "Naman Textiles",
-  tagline: "Premium Fabrics for Every Occasion",
+  tagline: "Wholesale & Retail Fabrics Since 1990",
   description:
     "Your trusted destination for premium quality fabrics since 1990. We offer a wide range of textiles from Cotton to Banarsi Brocade.",
   phone: "+91 87429 09296",

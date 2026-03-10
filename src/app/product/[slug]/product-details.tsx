@@ -16,6 +16,7 @@ import {
   ImageIcon,
   Trash2,
   Star,
+  Scissors,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,7 @@ import { formatPrice, cn } from "@/lib/utils";
 import {
   MAX_METER_ORDER_QUANTITY,
   MAX_PIECE_ORDER_QUANTITY,
+  STORE_INFO,
 } from "@/lib/constants";
 import { cartStore } from "@/stores";
 import { useXStateSelector } from "@/hooks";
@@ -396,6 +398,26 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 )}
               </div>
             )}
+
+            {/* Request Sample */}
+            <Button
+              variant="outline"
+              className="text-ink-1 w-full rounded-full border-black/10 bg-white/80 hover:bg-white"
+              onClick={() => {
+                const whatsappNumber = STORE_INFO.whatsapp.replace(/[+\s]/g, "");
+                const productUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/product/${product.slug}`;
+                const message = encodeURIComponent(
+                  `Hi! I'd like to request a sample/swatch of *${product.name}* (${formatPrice(price)}/${unitLabel}). ${productUrl}`
+                );
+                window.open(
+                  `https://wa.me/${whatsappNumber}?text=${message}`,
+                  "_blank"
+                );
+              }}
+            >
+              <Scissors className="mr-2 h-4 w-4" />
+              Request Sample / Swatch
+            </Button>
 
             {/* Wishlist & Share */}
             <div className="flex gap-2">

@@ -16,6 +16,7 @@ import {
   Mail,
   MapPin,
   Loader2,
+  FileText,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -348,6 +349,19 @@ export default function OrderConfirmationPage() {
                       asChild
                     >
                       <Link href="/account/orders">View All Orders</Link>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="text-ink-1 w-full rounded-full border-black/10 bg-white/80 hover:bg-white"
+                      onClick={() => {
+                        window.open(
+                          `/api/invoice?orderId=${order.id}`,
+                          "_blank"
+                        );
+                      }}
+                    >
+                      <FileText className="mr-2 h-4 w-4" />
+                      Download Invoice
                     </Button>
                     <Button
                       variant="outline"
