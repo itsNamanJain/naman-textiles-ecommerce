@@ -1,5 +1,5 @@
 {
-  "id": "d198ca2b-955d-41e7-8344-58f460fba33b",
+  "id": "4fdfc804-ac35-4dd0-83f7-131ef7274af3",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -89,8 +89,12 @@
           "name": "cart_item_cart_id_cart_id_fk",
           "tableFrom": "cart_item",
           "tableTo": "cart",
-          "columnsFrom": ["cart_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "cart_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -98,8 +102,12 @@
           "name": "cart_item_product_id_product_id_fk",
           "tableFrom": "cart_item",
           "tableTo": "product",
-          "columnsFrom": ["product_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "product_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -107,8 +115,12 @@
           "name": "cart_item_variant_id_product_variant_id_fk",
           "tableFrom": "cart_item",
           "tableTo": "product_variant",
-          "columnsFrom": ["variant_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "variant_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -191,8 +203,12 @@
           "name": "cart_user_id_user_id_fk",
           "tableFrom": "cart",
           "tableTo": "user",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -202,7 +218,9 @@
         "cart_user_id_unique": {
           "name": "cart_user_id_unique",
           "nullsNotDistinct": false,
-          "columns": ["user_id"]
+          "columns": [
+            "user_id"
+          ]
         }
       },
       "policies": {},
@@ -275,8 +293,12 @@
           "name": "wishlist_item_wishlist_id_wishlist_id_fk",
           "tableFrom": "wishlist_item",
           "tableTo": "wishlist",
-          "columnsFrom": ["wishlist_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "wishlist_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -284,8 +306,12 @@
           "name": "wishlist_item_product_id_product_id_fk",
           "tableFrom": "wishlist_item",
           "tableTo": "product",
-          "columnsFrom": ["product_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "product_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -347,8 +373,12 @@
           "name": "wishlist_user_id_user_id_fk",
           "tableFrom": "wishlist",
           "tableTo": "user",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -358,7 +388,9 @@
         "wishlist_user_id_unique": {
           "name": "wishlist_user_id_unique",
           "nullsNotDistinct": false,
-          "columns": ["user_id"]
+          "columns": [
+            "user_id"
+          ]
         }
       },
       "policies": {},
@@ -458,8 +490,12 @@
           "name": "account_user_id_user_id_fk",
           "tableFrom": "account",
           "tableTo": "user",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -467,7 +503,10 @@
       "compositePrimaryKeys": {
         "account_provider_provider_account_id_pk": {
           "name": "account_provider_provider_account_id_pk",
-          "columns": ["provider", "provider_account_id"]
+          "columns": [
+            "provider",
+            "provider_account_id"
+          ]
         }
       },
       "uniqueConstraints": {},
@@ -503,14 +542,14 @@
           "primaryKey": false,
           "notNull": true
         },
-        "address_line_1": {
-          "name": "address_line_1",
+        "address_line_one": {
+          "name": "address_line_one",
           "type": "varchar(500)",
           "primaryKey": false,
           "notNull": true
         },
-        "address_line_2": {
-          "name": "address_line_2",
+        "address_line_two": {
+          "name": "address_line_two",
           "type": "varchar(500)",
           "primaryKey": false,
           "notNull": false
@@ -575,8 +614,12 @@
           "name": "address_user_id_user_id_fk",
           "tableFrom": "address",
           "tableTo": "user",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -632,8 +675,12 @@
           "name": "session_user_id_user_id_fk",
           "tableFrom": "session",
           "tableTo": "user",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -666,12 +713,6 @@
           "primaryKey": false,
           "notNull": true
         },
-        "email_verified": {
-          "name": "email_verified",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false
-        },
         "image": {
           "name": "image",
           "type": "varchar(255)",
@@ -695,6 +736,12 @@
         "phone": {
           "name": "phone",
           "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email_verified": {
+          "name": "email_verified",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": false
         },
@@ -749,7 +796,9 @@
         "user_email_unique": {
           "name": "user_email_unique",
           "nullsNotDistinct": false,
-          "columns": ["email"]
+          "columns": [
+            "email"
+          ]
         }
       },
       "policies": {},
@@ -784,7 +833,10 @@
       "compositePrimaryKeys": {
         "verification_token_identifier_token_pk": {
           "name": "verification_token_identifier_token_pk",
-          "columns": ["identifier", "token"]
+          "columns": [
+            "identifier",
+            "token"
+          ]
         }
       },
       "uniqueConstraints": {},
@@ -820,32 +872,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "image": {
-          "name": "image",
-          "type": "varchar(500)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "parent_id": {
-          "name": "parent_id",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "position": {
-          "name": "position",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
-        },
-        "is_active": {
-          "name": "is_active",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": true
-        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp with time zone",
@@ -874,21 +900,6 @@
           "concurrently": false,
           "method": "btree",
           "with": {}
-        },
-        "category_parent_id_idx": {
-          "name": "category_parent_id_idx",
-          "columns": [
-            {
-              "expression": "parent_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
         }
       },
       "foreignKeys": {},
@@ -897,12 +908,16 @@
         "category_name_unique": {
           "name": "category_name_unique",
           "nullsNotDistinct": false,
-          "columns": ["name"]
+          "columns": [
+            "name"
+          ]
         },
         "category_slug_unique": {
           "name": "category_slug_unique",
           "nullsNotDistinct": false,
-          "columns": ["slug"]
+          "columns": [
+            "slug"
+          ]
         }
       },
       "policies": {},
@@ -930,6 +945,12 @@
           "type": "varchar(500)",
           "primaryKey": false,
           "notNull": true
+        },
+        "public_id": {
+          "name": "public_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
         },
         "alt": {
           "name": "alt",
@@ -973,8 +994,12 @@
           "name": "product_image_product_id_product_id_fk",
           "tableFrom": "product_image",
           "tableTo": "product",
-          "columnsFrom": ["product_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "product_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1007,34 +1032,15 @@
           "primaryKey": false,
           "notNull": true
         },
-        "sku": {
-          "name": "sku",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": false
-        },
         "price": {
           "name": "price",
           "type": "numeric(10, 2)",
           "primaryKey": false,
           "notNull": true
         },
-        "stock_quantity": {
-          "name": "stock_quantity",
-          "type": "numeric(10, 2)",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'0'"
-        },
         "size": {
           "name": "size",
           "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "color": {
-          "name": "color",
-          "type": "varchar(100)",
           "primaryKey": false,
           "notNull": false
         },
@@ -1079,20 +1085,18 @@
           "name": "product_variant_product_id_product_id_fk",
           "tableFrom": "product_variant",
           "tableTo": "product",
-          "columnsFrom": ["product_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "product_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "product_variant_sku_unique": {
-          "name": "product_variant_sku_unique",
-          "nullsNotDistinct": false,
-          "columns": ["sku"]
-        }
-      },
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -1125,12 +1129,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "short_description": {
-          "name": "short_description",
-          "type": "varchar(500)",
-          "primaryKey": false,
-          "notNull": false
-        },
         "price": {
           "name": "price",
           "type": "numeric(10, 2)",
@@ -1143,23 +1141,9 @@
           "primaryKey": false,
           "notNull": false
         },
-        "cost_price": {
-          "name": "cost_price",
-          "type": "numeric(10, 2)",
-          "primaryKey": false,
-          "notNull": false
-        },
         "selling_mode": {
           "name": "selling_mode",
           "type": "selling_mode",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'meter'"
-        },
-        "unit": {
-          "name": "unit",
-          "type": "unit",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
@@ -1172,27 +1156,8 @@
           "notNull": true,
           "default": "'1'"
         },
-        "quantity_step": {
-          "name": "quantity_step",
-          "type": "numeric(10, 2)",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'0.5'"
-        },
-        "max_order_quantity": {
-          "name": "max_order_quantity",
-          "type": "numeric(10, 2)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "sku": {
-          "name": "sku",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "barcode": {
-          "name": "barcode",
+        "color": {
+          "name": "color",
           "type": "varchar(100)",
           "primaryKey": false,
           "notNull": false
@@ -1203,69 +1168,12 @@
           "primaryKey": false,
           "notNull": false
         },
-        "material": {
-          "name": "material",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "width": {
-          "name": "width",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "weight": {
-          "name": "weight",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "color": {
-          "name": "color",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "pattern": {
-          "name": "pattern",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "composition": {
-          "name": "composition",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
         "stock_quantity": {
           "name": "stock_quantity",
-          "type": "numeric(10, 2)",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "default": "'0'"
-        },
-        "low_stock_threshold": {
-          "name": "low_stock_threshold",
-          "type": "numeric(10, 2)",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'10'"
-        },
-        "track_quantity": {
-          "name": "track_quantity",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": true
-        },
-        "allow_backorder": {
-          "name": "allow_backorder",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": false
+          "default": -1
         },
         "is_active": {
           "name": "is_active",
@@ -1280,18 +1188,6 @@
           "primaryKey": false,
           "notNull": true,
           "default": false
-        },
-        "meta_title": {
-          "name": "meta_title",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "meta_description": {
-          "name": "meta_description",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
         },
         "category_id": {
           "name": "category_id",
@@ -1409,8 +1305,12 @@
           "name": "product_category_id_category_id_fk",
           "tableFrom": "product",
           "tableTo": "category",
-          "columnsFrom": ["category_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "category_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1420,14 +1320,156 @@
         "product_slug_unique": {
           "name": "product_slug_unique",
           "nullsNotDistinct": false,
-          "columns": ["slug"]
-        },
-        "product_sku_unique": {
-          "name": "product_sku_unique",
-          "nullsNotDistinct": false,
-          "columns": ["sku"]
+          "columns": [
+            "slug"
+          ]
         }
       },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.cancellation_request": {
+      "name": "cancellation_request",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "order_id": {
+          "name": "order_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "cancellation_request_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pending'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "cancellation_request_order_id_idx": {
+          "name": "cancellation_request_order_id_idx",
+          "columns": [
+            {
+              "expression": "order_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "cancellation_request_user_id_idx": {
+          "name": "cancellation_request_user_id_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "cancellation_request_status_idx": {
+          "name": "cancellation_request_status_idx",
+          "columns": [
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "cancellation_request_order_unique_idx": {
+          "name": "cancellation_request_order_unique_idx",
+          "columns": [
+            {
+              "expression": "order_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "cancellation_request_order_id_order_id_fk": {
+          "name": "cancellation_request_order_id_order_id_fk",
+          "tableFrom": "cancellation_request",
+          "tableTo": "order",
+          "columnsFrom": [
+            "order_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "cancellation_request_user_id_user_id_fk": {
+          "name": "cancellation_request_user_id_user_id_fk",
+          "tableFrom": "cancellation_request",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -1546,8 +1588,12 @@
           "name": "order_item_order_id_order_id_fk",
           "tableFrom": "order_item",
           "tableTo": "order",
-          "columnsFrom": ["order_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "order_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1555,8 +1601,12 @@
           "name": "order_item_product_id_product_id_fk",
           "tableFrom": "order_item",
           "tableTo": "product",
-          "columnsFrom": ["product_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "product_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1640,9 +1690,10 @@
         },
         "payment_method": {
           "name": "payment_method",
-          "type": "varchar(100)",
+          "type": "varchar(50)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "'cod'"
         },
         "payment_id": {
           "name": "payment_id",
@@ -1650,47 +1701,59 @@
           "primaryKey": false,
           "notNull": false
         },
-        "shipping_name": {
-          "name": "shipping_name",
+        "utr_number": {
+          "name": "utr_number",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name": {
+          "name": "name",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
         },
-        "shipping_phone": {
-          "name": "shipping_phone",
+        "phone": {
+          "name": "phone",
           "type": "varchar(20)",
           "primaryKey": false,
           "notNull": true
         },
-        "shipping_address_line_1": {
-          "name": "shipping_address_line_1",
+        "address_line_one": {
+          "name": "address_line_one",
           "type": "varchar(500)",
           "primaryKey": false,
           "notNull": true
         },
-        "shipping_address_line_2": {
-          "name": "shipping_address_line_2",
+        "address_line_two": {
+          "name": "address_line_two",
           "type": "varchar(500)",
           "primaryKey": false,
           "notNull": false
         },
-        "shipping_city": {
-          "name": "shipping_city",
+        "city": {
+          "name": "city",
           "type": "varchar(100)",
           "primaryKey": false,
           "notNull": true
         },
-        "shipping_state": {
-          "name": "shipping_state",
+        "state": {
+          "name": "state",
           "type": "varchar(100)",
           "primaryKey": false,
           "notNull": true
         },
-        "shipping_pincode": {
-          "name": "shipping_pincode",
+        "pincode": {
+          "name": "pincode",
           "type": "varchar(10)",
           "primaryKey": false,
           "notNull": true
+        },
+        "gst_number": {
+          "name": "gst_number",
+          "type": "varchar(15)",
+          "primaryKey": false,
+          "notNull": false
         },
         "tracking_number": {
           "name": "tracking_number",
@@ -1829,8 +1892,12 @@
           "name": "order_user_id_user_id_fk",
           "tableFrom": "order",
           "tableTo": "user",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1840,7 +1907,9 @@
         "order_order_number_unique": {
           "name": "order_order_number_unique",
           "nullsNotDistinct": false,
-          "columns": ["order_number"]
+          "columns": [
+            "order_number"
+          ]
         }
       },
       "policies": {},
@@ -1874,12 +1943,6 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true
-        },
-        "title": {
-          "name": "title",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
         },
         "comment": {
           "name": "comment",
@@ -1981,8 +2044,12 @@
           "name": "review_user_id_user_id_fk",
           "tableFrom": "review",
           "tableTo": "user",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1990,8 +2057,12 @@
           "name": "review_product_id_product_id_fk",
           "tableFrom": "review",
           "tableTo": "product",
-          "columnsFrom": ["product_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "product_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2244,116 +2315,9 @@
         "coupon_code_unique": {
           "name": "coupon_code_unique",
           "nullsNotDistinct": false,
-          "columns": ["code"]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.newsletter": {
-      "name": "newsletter",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "varchar(255)",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "email": {
-          "name": "email",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "is_active": {
-          "name": "is_active",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {
-        "newsletter_email_idx": {
-          "name": "newsletter_email_idx",
           "columns": [
-            {
-              "expression": "email",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "newsletter_email_unique": {
-          "name": "newsletter_email_unique",
-          "nullsNotDistinct": false,
-          "columns": ["email"]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.setting": {
-      "name": "setting",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "varchar(255)",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "key": {
-          "name": "key",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "value": {
-          "name": "value",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "setting_key_unique": {
-          "name": "setting_key_unique",
-          "nullsNotDistinct": false,
-          "columns": ["key"]
+            "code"
+          ]
         }
       },
       "policies": {},
@@ -2362,10 +2326,22 @@
     }
   },
   "enums": {
+    "public.cancellation_request_status": {
+      "name": "cancellation_request_status",
+      "schema": "public",
+      "values": [
+        "pending",
+        "approved",
+        "rejected"
+      ]
+    },
     "public.discount_type": {
       "name": "discount_type",
       "schema": "public",
-      "values": ["percentage", "fixed"]
+      "values": [
+        "percentage",
+        "fixed"
+      ]
     },
     "public.order_status": {
       "name": "order_status",
@@ -2383,22 +2359,28 @@
     "public.payment_status": {
       "name": "payment_status",
       "schema": "public",
-      "values": ["pending", "paid", "failed", "refunded"]
+      "values": [
+        "pending",
+        "paid",
+        "failed",
+        "refunded"
+      ]
     },
     "public.selling_mode": {
       "name": "selling_mode",
       "schema": "public",
-      "values": ["meter", "piece"]
-    },
-    "public.unit": {
-      "name": "unit",
-      "schema": "public",
-      "values": ["meter", "piece", "kg", "yard", "set"]
+      "values": [
+        "meter",
+        "piece"
+      ]
     },
     "public.user_role": {
       "name": "user_role",
       "schema": "public",
-      "values": ["customer", "admin"]
+      "values": [
+        "customer",
+        "admin"
+      ]
     }
   },
   "schemas": {},
