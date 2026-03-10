@@ -13,7 +13,13 @@ import {
   DEFAULT_SETTINGS,
   MAX_METER_ORDER_QUANTITY,
   MAX_PIECE_ORDER_QUANTITY,
+  STORE_INFO,
 } from "@/lib/constants";
+import { sendEmail } from "@/server/email";
+import {
+  orderConfirmationEmail,
+  adminNewOrderEmail,
+} from "@/server/email/templates";
 
 const GST_REGEX = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/;
 
@@ -306,6 +312,62 @@ export const orderRouter = createTRPCRouter({
           .where("code", "=", appliedCouponCode)
           .execute();
       }
+
+      // Send email notifications (fire-and-forget, don't block order response)
+      const emailData = {
+        orderNumber: order.orderNumber,
+        customerName: input.shippingAddress.name,
+        items: validItems.map((item) => ({
+          productName: item.productName,
+          quantity: item.quantity.toFixed(2),
+          unit: item.unit,
+          price: item.unitPrice.toFixed(2),
+          total: (item.unitPrice * item.quantity).toFixed(2),
+        })),
+        subtotal: subtotal.toFixed(2),
+        shippingCost: shippingCost.toFixed(2),
+        tax: tax.toFixed(2),
+        discount: discount.toFixed(2),
+        total: total.toFixed(2),
+        shippingAddress: {
+          name: input.shippingAddress.name,
+          phone: input.shippingAddress.phone,
+          addressLineOne: input.shippingAddress.addressLineOne,
+          addressLineTwo: input.shippingAddress.addressLineTwo,
+          city: input.shippingAddress.city,
+          state: input.shippingAddress.state,
+          pincode: input.shippingAddress.pincode,
+        },
+        couponCode: appliedCouponCode,
+        gstNumber: input.gstNumber ?? null,
+      };
+
+      // Fetch customer email for notifications
+      void ctx.db
+        .selectFrom("user")
+        .select(["email", "name"])
+        .where("id", "=", userId)
+        .executeTakeFirst()
+        .then((user) => {
+          if (!user?.email) return;
+
+          // Send order confirmation to customer
+          void sendEmail({
+            to: user.email,
+            subject: `Order Confirmed - ${order.orderNumber} | ${STORE_INFO.name}`,
+            html: orderConfirmationEmail(emailData),
+          });
+
+          // Send new order alert to admin
+          void sendEmail({
+            to: STORE_INFO.email,
+            subject: `New Order - ${order.orderNumber} | ${STORE_INFO.name}`,
+            html: adminNewOrderEmail({ ...emailData, customerEmail: user.email }),
+          });
+        })
+        .catch((err) => {
+          console.error("[Email] Failed to fetch user for email:", err);
+        });
 
       return {
         success: true,
