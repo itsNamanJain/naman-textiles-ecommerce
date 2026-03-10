@@ -64,6 +64,13 @@
       "when": 1769708133755,
       "tag": "0008_living_retro_girl",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1773149196492,
+      "tag": "0009_thick_lyja",
+      "breakpoints": true
     }
   ]
 }
