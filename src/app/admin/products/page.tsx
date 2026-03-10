@@ -292,6 +292,22 @@ export default function AdminProductsPage() {
                           <p className="text-brand-3 text-sm font-bold">
                             {formatPrice(Number(product.price))}
                           </p>
+                          <Badge
+                            variant="secondary"
+                            className={
+                              product.stockQuantity === 0
+                                ? "bg-danger-2 text-danger-4 text-[10px]"
+                                : product.stockQuantity > 0
+                                  ? "bg-paper-1 text-ink-2 text-[10px]"
+                                  : "bg-paper-1 text-muted-2 text-[10px]"
+                            }
+                          >
+                            {product.stockQuantity === -1
+                              ? "Unlimited"
+                              : product.stockQuantity === 0
+                                ? "Out of Stock"
+                                : `Stock: ${product.stockQuantity}`}
+                          </Badge>
                         </div>
 
                         {/* Actions - Compact icon buttons */}

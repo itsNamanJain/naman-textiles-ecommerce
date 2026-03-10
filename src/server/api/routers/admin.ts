@@ -608,6 +608,7 @@ export const adminRouter = createTRPCRouter({
         sellingMode: z.enum(["meter", "piece"]).default("meter"),
         minOrderQuantity: z.number().positive().default(1),
         categoryId: z.string(),
+        stockQuantity: z.number().int().min(-1).default(-1),
         isActive: z.boolean().default(true),
         isFeatured: z.boolean().default(false),
         images: z
@@ -682,6 +683,7 @@ export const adminRouter = createTRPCRouter({
         sellingMode: z.enum(["meter", "piece"]).optional(),
         minOrderQuantity: z.number().positive().optional(),
         categoryId: z.string().optional(),
+        stockQuantity: z.number().int().min(-1).optional(),
         isActive: z.boolean().optional(),
         isFeatured: z.boolean().optional(),
       })

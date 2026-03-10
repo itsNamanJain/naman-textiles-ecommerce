@@ -42,6 +42,7 @@ type Product = {
   comparePrice: string | null;
   sellingMode: "meter" | "piece";
   minOrderQuantity: string;
+  stockQuantity: number;
   categoryId: string;
   category: { id: string; name: string; slug: string } | null;
   images: { id: string; url: string; alt: string | null }[];
@@ -201,7 +202,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       )
     : 0;
 
-  const inStock = true;
+  const inStock = product.stockQuantity !== 0;
   const canIncrement = quantityInCart + step <= maxQty;
   const canDecrement = quantityInCart - step >= minQty;
 
@@ -322,7 +323,11 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 <>
                   <Check className="text-success-1 h-5 w-5" />
                   <span className="text-success-1 font-semibold">In Stock</span>
-                  <span className="text-brand-3">Available</span>
+                  {product.stockQuantity > 0 && product.stockQuantity <= 10 && (
+                    <span className="text-danger-1 text-sm">
+                      Only {product.stockQuantity} left
+                    </span>
+                  )}
                 </>
               ) : (
                 <span className="text-danger-1 font-semibold">

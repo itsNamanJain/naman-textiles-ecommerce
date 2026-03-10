@@ -62,7 +62,7 @@ export const orderRouter = createTRPCRouter({
       // Fetch current stock for all products
       const productStock = await ctx.db
         .selectFrom("product")
-        .select(["id", "name", "price", "minOrderQuantity", "sellingMode"])
+        .select(["id", "name", "price", "minOrderQuantity", "sellingMode", "stockQuantity"])
         .where("id", "in", productIds)
         .execute();
 
@@ -75,6 +75,7 @@ export const orderRouter = createTRPCRouter({
             price: Number(p.price),
             minOrderQuantity: Number(p.minOrderQuantity),
             sellingMode: p.sellingMode,
+            stockQuantity: p.stockQuantity,
             unit: p.sellingMode === "piece" ? "piece" : "meter",
           },
         ])
@@ -92,6 +93,22 @@ export const orderRouter = createTRPCRouter({
         const quantity = item.quantity;
         if (quantity <= 0) {
           invalidItems.push(productInfo.name);
+          return null;
+        }
+
+        // Check stock: -1 = unlimited, 0 = out of stock, >0 = limited
+        if (productInfo.stockQuantity === 0) {
+          invalidItems.push(`${productInfo.name} (out of stock)`);
+          return null;
+        }
+
+        if (
+          productInfo.stockQuantity > 0 &&
+          quantity > productInfo.stockQuantity
+        ) {
+          invalidItems.push(
+            `${productInfo.name} (only ${productInfo.stockQuantity} available)`
+          );
           return null;
         }
 
@@ -268,6 +285,18 @@ export const orderRouter = createTRPCRouter({
             total: (item.unitPrice * item.quantity).toFixed(2),
           })
           .execute();
+
+        // Deduct stock for products with limited stock (stockQuantity > 0)
+        const productInfo = stockMap.get(item.productId);
+        if (productInfo && productInfo.stockQuantity > 0) {
+          await ctx.db
+            .updateTable("product")
+            .set({
+              stockQuantity: sql<number>`GREATEST(${sql.ref("stock_quantity")} - ${item.quantity}, 0)`,
+            })
+            .where("id", "=", item.productId)
+            .execute();
+        }
       }
 
       if (appliedCouponCode) {

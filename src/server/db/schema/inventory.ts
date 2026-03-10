@@ -44,6 +44,7 @@ export const products = createTable(
     minOrderQuantity: numeric("min_order_quantity", { precision: 10, scale: 2 })
       .default("1")
       .notNull(),
+    stockQuantity: integer("stock_quantity").default(-1).notNull(), // -1 = unlimited, 0 = out of stock, >0 = limited stock
     isActive: boolean("is_active").default(true).notNull(),
     isFeatured: boolean("is_featured").default(false).notNull(),
     categoryId: varchar("category_id", { length: 255 })
