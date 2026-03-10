@@ -637,6 +637,51 @@ export const orderRouter = createTRPCRouter({
       return { success: true, status: "pending" as const };
     }),
 
+  // Submit UTR number for UPI payment verification
+  submitUtr: protectedProcedure
+    .input(
+      z.object({
+        orderId: z.string(),
+        utrNumber: z
+          .string()
+          .min(6, "UTR number must be at least 6 characters")
+          .max(50, "UTR number is too long")
+          .regex(/^[A-Za-z0-9]+$/, "UTR must contain only letters and numbers"),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+
+      const order = await ctx.db
+        .selectFrom("order")
+        .select(["id", "paymentMethod", "paymentStatus"])
+        .where("order.id", "=", input.orderId)
+        .where("order.userId", "=", userId)
+        .executeTakeFirst();
+
+      if (!order) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Order not found",
+        });
+      }
+
+      if (order.paymentMethod !== "upi") {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "UTR is only applicable for UPI payments",
+        });
+      }
+
+      await ctx.db
+        .updateTable("order")
+        .set({ utrNumber: input.utrNumber.toUpperCase() })
+        .where("order.id", "=", input.orderId)
+        .execute();
+
+      return { success: true };
+    }),
+
   // Get order count for user
   getCount: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.user.id;

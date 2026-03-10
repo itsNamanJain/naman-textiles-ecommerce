@@ -307,6 +307,11 @@ export default function AdminOrdersPage() {
                               >
                                 {order.paymentStatus}
                               </Badge>
+                              {order.utrNumber && (
+                                <p className="text-muted-2 font-mono text-xs" title="UTR Number">
+                                  UTR: {order.utrNumber}
+                                </p>
+                              )}
                               {order.paymentStatus === "pending" && (
                                 <Button
                                   variant="outline"

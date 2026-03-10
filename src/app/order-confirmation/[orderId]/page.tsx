@@ -343,6 +343,12 @@ export default function OrderConfirmationPage() {
                         {order.paymentStatus === "paid" ? "Paid" : "Pending"}
                       </span>
                     </p>
+                    {order.utrNumber && (
+                      <p className="text-muted-1 mt-1 text-sm">
+                        <span className="font-medium">UTR:</span>{" "}
+                        <span className="font-mono">{order.utrNumber}</span>
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-3 pt-4">

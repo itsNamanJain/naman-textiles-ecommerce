@@ -18,11 +18,13 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { FadeIn } from "@/components/ui/motion";
 import { formatPrice } from "@/lib/utils";
 import { api } from "@/trpc/react";
+import { toast } from "sonner";
 import { STORE_INFO } from "@/lib/constants";
 
 export default function PaymentPage() {
@@ -31,6 +33,8 @@ export default function PaymentPage() {
   const orderId = params.orderId as string;
   const [copiedUpi, setCopiedUpi] = useState(false);
   const [copiedAmount, setCopiedAmount] = useState(false);
+  const [utrNumber, setUtrNumber] = useState("");
+  const [utrSubmitted, setUtrSubmitted] = useState(false);
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [upiUrl, setUpiUrl] = useState<string | null>(null);
   const [isLoadingQr, setIsLoadingQr] = useState(true);
@@ -40,6 +44,24 @@ export default function PaymentPage() {
     isLoading,
     error,
   } = api.order.getById.useQuery({ id: orderId }, { enabled: !!orderId });
+
+  const submitUtrMutation = api.order.submitUtr.useMutation({
+    onSuccess: () => {
+      setUtrSubmitted(true);
+      toast.success("UTR submitted! We'll verify your payment shortly.");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to submit UTR");
+    },
+  });
+
+  // Pre-fill UTR if already submitted
+  useEffect(() => {
+    if (order?.utrNumber) {
+      setUtrNumber(order.utrNumber);
+      setUtrSubmitted(true);
+    }
+  }, [order]);
 
   // Generate QR code
   useEffect(() => {
@@ -340,7 +362,7 @@ export default function PaymentPage() {
                       4
                     </div>
                     <p className="text-muted-1 text-sm">
-                      Once paid, our team will verify and confirm your order within a few hours
+                      After payment, enter your <span className="text-ink-1 font-semibold">UTR / Transaction ID</span> below for faster verification
                     </p>
                   </div>
                 </div>
@@ -348,8 +370,77 @@ export default function PaymentPage() {
             </Card>
           </FadeIn>
 
-          {/* Important Note */}
+          {/* UTR Submission */}
           <FadeIn delay={0.35}>
+            <Card className="border border-black/5 bg-white/80">
+              <CardHeader>
+                <CardTitle className="font-display text-ink-1 text-lg">
+                  Submit UTR / Transaction ID
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-1 text-sm">
+                  After completing the payment, enter your UPI Transaction
+                  Reference (UTR) number for faster verification. You can find
+                  this in your UPI app&apos;s transaction history.
+                </p>
+                {utrSubmitted ? (
+                  <div className="bg-success-2 flex items-center gap-3 rounded-2xl p-4">
+                    <CheckCircle2 className="text-success-1 h-5 w-5 flex-shrink-0" />
+                    <div>
+                      <p className="text-success-1 text-sm font-medium">
+                        UTR Submitted
+                      </p>
+                      <p className="text-success-1 font-mono text-sm">
+                        {utrNumber}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Enter 12-digit UTR number"
+                      value={utrNumber}
+                      onChange={(e) =>
+                        setUtrNumber(
+                          e.target.value.replace(/[^A-Za-z0-9]/g, "").toUpperCase()
+                        )
+                      }
+                      className="font-mono rounded-2xl border-black/10 bg-white/80 tracking-wider"
+                      maxLength={50}
+                    />
+                    <Button
+                      onClick={() => {
+                        if (!utrNumber.trim()) {
+                          toast.error("Please enter UTR number");
+                          return;
+                        }
+                        if (utrNumber.length < 6) {
+                          toast.error("UTR number must be at least 6 characters");
+                          return;
+                        }
+                        submitUtrMutation.mutate({
+                          orderId,
+                          utrNumber: utrNumber.trim(),
+                        });
+                      }}
+                      disabled={submitUtrMutation.isPending || !utrNumber.trim()}
+                      className="bg-brand-1 hover:bg-brand-2 rounded-full"
+                    >
+                      {submitUtrMutation.isPending ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        "Submit"
+                      )}
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </FadeIn>
+
+          {/* Important Note */}
+          <FadeIn delay={0.4}>
             <div className="bg-paper-1 rounded-2xl border border-black/5 p-4">
               <div className="flex items-start gap-3">
                 <AlertCircle className="text-brand-3 mt-0.5 h-5 w-5 flex-shrink-0" />
@@ -374,7 +465,7 @@ export default function PaymentPage() {
           </FadeIn>
 
           {/* Actions */}
-          <FadeIn delay={0.4}>
+          <FadeIn delay={0.45}>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Button
                 className="bg-brand-1 hover:bg-brand-2 flex-1 rounded-full"

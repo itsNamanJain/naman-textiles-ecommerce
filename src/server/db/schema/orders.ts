@@ -46,6 +46,7 @@ export const orders = createTable(
       .notNull(),
     paymentMethod: varchar("payment_method", { length: 50 }).default("cod").notNull(),
     paymentId: varchar("payment_id", { length: 255 }),
+    utrNumber: varchar("utr_number", { length: 50 }),
 
     // Shipping address (snapshot at time of order)
     name: varchar("name", { length: 255 }).notNull(),
