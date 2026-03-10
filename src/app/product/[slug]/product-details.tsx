@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import {
   Heart,
-  Share2,
   Minus,
   Plus,
   ShoppingCart,
@@ -23,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { FadeIn } from "@/components/ui/motion";
+import { ShareButton } from "@/components/products/share-button";
 import { formatPrice, cn } from "@/lib/utils";
 import {
   MAX_METER_ORDER_QUANTITY,
@@ -163,23 +163,6 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       return;
     }
     toggleWishlistMutation.mutate({ productId: product.id });
-  };
-
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: product.name,
-          text: product.description ?? `Check out ${product.name}`,
-          url: window.location.href,
-        });
-      } catch {
-        // User cancelled
-      }
-    } else {
-      await navigator.clipboard.writeText(window.location.href);
-      toast.success("Link copied to clipboard");
-    }
   };
 
   const handleSubmitReview = () => {
@@ -430,13 +413,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 />
                 {isInWishlist ? "In Wishlist" : "Add to Wishlist"}
               </Button>
-              <Button
-                variant="outline"
-                className="text-ink-1 rounded-full border-black/10 bg-white/80 hover:bg-white"
-                onClick={handleShare}
-              >
-                <Share2 className="h-4 w-4" />
-              </Button>
+              <ShareButton product={product} />
             </div>
 
             {/* Features */}

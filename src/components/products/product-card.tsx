@@ -16,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { ShareButton } from "@/components/products/share-button";
 import { formatPrice, formatUnit, cn } from "@/lib/utils";
 import {
   MAX_METER_ORDER_QUANTITY,
@@ -247,7 +248,8 @@ export function ProductCard({ product, className }: ProductCardProps) {
           )}
         </div>
 
-        {/* Wishlist */}
+        {/* Share & Wishlist */}
+        <ShareButton product={product} compact />
         <button
           className={cn(
             "absolute top-1.5 right-1.5 flex h-7 w-7 items-center justify-center rounded-full bg-white/90 shadow transition-all hover:scale-110",
