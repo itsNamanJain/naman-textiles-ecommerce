@@ -48,6 +48,13 @@ const quickLinks = [
   { name: "About Us", href: "/about" },
   { name: "Contact Us", href: "/contact" },
   { name: "Track Order", href: "/track-order" },
+  { name: "Bulk Orders", href: "/bulk-orders" },
+];
+
+const policies = [
+  { name: "Shipping Policy", href: "/shipping-policy" },
+  { name: "Return & Refund Policy", href: "/return-policy" },
+  { name: "Privacy Policy", href: "/privacy-policy" },
 ];
 
 const customerService = [
@@ -146,6 +153,23 @@ export function Footer() {
             </h3>
             <ul className="space-y-2">
               {customerService.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-warm-2 hover:text-sand-6 text-sm transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            {/* Policies */}
+            <h3 className="mb-4 mt-8 text-lg font-semibold text-white">
+              Policies
+            </h3>
+            <ul className="space-y-2">
+              {policies.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}

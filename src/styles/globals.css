@@ -209,6 +209,33 @@ button:disabled,
   .card-hover:hover {
     @apply -translate-y-1 shadow-lg;
   }
+
+  /* Policy page typography */
+  .prose-policy section {
+    @apply mb-8;
+  }
+  .prose-policy section:last-of-type {
+    @apply mb-0;
+  }
+  .prose-policy h2 {
+    @apply text-ink-1 mb-3 text-lg font-semibold;
+  }
+  .prose-policy p {
+    @apply text-muted-1 mb-3 text-sm leading-relaxed;
+  }
+  .prose-policy ul,
+  .prose-policy ol {
+    @apply text-muted-1 mb-3 space-y-1.5 pl-5 text-sm leading-relaxed;
+  }
+  .prose-policy ul {
+    @apply list-disc;
+  }
+  .prose-policy ol {
+    @apply list-decimal;
+  }
+  .prose-policy li {
+    @apply pl-1;
+  }
 }
 
 @keyframes fadeInUp {
