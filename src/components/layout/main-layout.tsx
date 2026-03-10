@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { Header } from "./header";
 import { Footer } from "./footer";
+import { WhatsAppButton } from "./whatsapp-button";
 import { CartDrawer } from "@/components/cart";
 
 export function MainLayout({ children }: { children: React.ReactNode }) {
@@ -22,6 +23,7 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
         <Footer />
       </div>
       <CartDrawer />
+      <WhatsAppButton />
     </>
   );
 }

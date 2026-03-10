@@ -91,6 +91,9 @@ export function Header() {
               </a>
             </div>
             <div className="flex items-center gap-4">
+              <Link href="/about" className="hover:text-brand-1">
+                About Us
+              </Link>
               <Link href="/track-order" className="hover:text-brand-1">
                 Track Order
               </Link>
@@ -131,6 +134,13 @@ export function Header() {
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     All Products
+                  </Link>
+                  <Link
+                    href="/about"
+                    className="text-ink-1 hover:text-brand-1 text-lg font-medium"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    About Us
                   </Link>
                   <div className="border-t pt-4">
                     <span className="text-muted-2 mb-3 block text-xs font-semibold tracking-[0.2em] uppercase">

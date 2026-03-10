@@ -24,10 +24,9 @@ export const STORE_INFO = {
     closedDay: "Monday",
   },
   social: {
-    facebook: "https://facebook.com",
-    instagram: "https://instagram.com",
-    twitter: "https://x.com",
-    youtube: "https://youtube.com",
+    facebook: "https://www.facebook.com/Namostu.textiles/",
+    instagram: "https://www.instagram.com/naman.textiles/",
+    youtube: "https://www.youtube.com/@Namantextiles",
   },
 } as const;
 
