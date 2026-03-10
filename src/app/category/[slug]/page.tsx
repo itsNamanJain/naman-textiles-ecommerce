@@ -15,6 +15,8 @@ type Props = {
     mode?: string;
     minPrice?: string;
     maxPrice?: string;
+    color?: string;
+    fabricType?: string;
   }>;
 };
 
@@ -41,7 +43,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CategoryPage({ params, searchParams }: Props) {
   const { slug } = await params;
-  const { sort = "newest", mode, minPrice, maxPrice } = await searchParams;
+  const { sort = "newest", mode, minPrice, maxPrice, color, fabricType } = await searchParams;
 
   const category = await api.category.getBySlug({ slug });
 
@@ -110,6 +112,8 @@ export default async function CategoryPage({ params, searchParams }: Props) {
             sellingMode={sellingMode}
             minPrice={minPrice ? parseFloat(minPrice) : undefined}
             maxPrice={maxPrice ? parseFloat(maxPrice) : undefined}
+            color={color}
+            fabricType={fabricType}
           />
         </Suspense>
       </div>

@@ -44,6 +44,8 @@ const productSchema = z.object({
   sellingMode: z.enum(["meter", "piece"]),
   minOrderQuantity: z.coerce.number().positive(),
   categoryId: z.string().min(1, "Category is required"),
+  color: z.string().optional(),
+  fabricType: z.string().optional(),
   stockQuantity: z.coerce.number().int().min(-1),
   isActive: z.boolean(),
   isFeatured: z.boolean(),
@@ -61,6 +63,8 @@ type ProductData = {
   sellingMode: "meter" | "piece";
   minOrderQuantity: string;
   categoryId: string;
+  color: string | null;
+  fabricType: string | null;
   stockQuantity: number;
   isActive: boolean;
   isFeatured: boolean;
@@ -133,6 +137,8 @@ export function ProductForm({
     defaultValues: {
       sellingMode: "meter",
       minOrderQuantity: 1,
+      color: "",
+      fabricType: "",
       stockQuantity: -1,
       isActive: true,
       isFeatured: false,
@@ -154,6 +160,8 @@ export function ProductForm({
         sellingMode: product.sellingMode,
         minOrderQuantity: Number(product.minOrderQuantity),
         categoryId: product.categoryId,
+        color: product.color ?? "",
+        fabricType: product.fabricType ?? "",
         stockQuantity: isDuplicate ? -1 : product.stockQuantity,
         isActive: isDuplicate ? true : product.isActive,
         isFeatured: isDuplicate ? false : product.isFeatured,
@@ -186,6 +194,8 @@ export function ProductForm({
         sellingMode: "meter",
         minOrderQuantity: 1,
         categoryId: "",
+        color: "",
+        fabricType: "",
         stockQuantity: -1,
         isActive: true,
         isFeatured: false,
@@ -511,6 +521,27 @@ export function ProductForm({
                   </p>
                 )}
               </div>
+
+              {!isQuickAdd && (
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="color">Color</Label>
+                    <Input
+                      id="color"
+                      placeholder="e.g., Red, Blue, Multi"
+                      {...register("color")}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="fabricType">Fabric Type</Label>
+                    <Input
+                      id="fabricType"
+                      placeholder="e.g., Cotton, Silk, Rayon"
+                      {...register("fabricType")}
+                    />
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
 

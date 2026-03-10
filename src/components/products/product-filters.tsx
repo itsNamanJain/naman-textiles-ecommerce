@@ -22,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { api } from "@/trpc/react";
 
 type ProductFiltersProps = {
   categorySlug?: string;
@@ -50,6 +51,9 @@ export function ProductFilters({ categorySlug }: ProductFiltersProps) {
   const [maxPrice, setMaxPrice] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
+  // Fetch filter options from DB
+  const { data: filterOptions } = api.product.getFilterOptions.useQuery();
+
   // Sync state with URL params after mount
   useEffect(() => {
     setMinPrice(searchParams.get("minPrice") ?? "");
@@ -58,6 +62,8 @@ export function ProductFilters({ categorySlug }: ProductFiltersProps) {
 
   const currentSort = searchParams.get("sort") ?? "newest";
   const currentMode = searchParams.get("mode") ?? "all";
+  const currentColor = searchParams.get("color") ?? "all";
+  const currentFabricType = searchParams.get("fabricType") ?? "all";
 
   const updateFilters = (updates: Record<string, string | null>) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -83,6 +89,14 @@ export function ProductFilters({ categorySlug }: ProductFiltersProps) {
     updateFilters({ mode: value });
   };
 
+  const handleColorChange = (value: string) => {
+    updateFilters({ color: value });
+  };
+
+  const handleFabricTypeChange = (value: string) => {
+    updateFilters({ fabricType: value });
+  };
+
   const handlePriceFilter = () => {
     updateFilters({
       minPrice: minPrice || null,
@@ -102,7 +116,9 @@ export function ProductFilters({ categorySlug }: ProductFiltersProps) {
   const hasActiveFilters =
     searchParams.get("minPrice") ||
     searchParams.get("maxPrice") ||
-    searchParams.get("mode");
+    searchParams.get("mode") ||
+    searchParams.get("color") ||
+    searchParams.get("fabricType");
 
   return (
     <div className="flex flex-wrap items-center gap-3">
@@ -135,6 +151,47 @@ export function ProductFilters({ categorySlug }: ProductFiltersProps) {
           </SelectContent>
         </Select>
       </div>
+
+      {/* Color Filter (Desktop) */}
+      {filterOptions?.colors && filterOptions.colors.length > 0 && (
+        <div className="hidden lg:block">
+          <Select value={currentColor} onValueChange={handleColorChange}>
+            <SelectTrigger className="w-[160px] rounded-full border-black/10 bg-white/80 text-sm">
+              <SelectValue placeholder="Color" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Colors</SelectItem>
+              {filterOptions.colors.map((color) => (
+                <SelectItem key={color} value={color}>
+                  {color}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+
+      {/* Fabric Type Filter (Desktop) */}
+      {filterOptions?.fabricTypes && filterOptions.fabricTypes.length > 0 && (
+        <div className="hidden lg:block">
+          <Select
+            value={currentFabricType}
+            onValueChange={handleFabricTypeChange}
+          >
+            <SelectTrigger className="w-[160px] rounded-full border-black/10 bg-white/80 text-sm">
+              <SelectValue placeholder="Fabric Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Fabrics</SelectItem>
+              {filterOptions.fabricTypes.map((type) => (
+                <SelectItem key={type} value={type}>
+                  {type}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
 
       {/* Filters Sheet (Mobile + Advanced) */}
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -212,6 +269,95 @@ export function ProductFilters({ categorySlug }: ProductFiltersProps) {
 
             <Separator className="md:hidden" />
 
+            {/* Color Filter (Sheet) */}
+            {filterOptions?.colors && filterOptions.colors.length > 0 && (
+              <>
+                <div>
+                  <Label className="text-ink-1 text-sm font-semibold">
+                    Color
+                  </Label>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <Button
+                      variant={currentColor === "all" ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => handleColorChange("all")}
+                      className={
+                        currentColor === "all"
+                          ? "bg-brand-1 hover:bg-brand-2 rounded-full"
+                          : "rounded-full border-black/10 bg-white/80"
+                      }
+                    >
+                      All
+                    </Button>
+                    {filterOptions.colors.map((color) => (
+                      <Button
+                        key={color}
+                        variant={
+                          currentColor === color ? "default" : "outline"
+                        }
+                        size="sm"
+                        onClick={() => handleColorChange(color)}
+                        className={
+                          currentColor === color
+                            ? "bg-brand-1 hover:bg-brand-2 rounded-full"
+                            : "rounded-full border-black/10 bg-white/80"
+                        }
+                      >
+                        {color}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+                <Separator />
+              </>
+            )}
+
+            {/* Fabric Type Filter (Sheet) */}
+            {filterOptions?.fabricTypes &&
+              filterOptions.fabricTypes.length > 0 && (
+                <>
+                  <div>
+                    <Label className="text-ink-1 text-sm font-semibold">
+                      Fabric Type
+                    </Label>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      <Button
+                        variant={
+                          currentFabricType === "all" ? "default" : "outline"
+                        }
+                        size="sm"
+                        onClick={() => handleFabricTypeChange("all")}
+                        className={
+                          currentFabricType === "all"
+                            ? "bg-brand-1 hover:bg-brand-2 rounded-full"
+                            : "rounded-full border-black/10 bg-white/80"
+                        }
+                      >
+                        All
+                      </Button>
+                      {filterOptions.fabricTypes.map((type) => (
+                        <Button
+                          key={type}
+                          variant={
+                            currentFabricType === type ? "default" : "outline"
+                          }
+                          size="sm"
+                          onClick={() => handleFabricTypeChange(type)}
+                          className={
+                            currentFabricType === type
+                              ? "bg-brand-1 hover:bg-brand-2 rounded-full"
+                              : "rounded-full border-black/10 bg-white/80"
+                          }
+                        >
+                          {type}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                  <Separator />
+                </>
+              )}
+
             {/* Action Buttons */}
             <div className="flex gap-3">
               <Button
@@ -271,6 +417,28 @@ export function ProductFilters({ categorySlug }: ProductFiltersProps) {
               onClick={() => handleModeChange("all")}
             >
               {currentMode === "meter" ? "By Meter" : "By Piece"}
+              <X className="h-3 w-3" />
+            </Button>
+          )}
+          {currentColor !== "all" && (
+            <Button
+              variant="secondary"
+              size="sm"
+              className="bg-paper-1 text-ink-2 h-7 gap-1 rounded-full text-xs"
+              onClick={() => handleColorChange("all")}
+            >
+              Color: {currentColor}
+              <X className="h-3 w-3" />
+            </Button>
+          )}
+          {currentFabricType !== "all" && (
+            <Button
+              variant="secondary"
+              size="sm"
+              className="bg-paper-1 text-ink-2 h-7 gap-1 rounded-full text-xs"
+              onClick={() => handleFabricTypeChange("all")}
+            >
+              Fabric: {currentFabricType}
               <X className="h-3 w-3" />
             </Button>
           )}
