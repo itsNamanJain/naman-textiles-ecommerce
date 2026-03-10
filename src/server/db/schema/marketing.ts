@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import {
   boolean,
   index,
@@ -15,7 +16,7 @@ export const coupons = createTable(
   {
     id: varchar("id", { length: 255 })
       .primaryKey()
-      .$defaultFn(() => crypto.randomUUID()),
+      .default(sql`gen_random_uuid()`),
     code: varchar("code", { length: 100 }).notNull().unique(),
     description: text("description"),
     discountType: discountTypeEnum("discount_type").notNull(),
@@ -31,7 +32,7 @@ export const coupons = createTable(
     endDate: timestamp("end_date", { withTimezone: true }).notNull(),
     isActive: boolean("is_active").default(true).notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })
-      .$defaultFn(() => new Date())
+      .default(sql`now()`)
       .notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
       () => new Date()
@@ -48,7 +49,7 @@ export const banners = createTable(
   {
     id: varchar("id", { length: 255 })
       .primaryKey()
-      .$defaultFn(() => crypto.randomUUID()),
+      .default(sql`gen_random_uuid()`),
     title: varchar("title", { length: 255 }).notNull(),
     subtitle: varchar("subtitle", { length: 500 }),
     image: varchar("image", { length: 500 }).notNull(),
@@ -58,7 +59,7 @@ export const banners = createTable(
     startDate: timestamp("start_date", { withTimezone: true }),
     endDate: timestamp("end_date", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true })
-      .$defaultFn(() => new Date())
+      .default(sql`now()`)
       .notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
       () => new Date()

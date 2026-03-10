@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import {
   boolean,
   index,
@@ -15,12 +16,12 @@ export const categories = createTable(
   {
     id: varchar("id", { length: 255 })
       .primaryKey()
-      .$defaultFn(() => crypto.randomUUID()),
+      .default(sql`gen_random_uuid()`),
     name: varchar("name", { length: 255 }).notNull().unique(),
     slug: varchar("slug", { length: 255 }).notNull().unique(),
     description: text("description"),
     createdAt: timestamp("created_at", { withTimezone: true })
-      .$defaultFn(() => new Date())
+      .default(sql`now()`)
       .notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
       () => new Date()
@@ -34,7 +35,7 @@ export const products = createTable(
   {
     id: varchar("id", { length: 255 })
       .primaryKey()
-      .$defaultFn(() => crypto.randomUUID()),
+      .default(sql`gen_random_uuid()`),
     name: varchar("name", { length: 255 }).notNull(),
     slug: varchar("slug", { length: 255 }).notNull().unique(),
     description: text("description"),
@@ -54,7 +55,7 @@ export const products = createTable(
       .references(() => categories.id),
 
     createdAt: timestamp("created_at", { withTimezone: true })
-      .$defaultFn(() => new Date())
+      .default(sql`now()`)
       .notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
       () => new Date()
@@ -75,7 +76,7 @@ export const productImages = createTable(
   {
     id: varchar("id", { length: 255 })
       .primaryKey()
-      .$defaultFn(() => crypto.randomUUID()),
+      .default(sql`gen_random_uuid()`),
     productId: varchar("product_id", { length: 255 })
       .notNull()
       .references(() => products.id, { onDelete: "cascade" }),
@@ -84,7 +85,7 @@ export const productImages = createTable(
     alt: varchar("alt", { length: 255 }),
     position: integer("position").default(0).notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })
-      .$defaultFn(() => new Date())
+      .default(sql`now()`)
       .notNull(),
   },
   (t) => [index("product_image_product_id_idx").on(t.productId)]
@@ -95,7 +96,7 @@ export const productVariants = createTable(
   {
     id: varchar("id", { length: 255 })
       .primaryKey()
-      .$defaultFn(() => crypto.randomUUID()),
+      .default(sql`gen_random_uuid()`),
     productId: varchar("product_id", { length: 255 })
       .notNull()
       .references(() => products.id, { onDelete: "cascade" }),
@@ -106,7 +107,7 @@ export const productVariants = createTable(
     length: varchar("length", { length: 50 }),
 
     createdAt: timestamp("created_at", { withTimezone: true })
-      .$defaultFn(() => new Date())
+      .default(sql`now()`)
       .notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
       () => new Date()

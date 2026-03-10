@@ -16,7 +16,7 @@ export const authRouter = createTRPCRouter({
         name: z.string().min(2, "Name must be at least 2 characters"),
         email: z.string().email("Invalid email address"),
         password: z.string().min(6, "Password must be at least 6 characters"),
-        phone: z.string().optional(),
+        phone: z.string().min(10, "Valid phone number required"),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -37,14 +37,14 @@ export const authRouter = createTRPCRouter({
       // Hash password
       const hashedPassword = await hash(input.password, 12);
 
-      // Create user
+      // Create user (DB defaults handle id and createdAt via gen_random_uuid() and now())
       const newUser = await ctx.db
         .insertInto("user")
         .values({
           name: input.name,
           email: input.email.toLowerCase(),
           password: hashedPassword,
-          phone: input.phone ?? null,
+          phone: input.phone,
           role: "customer",
         })
         .returning(["id", "name", "email"])
@@ -115,7 +115,7 @@ export const authRouter = createTRPCRouter({
     .input(
       z.object({
         name: z.string().min(2, "Name must be at least 2 characters"),
-        phone: z.string().optional(),
+        phone: z.string().min(10, "Valid phone number required"),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -125,7 +125,7 @@ export const authRouter = createTRPCRouter({
         .updateTable("user")
         .set({
           name: input.name,
-          phone: input.phone ?? null,
+          phone: input.phone,
         })
         .where("id", "=", userId)
         .execute();

@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import {
   index,
   numeric,
@@ -22,7 +23,7 @@ export const orders = createTable(
   {
     id: varchar("id", { length: 255 })
       .primaryKey()
-      .$defaultFn(() => crypto.randomUUID()),
+      .default(sql`gen_random_uuid()`),
     orderNumber: varchar("order_number", { length: 50 }).notNull().unique(),
     userId: varchar("user_id", { length: 255 })
       .notNull()
@@ -72,7 +73,7 @@ export const orders = createTable(
     couponDiscount: numeric("coupon_discount", { precision: 10, scale: 2 }),
 
     createdAt: timestamp("created_at", { withTimezone: true })
-      .$defaultFn(() => new Date())
+      .default(sql`now()`)
       .notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
       () => new Date()
@@ -92,7 +93,7 @@ export const cancellationRequests = createTable(
   {
     id: varchar("id", { length: 255 })
       .primaryKey()
-      .$defaultFn(() => crypto.randomUUID()),
+      .default(sql`gen_random_uuid()`),
     orderId: varchar("order_id", { length: 255 })
       .notNull()
       .references(() => orders.id, { onDelete: "cascade" }),
@@ -104,7 +105,7 @@ export const cancellationRequests = createTable(
       .default("pending")
       .notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })
-      .$defaultFn(() => new Date())
+      .default(sql`now()`)
       .notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
       () => new Date()
@@ -123,7 +124,7 @@ export const orderItems = createTable(
   {
     id: varchar("id", { length: 255 })
       .primaryKey()
-      .$defaultFn(() => crypto.randomUUID()),
+      .default(sql`gen_random_uuid()`),
     orderId: varchar("order_id", { length: 255 })
       .notNull()
       .references(() => orders.id, { onDelete: "cascade" }),
@@ -144,7 +145,7 @@ export const orderItems = createTable(
     total: numeric("total", { precision: 10, scale: 2 }).notNull(),
 
     createdAt: timestamp("created_at", { withTimezone: true })
-      .$defaultFn(() => new Date())
+      .default(sql`now()`)
       .notNull(),
   },
   (t) => [

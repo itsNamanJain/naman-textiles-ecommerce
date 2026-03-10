@@ -30,7 +30,7 @@ const signUpSchema = z
   .object({
     name: z.string().min(2, "Name must be at least 2 characters"),
     email: z.string().email("Please enter a valid email address"),
-    phone: z.string().optional(),
+    phone: z.string().min(10, "Valid phone number required"),
     password: z
       .string()
       .min(6, "Password must be at least 6 characters")
@@ -211,7 +211,7 @@ export default function SignUpPage() {
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Phone (Optional)</FormLabel>
+                      <FormLabel>Phone</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Phone className="text-muted-3 absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
