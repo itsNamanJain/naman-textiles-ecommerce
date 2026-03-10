@@ -55,6 +55,7 @@ const policies = [
   { name: "Shipping Policy", href: "/shipping-policy" },
   { name: "Return & Refund Policy", href: "/return-policy" },
   { name: "Privacy Policy", href: "/privacy-policy" },
+  { name: "Terms & Conditions", href: "/terms" },
 ];
 
 const customerService = [

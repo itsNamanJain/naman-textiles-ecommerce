@@ -358,6 +358,22 @@ export default function OrderConfirmationPage() {
                     </Button>
                   </div>
 
+                  {/* Policy Links */}
+                  <div className="flex justify-center gap-4 pt-4 text-xs">
+                    <Link
+                      href="/shipping-policy"
+                      className="text-muted-2 hover:text-brand-1 underline"
+                    >
+                      Shipping Policy
+                    </Link>
+                    <Link
+                      href="/return-policy"
+                      className="text-muted-2 hover:text-brand-1 underline"
+                    >
+                      Return Policy
+                    </Link>
+                  </div>
+
                   {/* Contact Info */}
                   <div className="text-muted-1 pt-4 text-center text-sm">
                     <p>Need help with your order?</p>

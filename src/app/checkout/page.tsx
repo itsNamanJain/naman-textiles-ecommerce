@@ -1048,8 +1048,27 @@ function CheckoutContent() {
                       </Button>
 
                       <p className="text-muted-2 text-center text-xs">
-                        By placing this order, you agree to our Terms &
-                        Conditions
+                        By placing this order, you agree to our{" "}
+                        <Link
+                          href="/terms"
+                          className="hover:text-brand-1 underline"
+                        >
+                          Terms &amp; Conditions
+                        </Link>
+                        ,{" "}
+                        <Link
+                          href="/shipping-policy"
+                          className="hover:text-brand-1 underline"
+                        >
+                          Shipping Policy
+                        </Link>{" "}
+                        and{" "}
+                        <Link
+                          href="/return-policy"
+                          className="hover:text-brand-1 underline"
+                        >
+                          Return Policy
+                        </Link>
                       </p>
                     </CardContent>
                   </Card>
