@@ -33,13 +33,13 @@ export function CategoryGrid({
   const displayCategories = categories ?? [];
 
   return (
-    <section className="py-12 md:py-16">
+    <section className="py-16 md:py-24">
       <div className="container mx-auto px-4">
-        <FadeInView className="mb-8 text-center md:mb-12">
-          <h2 className="font-display text-ink-1 mb-2 text-2xl md:text-3xl lg:text-4xl">
+        <FadeInView className="mb-10 text-center md:mb-14">
+          <h2 className="font-display text-ink-0 mb-3 text-3xl md:text-4xl lg:text-5xl">
             {title}
           </h2>
-          <p className="text-muted-1 text-sm md:text-base">{subtitle}</p>
+          <p className="text-muted-1 mx-auto max-w-lg text-base md:text-lg">{subtitle}</p>
         </FadeInView>
 
         {isLoading ? (
@@ -51,7 +51,7 @@ export function CategoryGrid({
             No categories found
           </div>
         ) : (
-          <StaggerContainer className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+          <StaggerContainer className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 lg:gap-6">
             {displayCategories.map((category, index) => (
               <StaggerItem key={category.id}>
                 <Link
@@ -60,8 +60,8 @@ export function CategoryGrid({
                 >
                   <div
                     className={cn(
-                      "relative aspect-square overflow-hidden rounded-3xl border border-black/5 bg-gradient-to-br p-5 transition-all duration-300",
-                      "hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(15,15,15,0.1)]",
+                      "relative aspect-square overflow-hidden rounded-3xl border border-black/[0.04] bg-gradient-to-br p-6 transition-all duration-300",
+                      "hover:-translate-y-2 hover:shadow-[0_25px_50px_rgba(15,15,15,0.12)]",
                       categoryTints[index % categoryTints.length]
                     )}
                   >

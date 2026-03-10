@@ -4,14 +4,49 @@ import {
   motion,
   AnimatePresence,
   useReducedMotion,
+  useMotionValue,
+  useTransform,
+  useSpring,
   type HTMLMotionProps,
 } from "framer-motion";
-import { forwardRef, type ReactNode } from "react";
+import { forwardRef, useRef, type ReactNode, type MouseEvent } from "react";
 
 // Custom easing curves
 const easeOutQuad = [0.25, 0.46, 0.45, 0.94] as const;
+const easeOutCubic = [0.33, 1, 0.68, 1] as const;
 
-// Fade in animation
+// ─── Blur Fade In (Premium scroll reveal) ──────────────────────────
+export const BlurFadeIn = forwardRef<
+  HTMLDivElement,
+  HTMLMotionProps<"div"> & { children: ReactNode; delay?: number; direction?: "up" | "down" | "left" | "right" }
+>(({ children, delay = 0, direction = "up", ...props }, ref) => {
+  const prefersReduced = useReducedMotion();
+
+  const directionMap = {
+    up: { y: 24, x: 0 },
+    down: { y: -24, x: 0 },
+    left: { x: 30, y: 0 },
+    right: { x: -30, y: 0 },
+  };
+
+  const { x, y } = directionMap[direction];
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={prefersReduced ? { opacity: 1 } : { opacity: 0, y, x, filter: "blur(10px)" }}
+      whileInView={{ opacity: 1, y: 0, x: 0, filter: "blur(0px)" }}
+      viewport={{ once: true, margin: "-60px", amount: 0.15 }}
+      transition={{ duration: 0.7, delay, ease: easeOutCubic }}
+      {...props}
+    >
+      {children}
+    </motion.div>
+  );
+});
+BlurFadeIn.displayName = "BlurFadeIn";
+
+// ─── Fade In ───────────────────────────────────────────────────────
 export const FadeIn = forwardRef<
   HTMLDivElement,
   HTMLMotionProps<"div"> & { children: ReactNode; delay?: number }
@@ -20,9 +55,9 @@ export const FadeIn = forwardRef<
   return (
     <motion.div
       ref={ref}
-      initial={prefersReduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay, ease: easeOutQuad }}
+      initial={prefersReduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 20, filter: "blur(8px)" }}
+      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      transition={{ duration: 0.6, delay, ease: easeOutCubic }}
       {...props}
     >
       {children}
@@ -31,7 +66,7 @@ export const FadeIn = forwardRef<
 });
 FadeIn.displayName = "FadeIn";
 
-// Fade in when in view
+// ─── Fade In When In View ──────────────────────────────────────────
 export const FadeInView = forwardRef<
   HTMLDivElement,
   HTMLMotionProps<"div"> & { children: ReactNode; delay?: number }
@@ -41,11 +76,11 @@ export const FadeInView = forwardRef<
     <motion.div
       ref={ref}
       initial={
-        prefersReduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }
+        prefersReduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 28, filter: "blur(10px)" }
       }
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px", amount: 0.15 }}
-      transition={{ duration: 0.5, delay, ease: easeOutQuad }}
+      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      viewport={{ once: true, margin: "-60px", amount: 0.15 }}
+      transition={{ duration: 0.7, delay, ease: easeOutCubic }}
       {...props}
     >
       {children}
@@ -54,16 +89,16 @@ export const FadeInView = forwardRef<
 });
 FadeInView.displayName = "FadeInView";
 
-// Scale on hover
+// ─── Scale On Hover ────────────────────────────────────────────────
 export const ScaleOnHover = forwardRef<
   HTMLDivElement,
   HTMLMotionProps<"div"> & { children: ReactNode; scale?: number }
->(({ children, scale = 1.02, ...props }, ref) => (
+>(({ children, scale = 1.03, ...props }, ref) => (
   <motion.div
     ref={ref}
     whileHover={{ scale }}
     whileTap={{ scale: 0.97 }}
-    transition={{ type: "spring", stiffness: 400, damping: 25 }}
+    transition={{ type: "spring", stiffness: 300, damping: 20 }}
     {...props}
   >
     {children}
@@ -71,7 +106,99 @@ export const ScaleOnHover = forwardRef<
 ));
 ScaleOnHover.displayName = "ScaleOnHover";
 
-// Slide in from left
+// ─── 3D Tilt Card Effect ──────────────────────────────────────────
+export const TiltCard = forwardRef<
+  HTMLDivElement,
+  HTMLMotionProps<"div"> & { children: ReactNode; intensity?: number }
+>(({ children, intensity = 10, style, ...props }, ref) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const rotateX = useMotionValue(0);
+  const rotateY = useMotionValue(0);
+
+  const springX = useSpring(rotateX, { stiffness: 300, damping: 30 });
+  const springY = useSpring(rotateY, { stiffness: 300, damping: 30 });
+
+  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    const el = cardRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const mouseX = e.clientX - centerX;
+    const mouseY = e.clientY - centerY;
+    rotateX.set((-mouseY / (rect.height / 2)) * intensity);
+    rotateY.set((mouseX / (rect.width / 2)) * intensity);
+  };
+
+  const handleMouseLeave = () => {
+    rotateX.set(0);
+    rotateY.set(0);
+  };
+
+  return (
+    <motion.div
+      ref={(node) => {
+        (cardRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+        if (typeof ref === "function") ref(node);
+        else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
+      }}
+      style={{ perspective: 1000, rotateX: springX, rotateY: springY, ...style }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      {...props}
+    >
+      {children}
+    </motion.div>
+  );
+});
+TiltCard.displayName = "TiltCard";
+
+// ─── Magnetic Button Effect ───────────────────────────────────────
+export const MagneticButton = forwardRef<
+  HTMLDivElement,
+  HTMLMotionProps<"div"> & { children: ReactNode; strength?: number }
+>(({ children, strength = 0.3, style, ...props }, ref) => {
+  const btnRef = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const springX = useSpring(x, { stiffness: 400, damping: 25 });
+  const springY = useSpring(y, { stiffness: 400, damping: 25 });
+
+  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    const el = btnRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    x.set((e.clientX - centerX) * strength);
+    y.set((e.clientY - centerY) * strength);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  return (
+    <motion.div
+      ref={(node) => {
+        (btnRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+        if (typeof ref === "function") ref(node);
+        else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
+      }}
+      style={{ x: springX, y: springY, ...style }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      {...props}
+    >
+      {children}
+    </motion.div>
+  );
+});
+MagneticButton.displayName = "MagneticButton";
+
+// ─── Slide In From Left ───────────────────────────────────────────
 export const SlideInLeft = forwardRef<
   HTMLDivElement,
   HTMLMotionProps<"div"> & { children: ReactNode; delay?: number }
@@ -81,11 +208,11 @@ export const SlideInLeft = forwardRef<
     <motion.div
       ref={ref}
       initial={
-        prefersReduced ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }
+        prefersReduced ? { opacity: 1, x: 0 } : { opacity: 0, x: -40, filter: "blur(8px)" }
       }
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5, delay, ease: easeOutQuad }}
+      whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.6, delay, ease: easeOutCubic }}
       {...props}
     >
       {children}
@@ -94,7 +221,7 @@ export const SlideInLeft = forwardRef<
 });
 SlideInLeft.displayName = "SlideInLeft";
 
-// Slide in from right
+// ─── Slide In From Right ──────────────────────────────────────────
 export const SlideInRight = forwardRef<
   HTMLDivElement,
   HTMLMotionProps<"div"> & { children: ReactNode; delay?: number }
@@ -104,11 +231,11 @@ export const SlideInRight = forwardRef<
     <motion.div
       ref={ref}
       initial={
-        prefersReduced ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }
+        prefersReduced ? { opacity: 1, x: 0 } : { opacity: 0, x: 40, filter: "blur(8px)" }
       }
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5, delay, ease: easeOutQuad }}
+      whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.6, delay, ease: easeOutCubic }}
       {...props}
     >
       {children}
@@ -117,16 +244,16 @@ export const SlideInRight = forwardRef<
 });
 SlideInRight.displayName = "SlideInRight";
 
-// Stagger children animation container
+// ─── Stagger Container ───────────────────────────────────────────
 export const StaggerContainer = forwardRef<
   HTMLDivElement,
   HTMLMotionProps<"div"> & { children: ReactNode; staggerDelay?: number }
->(({ children, staggerDelay = 0.08, ...props }, ref) => (
+>(({ children, staggerDelay = 0.1, ...props }, ref) => (
   <motion.div
     ref={ref}
     initial="hidden"
     whileInView="visible"
-    viewport={{ once: true, margin: "-50px" }}
+    viewport={{ once: true, margin: "-60px" }}
     variants={{
       hidden: { opacity: 0 },
       visible: {
@@ -143,7 +270,7 @@ export const StaggerContainer = forwardRef<
 ));
 StaggerContainer.displayName = "StaggerContainer";
 
-// Stagger item (use inside StaggerContainer)
+// ─── Stagger Item ─────────────────────────────────────────────────
 export const StaggerItem = forwardRef<
   HTMLDivElement,
   HTMLMotionProps<"div"> & { children: ReactNode }
@@ -151,10 +278,10 @@ export const StaggerItem = forwardRef<
   <motion.div
     ref={ref}
     variants={{
-      hidden: { opacity: 0, y: 20 },
-      visible: { opacity: 1, y: 0 },
+      hidden: { opacity: 0, y: 24, filter: "blur(10px)" },
+      visible: { opacity: 1, y: 0, filter: "blur(0px)" },
     }}
-    transition={{ type: "spring", stiffness: 100, damping: 15 }}
+    transition={{ duration: 0.5, ease: easeOutCubic }}
     {...props}
   >
     {children}
@@ -162,7 +289,7 @@ export const StaggerItem = forwardRef<
 ));
 StaggerItem.displayName = "StaggerItem";
 
-// Pulse animation (for loading states, badges, etc.)
+// ─── Pulse Animation ─────────────────────────────────────────────
 export const Pulse = forwardRef<
   HTMLDivElement,
   HTMLMotionProps<"div"> & { children: ReactNode }
@@ -178,7 +305,40 @@ export const Pulse = forwardRef<
 ));
 Pulse.displayName = "Pulse";
 
-// Page transition wrapper
+// ─── Count Up Animation ──────────────────────────────────────────
+export const CountUp = ({
+  value,
+  className,
+}: {
+  value: number;
+  className?: string;
+}) => {
+  const motionValue = useMotionValue(0);
+  const rounded = useTransform(motionValue, (v) => Math.round(v));
+
+  return (
+    <motion.span
+      className={className}
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true }}
+      onViewportEnter={() => {
+        motionValue.set(0);
+        // Animate to target value
+        const controls = {
+          duration: 1.5,
+          ease: easeOutCubic,
+        };
+        // Use spring for natural feel
+        motionValue.set(value);
+      }}
+    >
+      {rounded}
+    </motion.span>
+  );
+};
+
+// ─── Page Transition ─────────────────────────────────────────────
 export const PageTransition = forwardRef<
   HTMLDivElement,
   HTMLMotionProps<"div"> & { children: ReactNode }
@@ -187,10 +347,10 @@ export const PageTransition = forwardRef<
   return (
     <motion.div
       ref={ref}
-      initial={prefersReduced ? { opacity: 1 } : { opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.25, ease: easeOutQuad }}
+      initial={prefersReduced ? { opacity: 1 } : { opacity: 0, y: 12, filter: "blur(6px)" }}
+      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      exit={{ opacity: 0, filter: "blur(4px)" }}
+      transition={{ duration: 0.35, ease: easeOutCubic }}
       {...props}
     >
       {children}
@@ -198,6 +358,22 @@ export const PageTransition = forwardRef<
   );
 });
 PageTransition.displayName = "PageTransition";
+
+// ─── Floating Element (subtle hover float) ───────────────────────
+export const FloatingElement = forwardRef<
+  HTMLDivElement,
+  HTMLMotionProps<"div"> & { children: ReactNode; amplitude?: number; duration?: number }
+>(({ children, amplitude = 8, duration = 3, ...props }, ref) => (
+  <motion.div
+    ref={ref}
+    animate={{ y: [-amplitude, amplitude, -amplitude] }}
+    transition={{ duration, repeat: Infinity, ease: "easeInOut" }}
+    {...props}
+  >
+    {children}
+  </motion.div>
+));
+FloatingElement.displayName = "FloatingElement";
 
 // Export motion and AnimatePresence for custom animations
 export { motion, AnimatePresence };

@@ -170,7 +170,7 @@ export function HeroBanner() {
         <CarouselContent>
           {banners.map((banner, index) => (
             <CarouselItem key={banner.id}>
-              <div className="relative h-[430px] w-full overflow-hidden sm:h-[480px] md:h-[560px]">
+              <div className="relative h-[480px] w-full overflow-hidden sm:h-[560px] md:h-[640px] lg:h-[700px]">
                 {/* Background Image or Gradient */}
                 {banner.image ? (
                   <Image
@@ -207,14 +207,14 @@ export function HeroBanner() {
                       className="text-center md:text-left"
                     >
                       {banner.tag && (
-                        <span className="bg-brand-1 mb-4 inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold tracking-[0.2em] text-white uppercase">
+                        <span className="bg-brand-1/90 mb-6 inline-flex items-center gap-2 rounded-full px-5 py-2 text-xs font-semibold tracking-[0.15em] text-white uppercase shadow-lg shadow-brand-1/20 backdrop-blur-sm">
                           <Sparkles className="h-3.5 w-3.5" />
                           {banner.tag}
                         </span>
                       )}
                       <h1
-                        className={`font-display mb-4 text-4xl leading-tight sm:text-5xl lg:text-6xl ${
-                          banner.image ? "text-white" : "text-ink-1"
+                        className={`font-display mb-6 text-4xl sm:text-5xl md:text-6xl lg:text-7xl ${
+                          banner.image ? "text-white" : "text-ink-0"
                         }`}
                       >
                         <TypewriterText
@@ -224,14 +224,14 @@ export function HeroBanner() {
                       </h1>
                       {banner.subtitle && (
                         <p
-                          className={`mb-8 text-base leading-relaxed sm:text-lg ${
+                          className={`mb-10 max-w-lg text-base leading-relaxed sm:text-lg md:text-xl ${
                             banner.image ? "text-white/90" : "text-ink-2"
                           }`}
                         >
                           {banner.subtitle}
                         </p>
                       )}
-                      <div className="flex flex-col gap-3 sm:flex-row sm:justify-center md:justify-start">
+                      <div className="flex flex-col gap-4 sm:flex-row sm:justify-center md:justify-start">
                         <Button
                           asChild
                           size="lg"
@@ -297,13 +297,13 @@ export function HeroBanner() {
       </Carousel>
 
       {/* Dots Indicator */}
-      <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
+      <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 gap-2.5">
         {banners.map((_, index) => (
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`hover:bg-brand-1 h-2 w-2 rounded-full transition-all ${
-              currentSlide === index ? "bg-brand-1 w-7" : "bg-warm-6"
+            className={`rounded-full transition-all duration-300 ${
+              currentSlide === index ? "bg-brand-1 h-2.5 w-8 shadow-lg shadow-brand-1/30" : "bg-white/50 hover:bg-white/80 h-2.5 w-2.5"
             }`}
             aria-label={`Go to slide ${index + 1}`}
           />
