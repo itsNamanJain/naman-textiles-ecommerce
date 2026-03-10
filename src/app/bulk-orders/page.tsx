@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import {
   ChevronRight,
@@ -13,6 +14,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { STORE_INFO } from "@/lib/constants";
+
+export const metadata: Metadata = {
+  title: "Bulk Orders",
+  description:
+    "Place bulk fabric orders with Naman Textiles. Wholesale pricing, custom quantities, and dedicated support for large orders. Contact us for best deals.",
+};
 
 const whatsappNumber = STORE_INFO.whatsapp.replace(/[+\s]/g, "");
 

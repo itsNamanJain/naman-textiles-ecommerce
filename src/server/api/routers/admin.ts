@@ -6,6 +6,12 @@ import crypto from "crypto";
 
 import { createTRPCRouter, adminProcedure } from "@/server/api/trpc";
 import { env } from "@/env";
+import { STORE_INFO } from "@/lib/constants";
+import { sendEmail } from "@/server/email";
+import {
+  orderShippedEmail,
+  orderDeliveredEmail,
+} from "@/server/email/templates";
 
 // Helper function to calculate growth percentage
 function calculateGrowth(current: number, previous: number): number {
@@ -389,6 +395,42 @@ export const adminRouter = createTRPCRouter({
         .where("order.id", "=", input.orderId)
         .execute();
 
+      // Send email notifications for shipped/delivered status (fire-and-forget)
+      if (input.status === "shipped" || input.status === "delivered") {
+        void ctx.db
+          .selectFrom("user")
+          .select(["email", "name"])
+          .where("id", "=", order.userId)
+          .executeTakeFirst()
+          .then((user) => {
+            if (!user?.email) return;
+
+            if (input.status === "shipped") {
+              void sendEmail({
+                to: user.email,
+                subject: `Order Shipped - ${order.orderNumber} | ${STORE_INFO.name}`,
+                html: orderShippedEmail({
+                  orderNumber: order.orderNumber,
+                  customerName: user.name ?? order.name ?? "",
+                  trackingNumber: input.trackingNumber ?? order.trackingNumber,
+                }),
+              });
+            } else if (input.status === "delivered") {
+              void sendEmail({
+                to: user.email,
+                subject: `Order Delivered - ${order.orderNumber} | ${STORE_INFO.name}`,
+                html: orderDeliveredEmail({
+                  orderNumber: order.orderNumber,
+                  customerName: user.name ?? order.name ?? "",
+                }),
+              });
+            }
+          })
+          .catch((err) => {
+            console.error("[Email] Failed to send status email:", err);
+          });
+      }
+
       return { success: true };
     }),
 
@@ -427,6 +469,46 @@ export const adminRouter = createTRPCRouter({
           .where("order.id", "=", input.orderId)
           .execute();
       }
+
+      return { success: true };
+    }),
+
+  // Update payment status (for manual UPI verification)
+  updatePaymentStatus: adminProcedure
+    .input(
+      z.object({
+        orderId: z.string(),
+        paymentStatus: z.enum(["pending", "paid", "failed", "refunded"]),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const order = await ctx.db
+        .selectFrom("order")
+        .select(["id", "orderNumber"])
+        .where("order.id", "=", input.orderId)
+        .executeTakeFirst();
+
+      if (!order) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Order not found",
+        });
+      }
+
+      const updateData: Record<string, unknown> = {
+        paymentStatus: input.paymentStatus,
+      };
+
+      // Auto-confirm order when marked as paid
+      if (input.paymentStatus === "paid") {
+        updateData.status = "confirmed";
+      }
+
+      await ctx.db
+        .updateTable("order")
+        .set(updateData)
+        .where("order.id", "=", input.orderId)
+        .execute();
 
       return { success: true };
     }),
@@ -608,6 +690,9 @@ export const adminRouter = createTRPCRouter({
         sellingMode: z.enum(["meter", "piece"]).default("meter"),
         minOrderQuantity: z.number().positive().default(1),
         categoryId: z.string(),
+        color: z.string().optional(),
+        fabricType: z.string().optional(),
+        stockQuantity: z.number().int().min(-1).default(-1),
         isActive: z.boolean().default(true),
         isFeatured: z.boolean().default(false),
         images: z
@@ -682,6 +767,9 @@ export const adminRouter = createTRPCRouter({
         sellingMode: z.enum(["meter", "piece"]).optional(),
         minOrderQuantity: z.number().positive().optional(),
         categoryId: z.string().optional(),
+        color: z.string().nullable().optional(),
+        fabricType: z.string().nullable().optional(),
+        stockQuantity: z.number().int().min(-1).optional(),
         isActive: z.boolean().optional(),
         isFeatured: z.boolean().optional(),
       })

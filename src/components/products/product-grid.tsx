@@ -18,6 +18,8 @@ type ProductGridProps = {
   sellingMode?: "meter" | "piece";
   featured?: boolean;
   newArrivals?: boolean;
+  color?: string;
+  fabricType?: string;
 };
 
 export function ProductGrid({
@@ -29,6 +31,8 @@ export function ProductGrid({
   sellingMode,
   featured,
   newArrivals,
+  color,
+  fabricType,
 }: ProductGridProps) {
   const { ref, inView } = useInView();
 
@@ -50,6 +54,8 @@ export function ProductGrid({
       sellingMode,
       featured,
       newArrivals,
+      color,
+      fabricType,
     },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,

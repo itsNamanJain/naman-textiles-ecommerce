@@ -19,6 +19,8 @@ export const productRouter = createTRPCRouter({
           .enum(["newest", "oldest", "price-asc", "price-desc", "name"])
           .default("newest"),
         sellingMode: z.enum(["meter", "piece"]).optional(),
+        color: z.string().optional(),
+        fabricType: z.string().optional(),
         featured: z.boolean().optional(),
         newArrivals: z.boolean().optional(), // Filter for products added in last 30 days, excludes featured
       })
@@ -33,6 +35,8 @@ export const productRouter = createTRPCRouter({
         maxPrice,
         sortBy,
         sellingMode,
+        color,
+        fabricType,
         featured,
         newArrivals,
       } = input;
@@ -91,6 +95,16 @@ export const productRouter = createTRPCRouter({
       // Selling mode filter
       if (sellingMode) {
         query = query.where("product.sellingMode", "=", sellingMode);
+      }
+
+      // Color filter
+      if (color) {
+        query = query.where("product.color", "ilike", `%${color}%`);
+      }
+
+      // Fabric type filter
+      if (fabricType) {
+        query = query.where("product.fabricType", "ilike", `%${fabricType}%`);
       }
 
       // Featured filter
@@ -332,4 +346,35 @@ export const productRouter = createTRPCRouter({
       const result = await query.executeTakeFirst();
       return result?.count ?? 0;
     }),
+
+  // Get distinct filter values (colors and fabric types)
+  getFilterOptions: publicProcedure.query(async ({ ctx }) => {
+    const [colors, fabricTypes] = await Promise.all([
+      ctx.db
+        .selectFrom("product")
+        .select("product.color")
+        .where("product.isActive", "=", true)
+        .where("product.color", "is not", null)
+        .groupBy("product.color")
+        .orderBy("product.color", "asc")
+        .execute(),
+      ctx.db
+        .selectFrom("product")
+        .select("product.fabricType")
+        .where("product.isActive", "=", true)
+        .where("product.fabricType", "is not", null)
+        .groupBy("product.fabricType")
+        .orderBy("product.fabricType", "asc")
+        .execute(),
+    ]);
+
+    return {
+      colors: colors
+        .map((c) => c.color)
+        .filter((c): c is string => c !== null && c.trim() !== ""),
+      fabricTypes: fabricTypes
+        .map((f) => f.fabricType)
+        .filter((f): f is string => f !== null && f.trim() !== ""),
+    };
+  }),
 });

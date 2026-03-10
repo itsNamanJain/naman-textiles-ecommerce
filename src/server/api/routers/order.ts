@@ -13,7 +13,13 @@ import {
   DEFAULT_SETTINGS,
   MAX_METER_ORDER_QUANTITY,
   MAX_PIECE_ORDER_QUANTITY,
+  STORE_INFO,
 } from "@/lib/constants";
+import { sendEmail } from "@/server/email";
+import {
+  orderConfirmationEmail,
+  adminNewOrderEmail,
+} from "@/server/email/templates";
 
 const GST_REGEX = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/;
 
@@ -46,6 +52,7 @@ export const orderRouter = createTRPCRouter({
           .refine((value) => !value || GST_REGEX.test(value), {
             message: "Invalid GST number",
           }),
+        paymentMethod: z.enum(["cod", "upi"]).default("cod"),
         customerNote: z.string().optional(),
         couponCode: z.string().optional(),
       })
@@ -62,7 +69,7 @@ export const orderRouter = createTRPCRouter({
       // Fetch current stock for all products
       const productStock = await ctx.db
         .selectFrom("product")
-        .select(["id", "name", "price", "minOrderQuantity", "sellingMode"])
+        .select(["id", "name", "price", "minOrderQuantity", "sellingMode", "stockQuantity"])
         .where("id", "in", productIds)
         .execute();
 
@@ -75,6 +82,7 @@ export const orderRouter = createTRPCRouter({
             price: Number(p.price),
             minOrderQuantity: Number(p.minOrderQuantity),
             sellingMode: p.sellingMode,
+            stockQuantity: p.stockQuantity,
             unit: p.sellingMode === "piece" ? "piece" : "meter",
           },
         ])
@@ -92,6 +100,22 @@ export const orderRouter = createTRPCRouter({
         const quantity = item.quantity;
         if (quantity <= 0) {
           invalidItems.push(productInfo.name);
+          return null;
+        }
+
+        // Check stock: -1 = unlimited, 0 = out of stock, >0 = limited
+        if (productInfo.stockQuantity === 0) {
+          invalidItems.push(`${productInfo.name} (out of stock)`);
+          return null;
+        }
+
+        if (
+          productInfo.stockQuantity > 0 &&
+          quantity > productInfo.stockQuantity
+        ) {
+          invalidItems.push(
+            `${productInfo.name} (only ${productInfo.stockQuantity} available)`
+          );
           return null;
         }
 
@@ -226,6 +250,7 @@ export const orderRouter = createTRPCRouter({
           userId: userId,
           status: "pending",
           paymentStatus: "pending",
+          paymentMethod: input.paymentMethod,
           subtotal: subtotal.toString(),
           shippingCost: shippingCost.toString(),
           tax: tax.toString(),
@@ -268,6 +293,18 @@ export const orderRouter = createTRPCRouter({
             total: (item.unitPrice * item.quantity).toFixed(2),
           })
           .execute();
+
+        // Deduct stock for products with limited stock (stockQuantity > 0)
+        const productInfo = stockMap.get(item.productId);
+        if (productInfo && productInfo.stockQuantity > 0) {
+          await ctx.db
+            .updateTable("product")
+            .set({
+              stockQuantity: sql<number>`GREATEST(${sql.ref("stock_quantity")} - ${item.quantity}, 0)`,
+            })
+            .where("id", "=", item.productId)
+            .execute();
+        }
       }
 
       if (appliedCouponCode) {
@@ -278,10 +315,67 @@ export const orderRouter = createTRPCRouter({
           .execute();
       }
 
+      // Send email notifications (fire-and-forget, don't block order response)
+      const emailData = {
+        orderNumber: order.orderNumber,
+        customerName: input.shippingAddress.name,
+        items: validItems.map((item) => ({
+          productName: item.productName,
+          quantity: item.quantity.toFixed(2),
+          unit: item.unit,
+          price: item.unitPrice.toFixed(2),
+          total: (item.unitPrice * item.quantity).toFixed(2),
+        })),
+        subtotal: subtotal.toFixed(2),
+        shippingCost: shippingCost.toFixed(2),
+        tax: tax.toFixed(2),
+        discount: discount.toFixed(2),
+        total: total.toFixed(2),
+        shippingAddress: {
+          name: input.shippingAddress.name,
+          phone: input.shippingAddress.phone,
+          addressLineOne: input.shippingAddress.addressLineOne,
+          addressLineTwo: input.shippingAddress.addressLineTwo,
+          city: input.shippingAddress.city,
+          state: input.shippingAddress.state,
+          pincode: input.shippingAddress.pincode,
+        },
+        couponCode: appliedCouponCode,
+        gstNumber: input.gstNumber ?? null,
+      };
+
+      // Fetch customer email for notifications
+      void ctx.db
+        .selectFrom("user")
+        .select(["email", "name"])
+        .where("id", "=", userId)
+        .executeTakeFirst()
+        .then((user) => {
+          if (!user?.email) return;
+
+          // Send order confirmation to customer
+          void sendEmail({
+            to: user.email,
+            subject: `Order Confirmed - ${order.orderNumber} | ${STORE_INFO.name}`,
+            html: orderConfirmationEmail(emailData),
+          });
+
+          // Send new order alert to admin
+          void sendEmail({
+            to: STORE_INFO.email,
+            subject: `New Order - ${order.orderNumber} | ${STORE_INFO.name}`,
+            html: adminNewOrderEmail({ ...emailData, customerEmail: user.email }),
+          });
+        })
+        .catch((err) => {
+          console.error("[Email] Failed to fetch user for email:", err);
+        });
+
       return {
         success: true,
         orderId: order.id,
         orderNumber: order.orderNumber,
+        paymentMethod: input.paymentMethod,
         totals: {
           subtotal,
           shippingCost,
@@ -541,6 +635,51 @@ export const orderRouter = createTRPCRouter({
         .execute();
 
       return { success: true, status: "pending" as const };
+    }),
+
+  // Submit UTR number for UPI payment verification
+  submitUtr: protectedProcedure
+    .input(
+      z.object({
+        orderId: z.string(),
+        utrNumber: z
+          .string()
+          .min(6, "UTR number must be at least 6 characters")
+          .max(50, "UTR number is too long")
+          .regex(/^[A-Za-z0-9]+$/, "UTR must contain only letters and numbers"),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+
+      const order = await ctx.db
+        .selectFrom("order")
+        .select(["id", "paymentMethod", "paymentStatus"])
+        .where("order.id", "=", input.orderId)
+        .where("order.userId", "=", userId)
+        .executeTakeFirst();
+
+      if (!order) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Order not found",
+        });
+      }
+
+      if (order.paymentMethod !== "upi") {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "UTR is only applicable for UPI payments",
+        });
+      }
+
+      await ctx.db
+        .updateTable("order")
+        .set({ utrNumber: input.utrNumber.toUpperCase() })
+        .where("order.id", "=", input.orderId)
+        .execute();
+
+      return { success: true };
     }),
 
   // Get order count for user

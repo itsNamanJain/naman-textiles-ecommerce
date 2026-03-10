@@ -31,18 +31,6 @@ const InstagramIcon = () => (
   </svg>
 );
 
-const XIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="20"
-    height="20"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-  >
-    <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
-  </svg>
-);
-
 const YoutubeIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -57,8 +45,17 @@ const YoutubeIcon = () => (
 
 const quickLinks = [
   { name: "All Products", href: "/products" },
+  { name: "About Us", href: "/about" },
   { name: "Contact Us", href: "/contact" },
   { name: "Track Order", href: "/track-order" },
+  { name: "Bulk Orders", href: "/bulk-orders" },
+];
+
+const policies = [
+  { name: "Shipping Policy", href: "/shipping-policy" },
+  { name: "Return & Refund Policy", href: "/return-policy" },
+  { name: "Privacy Policy", href: "/privacy-policy" },
+  { name: "Terms & Conditions", href: "/terms" },
 ];
 
 const customerService = [
@@ -167,6 +164,23 @@ export function Footer() {
                 </li>
               ))}
             </ul>
+
+            {/* Policies */}
+            <h3 className="mb-4 mt-8 text-lg font-semibold text-white">
+              Policies
+            </h3>
+            <ul className="space-y-2">
+              {policies.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-warm-2 hover:text-sand-6 text-sm transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 
@@ -182,7 +196,7 @@ export function Footer() {
           {/* Social Links */}
           <div className="flex items-center gap-4">
             <Link
-              href="https://facebook.com"
+              href={STORE_INFO.social.facebook}
               target="_blank"
               className="hover:text-sand-6 transition-colors"
               aria-label="Facebook"
@@ -190,7 +204,7 @@ export function Footer() {
               <FacebookIcon />
             </Link>
             <Link
-              href="https://instagram.com"
+              href={STORE_INFO.social.instagram}
               target="_blank"
               className="hover:text-sand-6 transition-colors"
               aria-label="Instagram"
@@ -198,15 +212,7 @@ export function Footer() {
               <InstagramIcon />
             </Link>
             <Link
-              href="https://x.com"
-              target="_blank"
-              className="hover:text-sand-6 transition-colors"
-              aria-label="X (Twitter)"
-            >
-              <XIcon />
-            </Link>
-            <Link
-              href="https://youtube.com"
+              href={STORE_INFO.social.youtube}
               target="_blank"
               className="hover:text-sand-6 transition-colors"
               aria-label="YouTube"

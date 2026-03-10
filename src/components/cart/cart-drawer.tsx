@@ -14,6 +14,7 @@ import {
   SheetFooter,
 } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { AnimatePresence, motion } from "@/components/ui/motion";
 import { formatPrice, formatUnit, formatQuantity } from "@/lib/utils";
 import { cartStore } from "@/stores";
 import { useXStateSelector } from "@/hooks";
@@ -94,89 +95,100 @@ export function CartDrawer() {
             {/* Cart Items */}
             <ScrollArea className="flex-1">
               <div className="divide-y">
-                {items.map((item) => (
-                  <div key={item.productId} className="flex gap-3 p-4">
-                    {/* Product Image */}
-                    <div className="bg-paper-2 relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-2xl">
-                      {item.image ? (
-                        <Image
-                          src={item.image}
-                          alt={item.name}
-                          fill
-                          className="object-cover"
-                          sizes="80px"
-                        />
-                      ) : (
-                        <div className="flex h-full items-center justify-center">
-                          <ShoppingCart className="text-muted-3 h-8 w-8" />
+                <AnimatePresence initial={false}>
+                  {items.map((item) => (
+                    <motion.div
+                      key={item.productId}
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0, x: 50 }}
+                      transition={{ duration: 0.25, ease: "easeOut" }}
+                      className="overflow-hidden"
+                    >
+                      <div className="flex gap-3 p-4">
+                        {/* Product Image */}
+                        <div className="bg-paper-2 relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-2xl">
+                          {item.image ? (
+                            <Image
+                              src={item.image}
+                              alt={item.name}
+                              fill
+                              className="object-cover"
+                              sizes="80px"
+                            />
+                          ) : (
+                            <div className="flex h-full items-center justify-center">
+                              <ShoppingCart className="text-muted-3 h-8 w-8" />
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
 
-                    {/* Product Details */}
-                    <div className="flex min-w-0 flex-1 flex-col">
-                      <div className="flex justify-between gap-2">
-                        <Link
-                          href={`/product/${item.slug}`}
-                          className="text-ink-1 hover:text-brand-3 line-clamp-2 text-sm font-medium"
-                          onClick={handleClose}
-                        >
-                          {item.name}
-                        </Link>
-                        <button
-                          className="text-muted-3 hover:text-danger-4 flex-shrink-0 p-1"
-                          onClick={() => handleRemove(item.productId)}
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
-                      </div>
-
-                      <p className="text-muted-2 mt-1 text-sm">
-                        {formatPrice(item.price)} /{" "}
-                        {formatUnit(
-                          item.sellingMode === "piece" ? "piece" : "meter"
-                        )}
-                      </p>
-
-                      <div className="mt-auto flex items-center justify-between pt-2">
-                        {/* Quantity Controls */}
-                        <div className="flex items-center">
-                          <div className="flex items-center rounded-full border border-black/10 bg-white/80">
-                            <button
-                              className="hover:bg-paper-1 flex h-7 w-7 items-center justify-center"
-                              onClick={() => handleDecrement(item.productId)}
+                        {/* Product Details */}
+                        <div className="flex min-w-0 flex-1 flex-col">
+                          <div className="flex justify-between gap-2">
+                            <Link
+                              href={`/product/${item.slug}`}
+                              className="text-ink-1 hover:text-brand-3 line-clamp-2 text-sm font-medium"
+                              onClick={handleClose}
                             >
-                              <Minus className="h-3 w-3" />
-                            </button>
-                            <span className="w-8 text-center text-sm font-medium">
-                              {formatQuantity(
-                                item.quantity,
-                                item.sellingMode === "piece" ? "piece" : "meter"
-                              )}
-                            </span>
+                              {item.name}
+                            </Link>
                             <button
-                              className="hover:bg-paper-1 flex h-7 w-7 items-center justify-center"
-                              onClick={() => handleIncrement(item.productId)}
+                              className="text-muted-3 hover:text-danger-4 flex-shrink-0 p-1"
+                              onClick={() => handleRemove(item.productId)}
                             >
-                              <Plus className="h-3 w-3" />
+                              <X className="h-4 w-4" />
                             </button>
                           </div>
-                          <button
-                            className="text-muted-3 hover:bg-danger-1 hover:text-danger-4 ml-2 rounded-full p-1.5"
-                            onClick={() => handleRemove(item.productId)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        </div>
 
-                        {/* Item Total */}
-                        <span className="text-ink-1 text-sm font-semibold">
-                          {formatPrice(item.price * item.quantity)}
-                        </span>
+                          <p className="text-muted-2 mt-1 text-sm">
+                            {formatPrice(item.price)} /{" "}
+                            {formatUnit(
+                              item.sellingMode === "piece" ? "piece" : "meter"
+                            )}
+                          </p>
+
+                          <div className="mt-auto flex items-center justify-between pt-2">
+                            {/* Quantity Controls */}
+                            <div className="flex items-center">
+                              <div className="flex items-center rounded-full border border-black/10 bg-white/80">
+                                <button
+                                  className="hover:bg-paper-1 flex h-7 w-7 items-center justify-center"
+                                  onClick={() => handleDecrement(item.productId)}
+                                >
+                                  <Minus className="h-3 w-3" />
+                                </button>
+                                <span className="w-8 text-center text-sm font-medium">
+                                  {formatQuantity(
+                                    item.quantity,
+                                    item.sellingMode === "piece" ? "piece" : "meter"
+                                  )}
+                                </span>
+                                <button
+                                  className="hover:bg-paper-1 flex h-7 w-7 items-center justify-center"
+                                  onClick={() => handleIncrement(item.productId)}
+                                >
+                                  <Plus className="h-3 w-3" />
+                                </button>
+                              </div>
+                              <button
+                                className="text-muted-3 hover:bg-danger-1 hover:text-danger-4 ml-2 rounded-full p-1.5"
+                                onClick={() => handleRemove(item.productId)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </div>
+
+                            {/* Item Total */}
+                            <span className="text-ink-1 text-sm font-semibold">
+                              {formatPrice(item.price * item.quantity)}
+                            </span>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                ))}
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
               </div>
             </ScrollArea>
 

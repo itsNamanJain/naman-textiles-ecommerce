@@ -16,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { ShareButton } from "@/components/products/share-button";
 import { formatPrice, formatUnit, cn } from "@/lib/utils";
 import {
   MAX_METER_ORDER_QUANTITY,
@@ -35,6 +36,7 @@ type ProductCardProps = {
     comparePrice: string | null;
     sellingMode: "meter" | "piece";
     minOrderQuantity: string;
+    stockQuantity: number;
     isFeatured: boolean;
     images: { url: string; alt: string | null }[];
     category: { name: string; slug: string } | null;
@@ -138,6 +140,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
     product.sellingMode === "meter"
       ? MAX_METER_ORDER_QUANTITY
       : MAX_PIECE_ORDER_QUANTITY;
+  const isOutOfStock = product.stockQuantity === 0;
 
   const handleToggleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -228,7 +231,12 @@ export function ProductCard({ product, className }: ProductCardProps) {
 
         {/* Badges */}
         <div className="absolute top-1.5 left-1.5 flex flex-col gap-1">
-          {discount && (
+          {isOutOfStock && (
+            <Badge className="bg-ink-1 rounded px-1.5 py-0.5 text-[10px] font-semibold text-white">
+              Out of Stock
+            </Badge>
+          )}
+          {discount && !isOutOfStock && (
             <Badge className="bg-danger-1 rounded px-1.5 py-0.5 text-[10px] font-semibold text-white">
               -{discount}%
             </Badge>
@@ -240,7 +248,8 @@ export function ProductCard({ product, className }: ProductCardProps) {
           )}
         </div>
 
-        {/* Wishlist */}
+        {/* Share & Wishlist */}
+        <ShareButton product={product} compact />
         <button
           className={cn(
             "absolute top-1.5 right-1.5 flex h-7 w-7 items-center justify-center rounded-full bg-white/90 shadow transition-all hover:scale-110",
@@ -255,6 +264,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
         </button>
 
         {/* Cart Controls */}
+        {!isOutOfStock && (
         <div
           className={cn(
             "absolute inset-x-0 bottom-0 p-1 transition-all duration-200",
@@ -315,6 +325,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
             </div>
           )}
         </div>
+        )}
       </div>
 
       {/* Info */}

@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import {
   Heart,
-  Share2,
   Minus,
   Plus,
   ShoppingCart,
@@ -17,16 +16,19 @@ import {
   ImageIcon,
   Trash2,
   Star,
+  Scissors,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { FadeIn } from "@/components/ui/motion";
+import { ShareButton } from "@/components/products/share-button";
 import { formatPrice, cn } from "@/lib/utils";
 import {
   MAX_METER_ORDER_QUANTITY,
   MAX_PIECE_ORDER_QUANTITY,
+  STORE_INFO,
 } from "@/lib/constants";
 import { cartStore } from "@/stores";
 import { useXStateSelector } from "@/hooks";
@@ -42,6 +44,7 @@ type Product = {
   comparePrice: string | null;
   sellingMode: "meter" | "piece";
   minOrderQuantity: string;
+  stockQuantity: number;
   categoryId: string;
   category: { id: string; name: string; slug: string } | null;
   images: { id: string; url: string; alt: string | null }[];
@@ -164,23 +167,6 @@ export function ProductDetails({ product }: ProductDetailsProps) {
     toggleWishlistMutation.mutate({ productId: product.id });
   };
 
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: product.name,
-          text: product.description ?? `Check out ${product.name}`,
-          url: window.location.href,
-        });
-      } catch {
-        // User cancelled
-      }
-    } else {
-      await navigator.clipboard.writeText(window.location.href);
-      toast.success("Link copied to clipboard");
-    }
-  };
-
   const handleSubmitReview = () => {
     if (!isAuthenticated) {
       toast.error("Please sign in to leave a review");
@@ -201,7 +187,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       )
     : 0;
 
-  const inStock = true;
+  const inStock = product.stockQuantity !== 0;
   const canIncrement = quantityInCart + step <= maxQty;
   const canDecrement = quantityInCart - step >= minQty;
 
@@ -322,7 +308,11 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 <>
                   <Check className="text-success-1 h-5 w-5" />
                   <span className="text-success-1 font-semibold">In Stock</span>
-                  <span className="text-brand-3">Available</span>
+                  {product.stockQuantity > 0 && product.stockQuantity <= 10 && (
+                    <span className="text-danger-1 text-sm">
+                      Only {product.stockQuantity} left
+                    </span>
+                  )}
                 </>
               ) : (
                 <span className="text-danger-1 font-semibold">
@@ -409,6 +399,26 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               </div>
             )}
 
+            {/* Request Sample */}
+            <Button
+              variant="outline"
+              className="text-ink-1 w-full rounded-full border-black/10 bg-white/80 hover:bg-white"
+              onClick={() => {
+                const whatsappNumber = STORE_INFO.whatsapp.replace(/[+\s]/g, "");
+                const productUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/product/${product.slug}`;
+                const message = encodeURIComponent(
+                  `Hi! I'd like to request a sample/swatch of *${product.name}* (${formatPrice(price)}/${unitLabel}). ${productUrl}`
+                );
+                window.open(
+                  `https://wa.me/${whatsappNumber}?text=${message}`,
+                  "_blank"
+                );
+              }}
+            >
+              <Scissors className="mr-2 h-4 w-4" />
+              Request Sample / Swatch
+            </Button>
+
             {/* Wishlist & Share */}
             <div className="flex gap-2">
               <Button
@@ -425,13 +435,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 />
                 {isInWishlist ? "In Wishlist" : "Add to Wishlist"}
               </Button>
-              <Button
-                variant="outline"
-                className="text-ink-1 rounded-full border-black/10 bg-white/80 hover:bg-white"
-                onClick={handleShare}
-              >
-                <Share2 className="h-4 w-4" />
-              </Button>
+              <ShareButton product={product} />
             </div>
 
             {/* Features */}

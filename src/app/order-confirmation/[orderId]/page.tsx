@@ -16,6 +16,7 @@ import {
   Mail,
   MapPin,
   Loader2,
+  FileText,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -326,7 +327,9 @@ export default function OrderConfirmationPage() {
                   <div className="rounded-2xl border border-black/5 bg-white/80 p-4">
                     <p className="text-muted-1 text-sm">
                       <span className="font-medium">Payment Method:</span>{" "}
-                      Online Payment (PhonePe)
+                      {order.paymentMethod === "upi"
+                        ? "UPI"
+                        : "Cash on Delivery"}
                     </p>
                     <p className="text-muted-1 mt-1 text-sm">
                       <span className="font-medium">Payment Status:</span>{" "}
@@ -340,6 +343,12 @@ export default function OrderConfirmationPage() {
                         {order.paymentStatus === "paid" ? "Paid" : "Pending"}
                       </span>
                     </p>
+                    {order.utrNumber && (
+                      <p className="text-muted-1 mt-1 text-sm">
+                        <span className="font-medium">UTR:</span>{" "}
+                        <span className="font-mono">{order.utrNumber}</span>
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-3 pt-4">
@@ -352,10 +361,39 @@ export default function OrderConfirmationPage() {
                     <Button
                       variant="outline"
                       className="text-ink-1 w-full rounded-full border-black/10 bg-white/80 hover:bg-white"
+                      onClick={() => {
+                        window.open(
+                          `/api/invoice?orderId=${order.id}`,
+                          "_blank"
+                        );
+                      }}
+                    >
+                      <FileText className="mr-2 h-4 w-4" />
+                      Download Invoice
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="text-ink-1 w-full rounded-full border-black/10 bg-white/80 hover:bg-white"
                       asChild
                     >
                       <Link href="/products">Continue Shopping</Link>
                     </Button>
+                  </div>
+
+                  {/* Policy Links */}
+                  <div className="flex justify-center gap-4 pt-4 text-xs">
+                    <Link
+                      href="/shipping-policy"
+                      className="text-muted-2 hover:text-brand-1 underline"
+                    >
+                      Shipping Policy
+                    </Link>
+                    <Link
+                      href="/return-policy"
+                      className="text-muted-2 hover:text-brand-1 underline"
+                    >
+                      Return Policy
+                    </Link>
                   </div>
 
                   {/* Contact Info */}

@@ -19,6 +19,8 @@ type Props = {
     minPrice?: string;
     maxPrice?: string;
     search?: string;
+    color?: string;
+    fabricType?: string;
   }>;
 };
 
@@ -29,6 +31,8 @@ export default async function ProductsPage({ searchParams }: Props) {
     minPrice,
     maxPrice,
     search,
+    color,
+    fabricType,
   } = await searchParams;
 
   const sortBy = (
@@ -88,6 +92,8 @@ export default async function ProductsPage({ searchParams }: Props) {
             search={search}
             minPrice={minPrice ? parseFloat(minPrice) : undefined}
             maxPrice={maxPrice ? parseFloat(maxPrice) : undefined}
+            color={color}
+            fabricType={fabricType}
           />
         </Suspense>
       </div>

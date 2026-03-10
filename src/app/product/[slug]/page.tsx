@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import Script from "next/script";
 
 import { api } from "@/trpc/server";
 import { ProductDetails } from "./product-details";
@@ -19,12 +20,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: "Product Not Found" };
   }
 
+  const description =
+    product.description ??
+    `Buy ${product.name} at best price. Quality fabric from Naman Textiles, Gandhi Nagar, Delhi.`;
   return {
-    title: `${product.name} - Naman Textiles`,
-    description:
-      product.description ??
-      `Buy ${product.name} at best price. Quality fabric from Naman Textiles, Gandhi Nagar, Delhi.`,
+    title: product.name,
+    description,
     openGraph: {
+      title: `${product.name} - Naman Textiles`,
+      description,
+      type: "website",
+      images: product.images[0]?.url
+        ? [{ url: product.images[0].url, alt: product.name }]
+        : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${product.name} - Naman Textiles`,
+      description,
       images: product.images[0]?.url ? [product.images[0].url] : [],
     },
   };
@@ -40,6 +53,39 @@ export default async function ProductPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-transparent pb-12">
+      <Script
+        id="structured-data-product"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            name: product.name,
+            description:
+              product.description ??
+              `${product.name} - Premium fabric from Naman Textiles`,
+            image: product.images.map((img) => img.url),
+            brand: {
+              "@type": "Brand",
+              name: "Naman Textiles",
+            },
+            offers: {
+              "@type": "Offer",
+              price: product.price,
+              priceCurrency: "INR",
+              availability:
+                product.stockQuantity === 0
+                  ? "https://schema.org/OutOfStock"
+                  : "https://schema.org/InStock",
+              seller: {
+                "@type": "Organization",
+                name: "Naman Textiles",
+              },
+            },
+          }),
+        }}
+      />
+
       {/* Product Details */}
       <Suspense fallback={<ProductDetailsSkeleton />}>
         <ProductDetails product={product} />

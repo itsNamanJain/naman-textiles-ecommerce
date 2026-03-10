@@ -2,7 +2,7 @@
 
 export const STORE_INFO = {
   name: "Naman Textiles",
-  tagline: "Premium Fabrics for Every Occasion",
+  tagline: "Wholesale & Retail Fabrics Since 1990",
   description:
     "Your trusted destination for premium quality fabrics since 1990. We offer a wide range of textiles from Cotton to Banarsi Brocade.",
   phone: "+91 87429 09296",
@@ -23,11 +23,11 @@ export const STORE_INFO = {
     open: "10:00 AM - 8:00 PM",
     closedDay: "Monday",
   },
+  upiId: "namantextiles@upi",
   social: {
-    facebook: "https://facebook.com",
-    instagram: "https://instagram.com",
-    twitter: "https://x.com",
-    youtube: "https://youtube.com",
+    facebook: "https://www.facebook.com/Namostu.textiles/",
+    instagram: "https://www.instagram.com/naman.textiles/",
+    youtube: "https://www.youtube.com/@Namantextiles",
   },
 } as const;
 
