@@ -198,12 +198,12 @@ export function ProductCard({ product, className }: ProductCardProps) {
   return (
     <Card
       className={cn(
-        "group relative flex h-full flex-col gap-0 overflow-hidden rounded-2xl border border-black/5 bg-white/90 py-0 shadow-[0_10px_30px_rgba(15,15,15,0.06)] transition-all hover:-translate-y-1 hover:shadow-[0_25px_60px_rgba(15,15,15,0.12)]",
+        "group relative flex h-full flex-col gap-0 overflow-hidden rounded-2xl border border-black/[0.04] bg-white py-0 shadow-none transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_25px_50px_rgba(15,15,15,0.1)]",
         className
       )}
     >
       {/* Image */}
-      <div className="bg-paper-2 relative aspect-square overflow-hidden">
+      <div className="bg-paper-1 relative aspect-[3/4] overflow-hidden">
         <Link href={`/product/${product.slug}`}>
           {mainImage ? (
             <>
@@ -211,14 +211,14 @@ export function ProductCard({ product, className }: ProductCardProps) {
                 src={mainImage}
                 alt={product.images[0]?.alt ?? product.name}
                 fill
-                className="object-cover transition-all duration-300 group-hover:scale-105 group-hover:opacity-0"
+                className="object-cover transition-all duration-500 ease-out group-hover:scale-[1.08] group-hover:opacity-0"
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
               />
               <Image
                 src={hoverImage ?? mainImage}
                 alt={product.name}
                 fill
-                className="object-cover opacity-0 transition-all duration-300 group-hover:scale-105 group-hover:opacity-100"
+                className="object-cover opacity-0 transition-all duration-500 ease-out group-hover:scale-[1.08] group-hover:opacity-100"
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
               />
             </>
@@ -230,19 +230,19 @@ export function ProductCard({ product, className }: ProductCardProps) {
         </Link>
 
         {/* Badges */}
-        <div className="absolute top-1.5 left-1.5 flex flex-col gap-1">
+        <div className="absolute top-2.5 left-2.5 flex flex-col gap-1.5">
           {isOutOfStock && (
-            <Badge className="bg-ink-1 rounded px-1.5 py-0.5 text-[10px] font-semibold text-white">
+            <Badge className="bg-ink-1 rounded-full px-2.5 py-1 text-[11px] font-semibold tracking-wide text-white shadow-sm">
               Out of Stock
             </Badge>
           )}
           {discount && !isOutOfStock && (
-            <Badge className="bg-danger-1 rounded px-1.5 py-0.5 text-[10px] font-semibold text-white">
+            <Badge className="bg-danger-1 rounded-full px-2.5 py-1 text-[11px] font-semibold tracking-wide text-white shadow-sm">
               -{discount}%
             </Badge>
           )}
           {product.isFeatured && (
-            <Badge className="bg-brand-1 rounded px-1.5 py-0.5 text-[10px] font-semibold text-white">
+            <Badge className="bg-brand-1 rounded-full px-2.5 py-1 text-[11px] font-semibold tracking-wide text-white shadow-sm">
               Featured
             </Badge>
           )}
@@ -252,14 +252,14 @@ export function ProductCard({ product, className }: ProductCardProps) {
         <ShareButton product={product} compact />
         <button
           className={cn(
-            "absolute top-1.5 right-1.5 flex h-7 w-7 items-center justify-center rounded-full bg-white/90 shadow transition-all hover:scale-110",
+            "absolute top-2.5 right-2.5 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 shadow-md transition-all duration-200 hover:scale-110 hover:shadow-lg",
             isInWishlist ? "text-danger-1" : "text-muted-3 hover:text-danger-1"
           )}
           onClick={handleToggleWishlist}
           disabled={toggleWishlistMutation.isPending}
         >
           <Heart
-            className={cn("h-3.5 w-3.5", isInWishlist && "fill-current")}
+            className={cn("h-4 w-4", isInWishlist && "fill-current")}
           />
         </button>
 
@@ -267,24 +267,24 @@ export function ProductCard({ product, className }: ProductCardProps) {
         {!isOutOfStock && (
         <div
           className={cn(
-            "absolute inset-x-0 bottom-0 p-1 transition-all duration-200",
+            "absolute inset-x-0 bottom-0 p-2 transition-all duration-300",
             isInCart
               ? "translate-y-0"
               : "translate-y-0 md:translate-y-full md:group-hover:translate-y-0"
           )}
         >
           {isInCart ? (
-            <div className="flex items-center justify-center gap-1">
+            <div className="flex items-center justify-center gap-1.5">
               <button
-                className="text-danger-4 hover:bg-danger-1 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow transition-all active:scale-95"
+                className="text-danger-4 hover:bg-danger-1 hover:text-white flex h-9 w-9 items-center justify-center rounded-full bg-white/95 shadow-md backdrop-blur-sm transition-all duration-200 active:scale-95"
                 onClick={handleRemove}
               >
                 <Trash2 className="h-4 w-4" />
               </button>
-              <div className="flex items-center overflow-hidden rounded-full bg-white shadow">
+              <div className="flex items-center overflow-hidden rounded-full bg-white/95 shadow-md backdrop-blur-sm">
                 <button
                   className={cn(
-                    "flex h-8 w-8 items-center justify-center transition-all active:scale-95",
+                    "flex h-9 w-9 items-center justify-center transition-all duration-200 active:scale-95",
                     canDecrement
                       ? "text-muted-1 hover:bg-paper-1"
                       : "text-muted-3 cursor-not-allowed"
@@ -292,16 +292,16 @@ export function ProductCard({ product, className }: ProductCardProps) {
                   onClick={handleDecrement}
                   disabled={!canDecrement}
                 >
-                  <Minus className="h-3.5 w-3.5" strokeWidth={2.5} />
+                  <Minus className="h-4 w-4" strokeWidth={2.5} />
                 </button>
-                <div className="bg-paper-1 flex h-8 min-w-[32px] items-center justify-center px-1">
+                <div className="bg-paper-1/80 flex h-9 min-w-[36px] items-center justify-center px-1">
                   <span className="text-ink-1 text-sm font-bold">
                     {quantityInCart}
                   </span>
                 </div>
                 <button
                   className={cn(
-                    "flex h-8 w-8 items-center justify-center transition-all active:scale-95",
+                    "flex h-9 w-9 items-center justify-center transition-all duration-200 active:scale-95",
                     canIncrement
                       ? "text-muted-1 hover:bg-paper-1"
                       : "text-muted-3 cursor-not-allowed"
@@ -309,17 +309,17 @@ export function ProductCard({ product, className }: ProductCardProps) {
                   onClick={handleIncrement}
                   disabled={!canIncrement}
                 >
-                  <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />
+                  <Plus className="h-4 w-4" strokeWidth={2.5} />
                 </button>
               </div>
             </div>
           ) : (
             <div className="flex justify-center">
               <Button
-                className="bg-brand-1 hover:bg-brand-2 h-8 rounded-full px-3 text-xs font-semibold shadow active:scale-[0.98]"
+                className="bg-brand-1 hover:bg-brand-2 h-10 rounded-full px-5 text-sm font-semibold shadow-lg hover:shadow-xl active:scale-[0.97] transition-all duration-300"
                 onClick={handleAddToCart}
               >
-                <ShoppingCart className="mr-1.5 h-3.5 w-3.5" />
+                <ShoppingCart className="mr-1.5 h-4 w-4" />
                 Add to Cart
               </Button>
             </div>
@@ -329,36 +329,36 @@ export function ProductCard({ product, className }: ProductCardProps) {
       </div>
 
       {/* Info */}
-      <CardContent className="flex flex-1 flex-col p-2">
+      <CardContent className="flex flex-1 flex-col p-3">
         {product.category && (
           <Link
             href={`/category/${product.category.slug}`}
-            className="text-muted-3 hover:text-brand-1 text-[10px] font-semibold tracking-[0.2em] uppercase"
+            className="text-muted-2 hover:text-brand-1 text-xs font-medium tracking-[0.12em] uppercase transition-colors duration-200"
           >
             {product.category.name}
           </Link>
         )}
-        <Link href={`/product/${product.slug}`} className="mt-0.5">
-          <h3 className="text-ink-1 hover:text-brand-1 line-clamp-2 text-sm leading-tight font-semibold">
+        <Link href={`/product/${product.slug}`} className="mt-1">
+          <h3 className="text-ink-1 hover:text-brand-1 line-clamp-2 text-base leading-snug font-semibold transition-colors duration-200">
             {product.name}
           </h3>
         </Link>
-        <div className="mt-auto flex items-baseline gap-1 pt-1.5">
-          <span className="text-ink-1 text-sm font-semibold">
+        <div className="mt-auto flex items-baseline gap-1.5 pt-2">
+          <span className="text-ink-0 text-lg font-bold">
             {formatPrice(price)}
           </span>
-          <span className="text-muted-2 text-[10px]">
+          <span className="text-muted-2 text-xs">
             /{formatUnit(product.sellingMode === "piece" ? "piece" : "meter")}
           </span>
           {comparePrice && comparePrice > price && (
-            <span className="text-muted-2 text-[10px] line-through">
+            <span className="text-muted-2 text-xs line-through">
               {formatPrice(comparePrice)}
             </span>
           )}
         </div>
         {isInCart && (
-          <span className="text-brand-1 mt-0.5 inline-flex items-center gap-1 text-[10px] font-semibold">
-            <ShoppingCart className="h-2.5 w-2.5" />
+          <span className="text-brand-1 mt-1 inline-flex items-center gap-1 text-xs font-semibold">
+            <ShoppingCart className="h-3 w-3" />
             {formatPrice(price * quantityInCart)} in cart
           </span>
         )}

@@ -71,7 +71,7 @@ export function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full border-b border-black/5 bg-white/80 shadow-[0_8px_30px_rgba(15,15,15,0.04)] backdrop-blur">
+      <header className="sticky top-0 z-50 w-full border-b border-black/[0.06] bg-white/85 shadow-[0_1px_3px_rgba(0,0,0,0.05)] backdrop-blur-xl backdrop-saturate-150">
         {/* Top Bar */}
         <div className="from-paper-5 to-paper-6 hidden border-b border-black/5 bg-gradient-to-r via-white md:block">
           <div className="text-muted-4 container mx-auto flex items-center justify-between px-4 py-2 text-xs font-medium tracking-wide uppercase">
@@ -106,7 +106,7 @@ export function Header() {
 
         {/* Main Header */}
         <div className="container mx-auto px-4">
-          <div className="flex h-16 items-center justify-between gap-4 md:h-20">
+          <div className="flex h-16 items-center justify-between gap-4 md:h-[72px]">
             {/* Mobile Menu Button */}
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild className="md:hidden">
@@ -243,10 +243,10 @@ export function Header() {
                 onClick={() => setIsSearchOpen(true)}
                 className="relative w-full max-w-xl"
               >
-                <div className="text-muted-2 flex w-full items-center rounded-full border border-black/10 bg-white/90 py-2.5 pr-4 pl-12 text-left text-sm shadow-[0_10px_30px_rgba(15,15,15,0.05)] transition-all hover:border-black/20 hover:bg-white">
+                <div className="text-muted-2 flex w-full items-center rounded-full border border-black/8 bg-paper-1/80 py-3 pr-5 pl-12 text-left text-sm transition-all duration-200 hover:border-black/15 hover:bg-white hover:shadow-sm">
                   Search fabrics, categories, styles...
                 </div>
-                <Search className="text-muted-3 absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2" />
+                <Search className="text-muted-2 absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2" />
               </button>
             </div>
 
@@ -359,9 +359,9 @@ export function Header() {
         </div>
 
         {/* Category Navigation - Desktop */}
-        <nav className="hidden border-t border-black/5 bg-white/70 md:block">
+        <nav className="hidden border-t border-black/[0.04] bg-white/60 backdrop-blur-sm md:block">
           <div className="container mx-auto px-4">
-            <ul className="flex items-center justify-center gap-2 py-1.5">
+            <ul className="flex items-center justify-center gap-1 py-2">
               <li>
                 <Link
                   href="/products"

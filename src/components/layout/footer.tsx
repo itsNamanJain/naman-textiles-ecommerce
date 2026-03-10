@@ -74,11 +74,11 @@ export function Footer() {
   return (
     <footer className="bg-ink-0 text-paper-20">
       {/* Main Footer */}
-      <div className="container mx-auto px-4 py-14">
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
+      <div className="container mx-auto px-4 py-16 md:py-20">
+        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
           {/* Company Info */}
           <div>
-            <h2 className="font-display mb-4 text-2xl font-semibold text-white">
+            <h2 className="font-display mb-5 text-2xl font-semibold tracking-tight text-white md:text-3xl">
               {STORE_INFO.name}
             </h2>
             <p className="text-warm-2 mb-6 text-sm leading-relaxed">
@@ -111,15 +111,15 @@ export function Footer() {
 
           {/* Categories */}
           <div>
-            <h3 className="mb-4 text-lg font-semibold text-white">
+            <h3 className="mb-5 text-sm font-semibold tracking-[0.1em] text-white/90 uppercase">
               Categories
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-3">
               {displayCategories.map((category) => (
                 <li key={category.slug}>
                   <Link
                     href={`/category/${category.slug}`}
-                    className="text-warm-2 hover:text-sand-6 text-sm transition-colors"
+                    className="text-warm-2 hover:text-white text-sm transition-colors duration-200"
                   >
                     {category.name}
                   </Link>
@@ -130,15 +130,15 @@ export function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="mb-4 text-lg font-semibold text-white">
+            <h3 className="mb-5 text-sm font-semibold tracking-[0.1em] text-white/90 uppercase">
               Quick Links
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-3">
               {quickLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-warm-2 hover:text-sand-6 text-sm transition-colors"
+                    className="text-warm-2 hover:text-white text-sm transition-colors duration-200"
                   >
                     {link.name}
                   </Link>
@@ -149,15 +149,15 @@ export function Footer() {
 
           {/* Customer Service */}
           <div>
-            <h3 className="mb-4 text-lg font-semibold text-white">
+            <h3 className="mb-5 text-sm font-semibold tracking-[0.1em] text-white/90 uppercase">
               Customer Service
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-3">
               {customerService.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-warm-2 hover:text-sand-6 text-sm transition-colors"
+                    className="text-warm-2 hover:text-white text-sm transition-colors duration-200"
                   >
                     {link.name}
                   </Link>
@@ -169,12 +169,12 @@ export function Footer() {
             <h3 className="mb-4 mt-8 text-lg font-semibold text-white">
               Policies
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-3">
               {policies.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-warm-2 hover:text-sand-6 text-sm transition-colors"
+                    className="text-warm-2 hover:text-white text-sm transition-colors duration-200"
                   >
                     {link.name}
                   </Link>
@@ -198,7 +198,7 @@ export function Footer() {
             <Link
               href={STORE_INFO.social.facebook}
               target="_blank"
-              className="hover:text-sand-6 transition-colors"
+              className="hover:text-white transition-all duration-200 hover:scale-110"
               aria-label="Facebook"
             >
               <FacebookIcon />
@@ -206,7 +206,7 @@ export function Footer() {
             <Link
               href={STORE_INFO.social.instagram}
               target="_blank"
-              className="hover:text-sand-6 transition-colors"
+              className="hover:text-white transition-all duration-200 hover:scale-110"
               aria-label="Instagram"
             >
               <InstagramIcon />
@@ -214,7 +214,7 @@ export function Footer() {
             <Link
               href={STORE_INFO.social.youtube}
               target="_blank"
-              className="hover:text-sand-6 transition-colors"
+              className="hover:text-white transition-all duration-200 hover:scale-110"
               aria-label="YouTube"
             >
               <YoutubeIcon />

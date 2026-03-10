@@ -25,14 +25,14 @@ export function FeaturedProducts({
   });
 
   return (
-    <section className="bg-paper-4 py-12 md:py-16">
+    <section className="bg-paper-4 py-16 md:py-24">
       <div className="container mx-auto px-4">
-        <FadeInView className="mb-8 flex flex-col items-center justify-between gap-4 md:mb-12 md:flex-row">
+        <FadeInView className="mb-10 flex flex-col items-center justify-between gap-4 md:mb-14 md:flex-row">
           <div className="text-center md:text-left">
-            <h2 className="font-display text-ink-1 mb-2 text-2xl md:text-3xl lg:text-4xl">
+            <h2 className="font-display text-ink-0 mb-3 text-3xl md:text-4xl lg:text-5xl">
               {title}
             </h2>
-            <p className="text-muted-1 text-sm md:text-base">{subtitle}</p>
+            <p className="text-muted-1 text-base md:text-lg">{subtitle}</p>
           </div>
           <Button
             variant="outline"
@@ -52,7 +52,7 @@ export function FeaturedProducts({
             No featured products available
           </div>
         ) : (
-          <StaggerContainer className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
+          <StaggerContainer className="grid grid-cols-2 gap-5 sm:gap-6 md:grid-cols-3 lg:grid-cols-4 lg:gap-8">
             {products.map((product) => (
               <StaggerItem key={product.id}>
                 <ProductCard
