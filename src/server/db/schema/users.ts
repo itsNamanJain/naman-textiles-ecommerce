@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import {
   boolean,
   index,
@@ -16,16 +17,16 @@ export const users = createTable(
   {
     id: varchar("id", { length: 255 })
       .primaryKey()
-      .$defaultFn(() => crypto.randomUUID()),
+      .default(sql`gen_random_uuid()`),
     name: varchar("name", { length: 255 }),
     email: varchar("email", { length: 255 }).unique().notNull(),
     image: varchar("image", { length: 255 }),
     password: varchar("password", { length: 255 }),
     role: userRoleEnum("role").default("customer").notNull(),
-    phone: varchar("phone", { length: 20 }),
+    phone: varchar("phone", { length: 20 }).notNull(),
     emailVerified: timestamp("email_verified", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true })
-      .$defaultFn(() => new Date())
+      .default(sql`now()`)
       .notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
       () => new Date()
@@ -97,7 +98,7 @@ export const addresses = createTable(
   {
     id: varchar("id", { length: 255 })
       .primaryKey()
-      .$defaultFn(() => crypto.randomUUID()),
+      .default(sql`gen_random_uuid()`),
     userId: varchar("user_id", { length: 255 })
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
@@ -110,7 +111,7 @@ export const addresses = createTable(
     pincode: varchar("pincode", { length: 10 }).notNull(),
     isDefault: boolean("is_default").default(false).notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })
-      .$defaultFn(() => new Date())
+      .default(sql`now()`)
       .notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
       () => new Date()

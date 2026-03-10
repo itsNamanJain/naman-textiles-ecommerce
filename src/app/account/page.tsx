@@ -31,7 +31,7 @@ import { api } from "@/trpc/react";
 const profileSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
-  phone: z.string().optional(),
+  phone: z.string().min(10, "Valid phone number required"),
 });
 
 type ProfileFormData = z.infer<typeof profileSchema>;
@@ -172,7 +172,7 @@ export default function ProfilePage() {
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Phone Number (Optional)</FormLabel>
+                      <FormLabel>Phone Number</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Phone className="text-muted-3 absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />

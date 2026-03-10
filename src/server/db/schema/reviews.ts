@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import {
   boolean,
   index,
@@ -15,7 +16,7 @@ export const reviews = createTable(
   {
     id: varchar("id", { length: 255 })
       .primaryKey()
-      .$defaultFn(() => crypto.randomUUID()),
+      .default(sql`gen_random_uuid()`),
     userId: varchar("user_id", { length: 255 })
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
@@ -27,7 +28,7 @@ export const reviews = createTable(
     isVerified: boolean("is_verified").default(false).notNull(), // Verified purchase
     isApproved: boolean("is_approved").default(false).notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })
-      .$defaultFn(() => new Date())
+      .default(sql`now()`)
       .notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
       () => new Date()

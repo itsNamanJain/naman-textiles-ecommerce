@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import { index, numeric, timestamp, varchar } from "drizzle-orm/pg-core";
 import { users } from "./users";
 import { products, productVariants } from "./inventory";
@@ -11,13 +11,13 @@ export const carts = createTable(
   {
     id: varchar("id", { length: 255 })
       .primaryKey()
-      .$defaultFn(() => crypto.randomUUID()),
+      .default(sql`gen_random_uuid()`),
     userId: varchar("user_id", { length: 255 })
       .unique()
       .references(() => users.id, { onDelete: "cascade" }),
     sessionId: varchar("session_id", { length: 255 }), // For guest carts
     createdAt: timestamp("created_at", { withTimezone: true })
-      .$defaultFn(() => new Date())
+      .default(sql`now()`)
       .notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
       () => new Date()
@@ -36,7 +36,7 @@ export const cartItems = createTable(
   {
     id: varchar("id", { length: 255 })
       .primaryKey()
-      .$defaultFn(() => crypto.randomUUID()),
+      .default(sql`gen_random_uuid()`),
     cartId: varchar("cart_id", { length: 255 })
       .notNull()
       .references(() => carts.id, { onDelete: "cascade" }),
@@ -51,7 +51,7 @@ export const cartItems = createTable(
       .default("1")
       .notNull(), // Supports decimal for meters
     createdAt: timestamp("created_at", { withTimezone: true })
-      .$defaultFn(() => new Date())
+      .default(sql`now()`)
       .notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
       () => new Date()
@@ -70,13 +70,13 @@ export const wishlists = createTable(
   {
     id: varchar("id", { length: 255 })
       .primaryKey()
-      .$defaultFn(() => crypto.randomUUID()),
+      .default(sql`gen_random_uuid()`),
     userId: varchar("user_id", { length: 255 })
       .notNull()
       .unique()
       .references(() => users.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at", { withTimezone: true })
-      .$defaultFn(() => new Date())
+      .default(sql`now()`)
       .notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
       () => new Date()
@@ -92,7 +92,7 @@ export const wishlistItems = createTable(
   {
     id: varchar("id", { length: 255 })
       .primaryKey()
-      .$defaultFn(() => crypto.randomUUID()),
+      .default(sql`gen_random_uuid()`),
     wishlistId: varchar("wishlist_id", { length: 255 })
       .notNull()
       .references(() => wishlists.id, { onDelete: "cascade" }),
@@ -100,7 +100,7 @@ export const wishlistItems = createTable(
       .notNull()
       .references(() => products.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at", { withTimezone: true })
-      .$defaultFn(() => new Date())
+      .default(sql`now()`)
       .notNull(),
   },
   (t) => [
