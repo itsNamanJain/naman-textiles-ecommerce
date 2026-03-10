@@ -158,7 +158,7 @@ export function HeroBanner() {
 
   return (
     <section className="relative overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(184,116,58,0.12),transparent_45%),radial-gradient(circle_at_80%_0%,rgba(255,210,160,0.2),transparent_40%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(26,86,219,0.08),transparent_45%),radial-gradient(circle_at_80%_0%,rgba(59,130,246,0.12),transparent_40%)]" />
       <Carousel
         opts={{
           align: "start",

@@ -190,7 +190,7 @@ export default function ContactPage() {
           </div>
 
           {/* WhatsApp CTA */}
-          <div className="animate-fade-in-up animation-delay-300 from-ink-1 via-muted-6 to-brand-1 mt-12 rounded-3xl bg-gradient-to-r p-8 text-center text-white shadow-[0_30px_70px_rgba(45,28,18,0.35)]">
+          <div className="animate-fade-in-up animation-delay-300 from-ink-1 via-muted-6 to-brand-1 mt-12 rounded-3xl bg-gradient-to-r p-8 text-center text-white shadow-[0_30px_70px_rgba(15,23,42,0.35)]">
             <h2 className="font-display text-2xl">
               Quick Support via WhatsApp
             </h2>
