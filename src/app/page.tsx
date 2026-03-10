@@ -4,7 +4,6 @@ import {
   HeroBanner,
   CategoryGrid,
   FeaturedProducts,
-  FeaturesSection,
   PromoBanner,
 } from "@/components/home";
 
@@ -77,9 +76,6 @@ export default function HomePage() {
 
       {/* Hero Banner Carousel */}
       <HeroBanner />
-
-      {/* Features Strip */}
-      <FeaturesSection />
 
       {/* Category Grid */}
       <CategoryGrid />
