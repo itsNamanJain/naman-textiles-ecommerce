@@ -23,9 +23,9 @@ export const env = createEnv({
     SMTP_PASSWORD: z.string().optional(),
     SMTP_FROM_EMAIL: z.string().optional(),
     SMTP_FROM_NAME: z.string().optional(),
-    YOUTUBE_API_KEY: z.string().optional(),
-    UPSTASH_REDIS_REST_URL: z.string().url().optional(),
-    UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
+    YOUTUBE_API_KEY: z.string(),
+    UPSTASH_REDIS_REST_URL: z.string().url(),
+    UPSTASH_REDIS_REST_TOKEN: z.string(),
   },
 
   /**

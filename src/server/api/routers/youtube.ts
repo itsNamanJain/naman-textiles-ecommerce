@@ -15,10 +15,7 @@ const CACHE_KEY = "youtube:latest-videos";
 const CACHE_TTL = 12 * 60 * 60; // 12 hours in seconds
 
 async function fetchYouTubeVideos(): Promise<YouTubeVideo[]> {
-  const apiKey = env.YOUTUBE_API_KEY;
-  if (!apiKey) return [];
-
-  const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${YOUTUBE_UPLOADS_PLAYLIST_ID}&maxResults=5&key=${apiKey}`;
+  const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${YOUTUBE_UPLOADS_PLAYLIST_ID}&maxResults=5&key=${env.YOUTUBE_API_KEY}`;
 
   const res = await fetch(url);
   if (!res.ok) {
@@ -59,22 +56,18 @@ async function fetchYouTubeVideos(): Promise<YouTubeVideo[]> {
 
 export const youtubeRouter = createTRPCRouter({
   getLatestVideos: publicProcedure.query(async () => {
-    if (!env.YOUTUBE_API_KEY) return [];
-
     // Try Redis cache first
-    if (redis) {
-      try {
-        const cached = await redis.get<YouTubeVideo[]>(CACHE_KEY);
-        if (cached) return cached;
-      } catch (e) {
-        console.error("[YouTube] Redis read error:", e);
-      }
+    try {
+      const cached = await redis.get<YouTubeVideo[]>(CACHE_KEY);
+      if (cached) return cached;
+    } catch (e) {
+      console.error("[YouTube] Redis read error:", e);
     }
 
     const videos = await fetchYouTubeVideos();
 
     // Store in Redis with 12-hour TTL
-    if (redis && videos.length > 0) {
+    if (videos.length > 0) {
       redis.set(CACHE_KEY, videos, { ex: CACHE_TTL }).catch((e) => {
         console.error("[YouTube] Redis write error:", e);
       });
