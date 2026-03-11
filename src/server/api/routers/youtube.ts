@@ -15,7 +15,7 @@ const CACHE_KEY = "youtube:latest-videos";
 const CACHE_TTL = 12 * 60 * 60; // 12 hours in seconds
 
 async function fetchYouTubeVideos(): Promise<YouTubeVideo[]> {
-  const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${YOUTUBE_UPLOADS_PLAYLIST_ID}&maxResults=5&key=${env.YOUTUBE_API_KEY}`;
+  const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${YOUTUBE_UPLOADS_PLAYLIST_ID}&maxResults=10&key=${env.YOUTUBE_API_KEY}`;
 
   const res = await fetch(url);
   if (!res.ok) {
