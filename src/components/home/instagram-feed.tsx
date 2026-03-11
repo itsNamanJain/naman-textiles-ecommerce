@@ -72,7 +72,7 @@ export function InstagramFeed() {
                       key={reel.id}
                       className="basis-[280px] sm:basis-[320px] md:basis-[360px]"
                     >
-                      <div className="relative aspect-[9/16] overflow-hidden rounded-lg bg-black">
+                      <div className="relative aspect-[3.5/4] overflow-hidden rounded-lg bg-black">
                         <iframe
                           src={`https://www.instagram.com/reel/${code}/embed/`}
                           title="Instagram Reel"
@@ -82,7 +82,7 @@ export function InstagramFeed() {
                           className="absolute border-0"
                           style={{
                             width: "calc(100% + 2px)",
-                            height: "calc(100% + 400px)",
+                            height: "calc(100% + 59px)",
                             top: "-56px",
                             left: "-1px",
                           }}
