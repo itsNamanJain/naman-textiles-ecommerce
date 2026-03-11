@@ -84,10 +84,10 @@ export function InstagramFeed() {
                           scrolling="no"
                           className="absolute border-0"
                           style={{
-                            width: "100%",
-                            height: "200%",
-                            top: "-64px",
-                            left: 0,
+                            width: "calc(100% + 2px)",
+                            height: "calc(100% + 350px)",
+                            top: "-56px",
+                            left: "-1px",
                           }}
                         />
                       </div>
