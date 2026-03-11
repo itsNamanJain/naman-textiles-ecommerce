@@ -60,7 +60,7 @@ export function YouTubeFeed() {
           ) : (
             <div className="px-2 md:px-10">
               <Carousel
-                opts={{ align: "start", loop: true, dragFree: true }}
+                opts={{ align: "center", loop: true }}
                 className="w-full"
               >
                 <CarouselContent>

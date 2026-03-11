@@ -59,7 +59,7 @@ export function InstagramFeed() {
         ) : (
           <div className="px-2 md:px-10">
             <Carousel
-              opts={{ align: "start", loop: true, dragFree: true }}
+              opts={{ align: "center", loop: true }}
               className="w-full"
             >
               <CarouselContent>
@@ -79,7 +79,7 @@ export function InstagramFeed() {
                           allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
                           allowFullScreen
                           scrolling="no"
-                          className="absolute border-0"
+                          className="pointer-events-none absolute border-0"
                           style={{
                             width: "calc(100% + 2px)",
                             height: "calc(100% + 59px)",
