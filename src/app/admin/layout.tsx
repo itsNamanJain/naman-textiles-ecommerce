@@ -20,6 +20,7 @@ import {
   Tag,
   Star,
   Image as ImageIcon,
+  Instagram,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -65,6 +66,11 @@ const adminNavItems = [
     href: "/admin/reviews",
     label: "Reviews",
     icon: Star,
+  },
+  {
+    href: "/admin/instagram",
+    label: "Instagram",
+    icon: Instagram,
   },
 ];
 

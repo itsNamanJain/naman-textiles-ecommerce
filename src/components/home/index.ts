@@ -4,3 +4,4 @@ export { FeaturedProducts } from "./featured-products";
 export { FeaturesSection } from "./features-section";
 export { PromoBanner } from "./promo-banner";
 export { YouTubeFeed } from "./youtube-feed";
+export { InstagramFeed } from "./instagram-feed";

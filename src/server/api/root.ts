@@ -10,6 +10,7 @@ import { couponRouter } from "@/server/api/routers/coupon";
 import { bannerRouter } from "@/server/api/routers/banner";
 import { reviewRouter } from "@/server/api/routers/review";
 import { youtubeRouter } from "@/server/api/routers/youtube";
+import { instagramRouter } from "@/server/api/routers/instagram";
 import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
 
 /**
@@ -30,6 +31,7 @@ export const appRouter = createTRPCRouter({
   banner: bannerRouter,
   review: reviewRouter,
   youtube: youtubeRouter,
+  instagram: instagramRouter,
 });
 
 // export type definition of API
