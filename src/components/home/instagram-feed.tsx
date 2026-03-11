@@ -75,7 +75,7 @@ export function InstagramFeed() {
                       {/* Outer container clips to show only the video portion.
                           The iframe is shifted up to hide the profile header
                           and made taller to push the bottom UI out of view. */}
-                      <div className="relative aspect-[9/16] overflow-hidden bg-black">
+                      <div className="relative aspect-[9/16] overflow-hidden rounded-lg bg-black">
                         <iframe
                           src={`https://www.instagram.com/reel/${code}/embed/`}
                           title="Instagram Reel"
@@ -85,7 +85,7 @@ export function InstagramFeed() {
                           className="absolute border-0"
                           style={{
                             width: "100%",
-                            height: "180%",
+                            height: "200%",
                             top: "-64px",
                             left: 0,
                           }}
