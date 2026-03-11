@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { Loader2, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,27 +22,6 @@ export function InstagramFeed() {
   const { data: reels, isLoading } = api.instagram.getAll.useQuery(undefined, {
     staleTime: 60 * 60 * 1000,
   });
-  const embedScriptLoaded = useRef(false);
-
-  useEffect(() => {
-    if (!reels || reels.length === 0 || embedScriptLoaded.current) return;
-    embedScriptLoaded.current = true;
-    const script = document.createElement("script");
-    script.src = "https://www.instagram.com/embed.js";
-    script.async = true;
-    document.body.appendChild(script);
-    return () => {
-      document.body.removeChild(script);
-      embedScriptLoaded.current = false;
-    };
-  }, [reels]);
-
-  useEffect(() => {
-    if (reels && reels.length > 0 && typeof window !== "undefined") {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (window as any).instgrm?.Embeds?.process();
-    }
-  }, [reels]);
 
   if (!isLoading && (!reels || reels.length === 0)) return null;
 
@@ -92,20 +70,23 @@ export function InstagramFeed() {
                   return (
                     <CarouselItem
                       key={reel.id}
-                      className="basis-[280px] sm:basis-[320px] md:basis-[360px]"
+                      className="basis-[200px] sm:basis-[220px] md:basis-[260px]"
                     >
-                      <div className="overflow-hidden rounded-xl bg-white shadow-sm">
-                        <blockquote
-                          className="instagram-media"
-                          data-instgrm-captioned
-                          data-instgrm-permalink={`https://www.instagram.com/reel/${code}/`}
+                      {/* Outer container clips to 9:16 aspect ratio, hiding the
+                          likes/comments/caption UI that Instagram adds below */}
+                      <div className="relative aspect-[9/16] overflow-hidden rounded-xl bg-black shadow-sm">
+                        <iframe
+                          src={`https://www.instagram.com/reel/${code}/embed/`}
+                          title="Instagram Reel"
+                          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
+                          allowFullScreen
+                          scrolling="no"
+                          className="absolute inset-0 border-0"
                           style={{
-                            background: "#FFF",
-                            border: 0,
-                            margin: 0,
-                            padding: 0,
                             width: "100%",
-                            maxWidth: "100%",
+                            // Make iframe taller than container so bottom UI
+                            // (likes, comments, caption) overflows and gets clipped
+                            height: "140%",
                           }}
                         />
                       </div>
