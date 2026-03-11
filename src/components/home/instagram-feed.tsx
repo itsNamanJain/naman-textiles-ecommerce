@@ -87,6 +87,14 @@ export function InstagramFeed() {
                             left: "-1px",
                           }}
                         />
+                        {/* Clickable overlay to open reel on Instagram */}
+                        <a
+                          href={reel.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="absolute inset-0 z-10"
+                          aria-label="Watch on Instagram"
+                        />
                       </div>
                     </CarouselItem>
                   );
