@@ -20,6 +20,33 @@ interface InstagramReel {
   isActive: boolean;
 }
 
+interface OEmbedResponse {
+  thumbnail_url?: string;
+  title?: string;
+}
+
+async function fetchInstagramOEmbed(
+  url: string,
+): Promise<{ thumbnailUrl: string; title: string }> {
+  try {
+    const res = await fetch(
+      `https://api.instagram.com/oembed?url=${encodeURIComponent(url)}`,
+    );
+    if (!res.ok) {
+      console.error("[Instagram] oEmbed error:", res.status);
+      return { thumbnailUrl: "", title: "" };
+    }
+    const data = (await res.json()) as OEmbedResponse;
+    return {
+      thumbnailUrl: data.thumbnail_url ?? "",
+      title: data.title ?? "",
+    };
+  } catch (error) {
+    console.error("[Instagram] oEmbed fetch failed:", error);
+    return { thumbnailUrl: "", title: "" };
+  }
+}
+
 async function getAllReels(): Promise<InstagramReel[]> {
   const data = await redis.get<InstagramReel[]>(REDIS_KEY);
   return data ?? [];
@@ -32,7 +59,6 @@ async function saveAllReels(reels: InstagramReel[]): Promise<void> {
 const reelInputSchema = z.object({
   url: z.string().url("Please enter a valid URL"),
   title: z.string().default(""),
-  thumbnailUrl: z.string().url("Please enter a valid thumbnail URL"),
   position: z.number().int().min(0).default(0),
   isActive: z.boolean().default(true),
 });
@@ -53,12 +79,20 @@ export const instagramRouter = createTRPCRouter({
   create: adminProcedure
     .input(reelInputSchema)
     .mutation(async ({ input }) => {
+      const oembed = await fetchInstagramOEmbed(input.url);
+      if (!oembed.thumbnailUrl) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message:
+            "Could not fetch thumbnail from Instagram. Please check the reel URL.",
+        });
+      }
       const reels = await getAllReels();
       const newReel: InstagramReel = {
         id: randomUUID(),
         url: input.url,
-        title: input.title,
-        thumbnailUrl: input.thumbnailUrl,
+        title: input.title || oembed.title,
+        thumbnailUrl: oembed.thumbnailUrl,
         position: input.position,
         isActive: input.isActive,
       };
@@ -78,11 +112,25 @@ export const instagramRouter = createTRPCRouter({
           message: "Reel not found",
         });
       }
+      const existing = reels[index]!;
+      const urlChanged = existing.url !== input.url;
+      let thumbnailUrl = existing.thumbnailUrl;
+      if (urlChanged) {
+        const oembed = await fetchInstagramOEmbed(input.url);
+        if (!oembed.thumbnailUrl) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message:
+              "Could not fetch thumbnail from Instagram. Please check the reel URL.",
+          });
+        }
+        thumbnailUrl = oembed.thumbnailUrl;
+      }
       reels[index] = {
         id: input.id,
         url: input.url,
-        title: input.title,
-        thumbnailUrl: input.thumbnailUrl,
+        title: input.title || existing.title,
+        thumbnailUrl,
         position: input.position,
         isActive: input.isActive,
       };

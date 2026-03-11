@@ -33,7 +33,6 @@ import { toast } from "sonner";
 type ReelFormData = {
   url: string;
   title: string;
-  thumbnailUrl: string;
   position: string;
   isActive: boolean;
 };
@@ -41,7 +40,6 @@ type ReelFormData = {
 const initialFormData: ReelFormData = {
   url: "",
   title: "",
-  thumbnailUrl: "",
   position: "0",
   isActive: true,
 };
@@ -114,7 +112,6 @@ export default function AdminInstagramPage() {
     setFormData({
       url: reel.url,
       title: reel.title ?? "",
-      thumbnailUrl: reel.thumbnailUrl,
       position: String(reel.position ?? 0),
       isActive: reel.isActive ?? true,
     });
@@ -127,15 +124,14 @@ export default function AdminInstagramPage() {
   };
 
   const handleSubmit = () => {
-    if (!formData.url.trim() || !formData.thumbnailUrl.trim()) {
-      toast.error("Reel URL and thumbnail URL are required");
+    if (!formData.url.trim()) {
+      toast.error("Reel URL is required");
       return;
     }
 
     const payload = {
       url: formData.url.trim(),
       title: formData.title.trim(),
-      thumbnailUrl: formData.thumbnailUrl.trim(),
       position: Number.parseInt(formData.position || "0", 10),
       isActive: formData.isActive,
     };
@@ -282,7 +278,7 @@ export default function AdminInstagramPage() {
               {editingReelId ? "Edit Reel" : "Add Reel"}
             </DialogTitle>
             <DialogDescription>
-              Enter the Instagram reel URL and a thumbnail image URL.
+              Enter the Instagram reel URL. Thumbnail is fetched automatically.
             </DialogDescription>
           </DialogHeader>
 
@@ -312,21 +308,6 @@ export default function AdminInstagramPage() {
                   setFormData((prev) => ({
                     ...prev,
                     title: event.target.value,
-                  }))
-                }
-              />
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="thumbnailUrl">Thumbnail URL</Label>
-              <Input
-                id="thumbnailUrl"
-                placeholder="https://res.cloudinary.com/..."
-                value={formData.thumbnailUrl}
-                onChange={(event) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    thumbnailUrl: event.target.value,
                   }))
                 }
               />
