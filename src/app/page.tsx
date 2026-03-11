@@ -6,6 +6,7 @@ import {
   FeaturedProducts,
   PromoBanner,
   YouTubeFeed,
+  InstagramFeed,
 } from "@/components/home";
 
 export const metadata: Metadata = {
@@ -95,6 +96,9 @@ export default function HomePage() {
 
       {/* YouTube Feed */}
       <YouTubeFeed />
+
+      {/* Instagram Feed */}
+      <InstagramFeed />
     </>
   );
 }
