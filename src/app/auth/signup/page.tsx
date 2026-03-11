@@ -67,15 +67,23 @@ export default function SignUpPage() {
     onSuccess: async () => {
       toast.success("Account created successfully!");
       // Auto sign in after signup
-      const formData = form.getValues();
-      const result = await signIn("credentials", {
-        email: formData.email,
-        password: formData.password,
-        redirect: false,
-      });
-      if (result?.ok) {
-        router.push("/");
-        router.refresh();
+      try {
+        const formData = form.getValues();
+        const result = await signIn("credentials", {
+          email: formData.email,
+          password: formData.password,
+          redirect: false,
+        });
+        if (result?.ok) {
+          router.push("/");
+          router.refresh();
+        } else if (result?.error) {
+          toast.error("Account created but auto sign-in failed. Please sign in manually.");
+          router.push("/auth/signin");
+        }
+      } catch {
+        toast.error("Account created but auto sign-in failed. Please sign in manually.");
+        router.push("/auth/signin");
       }
     },
     onError: (error) => {
