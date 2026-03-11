@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
-import { Instagram, Plus, Pencil, Trash2 } from "lucide-react";
+import { Instagram, Plus, Trash2 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,7 +16,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import {
   Table,
   TableBody,
@@ -30,26 +28,11 @@ import { FadeIn } from "@/components/ui/motion";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
 
-type ReelFormData = {
-  url: string;
-  title: string;
-  position: string;
-  isActive: boolean;
-};
-
-const initialFormData: ReelFormData = {
-  url: "",
-  title: "",
-  position: "0",
-  isActive: true,
-};
-
 export default function AdminInstagramPage() {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [editingReelId, setEditingReelId] = useState<string | null>(null);
   const [deletingReelId, setDeletingReelId] = useState<string | null>(null);
-  const [formData, setFormData] = useState<ReelFormData>(initialFormData);
+  const [url, setUrl] = useState("");
 
   const utils = api.useUtils();
 
@@ -58,27 +41,12 @@ export default function AdminInstagramPage() {
   const createMutation = api.instagram.create.useMutation({
     onSuccess: () => {
       toast.success("Reel added");
-      setIsDialogOpen(false);
-      setFormData(initialFormData);
+      setIsAddDialogOpen(false);
+      setUrl("");
       utils.instagram.getAll.invalidate();
-      utils.instagram.getActive.invalidate();
     },
     onError: (error) => {
       toast.error(error.message || "Failed to add reel");
-    },
-  });
-
-  const updateMutation = api.instagram.update.useMutation({
-    onSuccess: () => {
-      toast.success("Reel updated");
-      setIsDialogOpen(false);
-      setEditingReelId(null);
-      setFormData(initialFormData);
-      utils.instagram.getAll.invalidate();
-      utils.instagram.getActive.invalidate();
-    },
-    onError: (error) => {
-      toast.error(error.message || "Failed to update reel");
     },
   });
 
@@ -88,60 +56,18 @@ export default function AdminInstagramPage() {
       setIsDeleteDialogOpen(false);
       setDeletingReelId(null);
       utils.instagram.getAll.invalidate();
-      utils.instagram.getActive.invalidate();
     },
     onError: (error) => {
       toast.error(error.message || "Failed to delete reel");
     },
   });
 
-  const openCreateDialog = () => {
-    setEditingReelId(null);
-    setFormData(initialFormData);
-    setIsDialogOpen(true);
-  };
-
-  const openEditDialog = (reelId: string) => {
-    const reel = reels?.find((item) => item.id === reelId);
-    if (!reel) {
-      toast.error("Reel not found");
-      return;
-    }
-
-    setEditingReelId(reelId);
-    setFormData({
-      url: reel.url,
-      title: reel.title ?? "",
-      position: String(reel.position ?? 0),
-      isActive: reel.isActive ?? true,
-    });
-    setIsDialogOpen(true);
-  };
-
-  const openDeleteDialog = (reelId: string) => {
-    setDeletingReelId(reelId);
-    setIsDeleteDialogOpen(true);
-  };
-
-  const handleSubmit = () => {
-    if (!formData.url.trim()) {
+  const handleAdd = () => {
+    if (!url.trim()) {
       toast.error("Reel URL is required");
       return;
     }
-
-    const payload = {
-      url: formData.url.trim(),
-      title: formData.title.trim(),
-      position: Number.parseInt(formData.position || "0", 10),
-      isActive: formData.isActive,
-    };
-
-    if (editingReelId) {
-      updateMutation.mutate({ id: editingReelId, ...payload });
-      return;
-    }
-
-    createMutation.mutate(payload);
+    createMutation.mutate({ url: url.trim() });
   };
 
   const handleDelete = () => {
@@ -162,7 +88,10 @@ export default function AdminInstagramPage() {
             </p>
           </div>
           <Button
-            onClick={openCreateDialog}
+            onClick={() => {
+              setUrl("");
+              setIsAddDialogOpen(true);
+            }}
             className="bg-ink-1 text-paper-1 hover:bg-ink-0 rounded-full"
           >
             <Plus className="mr-2 h-4 w-4" />
@@ -198,67 +127,39 @@ export default function AdminInstagramPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="text-muted-2">Thumbnail</TableHead>
-                      <TableHead className="text-muted-2">Title</TableHead>
-                      <TableHead className="text-muted-2">Status</TableHead>
-                      <TableHead className="text-muted-2">Position</TableHead>
+                      <TableHead className="text-muted-2">#</TableHead>
+                      <TableHead className="text-muted-2">URL</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {reels.map((reel) => (
+                    {reels.map((reel, index) => (
                       <TableRow key={reel.id}>
-                        <TableCell>
-                          <div className="relative h-16 w-9 overflow-hidden rounded">
-                            <Image
-                              src={reel.thumbnailUrl}
-                              alt={reel.title || "Reel"}
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
+                        <TableCell className="text-muted-2 w-12">
+                          {index + 1}
                         </TableCell>
                         <TableCell>
-                          <div className="space-y-1">
-                            <p className="text-ink-1 max-w-[200px] truncate font-medium">
-                              {reel.title || "Untitled"}
-                            </p>
-                            <p className="text-muted-2 max-w-[200px] truncate text-xs">
-                              {reel.url}
-                            </p>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge
-                            className={
-                              reel.isActive
-                                ? "bg-success-2 text-success-1"
-                                : "bg-gray-1 text-gray-2"
-                            }
+                          <a
+                            href={reel.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-brand-3 block max-w-[400px] truncate text-sm hover:underline"
                           >
-                            {reel.isActive ? "Active" : "Inactive"}
-                          </Badge>
+                            {reel.url}
+                          </a>
                         </TableCell>
-                        <TableCell>{reel.position}</TableCell>
                         <TableCell className="text-right">
-                          <div className="flex items-center justify-end gap-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="hover:bg-paper-1 rounded-full border-black/10 bg-white/80"
-                              onClick={() => openEditDialog(reel.id)}
-                            >
-                              <Pencil className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="text-danger-4 hover:bg-danger-1 hover:text-danger-5 rounded-full border-black/10"
-                              onClick={() => openDeleteDialog(reel.id)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="text-danger-4 hover:bg-danger-1 hover:text-danger-5 rounded-full border-black/10"
+                            onClick={() => {
+                              setDeletingReelId(reel.id);
+                              setIsDeleteDialogOpen(true);
+                            }}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -270,96 +171,42 @@ export default function AdminInstagramPage() {
         </Card>
       </FadeIn>
 
-      {/* Create/Edit Dialog */}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-2xl border border-black/5 bg-white/90">
+      {/* Add Dialog */}
+      <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+        <DialogContent className="max-w-lg border border-black/5 bg-white/90">
           <DialogHeader>
             <DialogTitle className="font-display text-ink-1">
-              {editingReelId ? "Edit Reel" : "Add Reel"}
+              Add Reel
             </DialogTitle>
             <DialogDescription>
-              Enter the Instagram reel URL. Thumbnail is fetched automatically.
+              Paste the Instagram reel URL.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="url">Reel URL</Label>
-              <Input
-                id="url"
-                placeholder="https://www.instagram.com/reel/..."
-                value={formData.url}
-                onChange={(event) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    url: event.target.value,
-                  }))
-                }
-              />
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="title">Title (optional)</Label>
-              <Input
-                id="title"
-                placeholder="Fabric showcase, styling tips, etc."
-                value={formData.title}
-                onChange={(event) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    title: event.target.value,
-                  }))
-                }
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="position">Position</Label>
-                <Input
-                  id="position"
-                  type="number"
-                  min={0}
-                  value={formData.position}
-                  onChange={(event) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      position: event.target.value,
-                    }))
-                  }
-                />
-              </div>
-
-              <div className="flex items-end gap-3 pb-1">
-                <Switch
-                  id="isActive"
-                  checked={formData.isActive}
-                  onCheckedChange={(checked) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      isActive: checked,
-                    }))
-                  }
-                />
-                <Label htmlFor="isActive">Active</Label>
-              </div>
-            </div>
+          <div className="grid gap-2">
+            <Label htmlFor="url">Reel URL</Label>
+            <Input
+              id="url"
+              placeholder="https://www.instagram.com/reel/..."
+              value={url}
+              onChange={(event) => setUrl(event.target.value)}
+            />
           </div>
 
           <DialogFooter>
             <Button
               variant="outline"
-              onClick={() => setIsDialogOpen(false)}
+              onClick={() => setIsAddDialogOpen(false)}
               className="rounded-full border-black/10 bg-white/80"
             >
               Cancel
             </Button>
             <Button
-              onClick={handleSubmit}
-              disabled={createMutation.isPending || updateMutation.isPending}
+              onClick={handleAdd}
+              disabled={createMutation.isPending}
               className="bg-ink-1 text-paper-1 hover:bg-ink-0 rounded-full"
             >
-              {editingReelId ? "Save Changes" : "Add Reel"}
+              Add Reel
             </Button>
           </DialogFooter>
         </DialogContent>
