@@ -39,3 +39,7 @@ export const DEFAULT_SETTINGS = {
 
 export const MAX_METER_ORDER_QUANTITY = 100;
 export const MAX_PIECE_ORDER_QUANTITY = 10;
+
+// YouTube channel config
+export const YOUTUBE_CHANNEL_ID = "UCncsrP2VokJS2LLX9AXxxrQ";
+export const YOUTUBE_UPLOADS_PLAYLIST_ID = "UUncsrP2VokJS2LLX9AXxxrQ";

@@ -5,6 +5,7 @@ import {
   CategoryGrid,
   FeaturedProducts,
   PromoBanner,
+  YouTubeFeed,
 } from "@/components/home";
 
 export const metadata: Metadata = {
@@ -91,6 +92,9 @@ export default function HomePage() {
         title="New Arrivals"
         subtitle="Fresh fabrics just added to our collection"
       />
+
+      {/* YouTube Feed */}
+      <YouTubeFeed />
     </>
   );
 }

@@ -23,6 +23,7 @@ export const env = createEnv({
     SMTP_PASSWORD: z.string().optional(),
     SMTP_FROM_EMAIL: z.string().optional(),
     SMTP_FROM_NAME: z.string().optional(),
+    YOUTUBE_API_KEY: z.string().optional(),
   },
 
   /**
@@ -55,6 +56,7 @@ export const env = createEnv({
     SMTP_PASSWORD: process.env.SMTP_PASSWORD,
     SMTP_FROM_EMAIL: process.env.SMTP_FROM_EMAIL,
     SMTP_FROM_NAME: process.env.SMTP_FROM_NAME,
+    YOUTUBE_API_KEY: process.env.YOUTUBE_API_KEY,
     NEXT_PUBLIC_GOOGLE_AUTH_ENABLED:
       process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED,
     NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME:

@@ -9,6 +9,7 @@ import { addressRouter } from "@/server/api/routers/address";
 import { couponRouter } from "@/server/api/routers/coupon";
 import { bannerRouter } from "@/server/api/routers/banner";
 import { reviewRouter } from "@/server/api/routers/review";
+import { youtubeRouter } from "@/server/api/routers/youtube";
 import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
 
 /**
@@ -28,6 +29,7 @@ export const appRouter = createTRPCRouter({
   coupon: couponRouter,
   banner: bannerRouter,
   review: reviewRouter,
+  youtube: youtubeRouter,
 });
 
 // export type definition of API
