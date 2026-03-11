@@ -1,4 +1,3 @@
-import { sql } from "drizzle-orm";
 import {
   boolean,
   index,
@@ -6,6 +5,7 @@ import {
   primaryKey,
   text,
   timestamp,
+  uuid,
   varchar,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccountType } from "next-auth/adapters";
@@ -15,9 +15,7 @@ import { createTable } from "./table-creator";
 export const users = createTable(
   "user",
   {
-    id: varchar("id", { length: 255 })
-      .primaryKey()
-      .default(sql`gen_random_uuid()`),
+    id: uuid("id").defaultRandom().primaryKey().notNull(),
     name: varchar("name", { length: 255 }),
     email: varchar("email", { length: 255 }).unique().notNull(),
     image: varchar("image", { length: 255 }),
@@ -25,12 +23,10 @@ export const users = createTable(
     role: userRoleEnum("role").default("customer").notNull(),
     phone: varchar("phone", { length: 20 }).notNull(),
     emailVerified: timestamp("email_verified", { withTimezone: true }),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`now()`)
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
       .notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date()
-    ),
+    updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }),
   },
   (t) => [
     index("user_email_idx").on(t.email),
@@ -41,7 +37,7 @@ export const users = createTable(
 export const accounts = createTable(
   "account",
   {
-    userId: varchar("user_id", { length: 255 })
+    userId: uuid("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     type: varchar("type", { length: 255 })
@@ -69,7 +65,7 @@ export const sessions = createTable(
   "session",
   {
     sessionToken: varchar("session_token", { length: 255 }).primaryKey(),
-    userId: varchar("user_id", { length: 255 })
+    userId: uuid("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     expires: timestamp("expires", {
@@ -96,10 +92,8 @@ export const verificationTokens = createTable(
 export const addresses = createTable(
   "address",
   {
-    id: varchar("id", { length: 255 })
-      .primaryKey()
-      .default(sql`gen_random_uuid()`),
-    userId: varchar("user_id", { length: 255 })
+    id: uuid("id").defaultRandom().primaryKey().notNull(),
+    userId: uuid("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     name: varchar("name", { length: 255 }).notNull(),
@@ -110,12 +104,10 @@ export const addresses = createTable(
     state: varchar("state", { length: 100 }).notNull(),
     pincode: varchar("pincode", { length: 10 }).notNull(),
     isDefault: boolean("is_default").default(false).notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`now()`)
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
       .notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date()
-    ),
+    updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }),
   },
   (t) => [index("address_user_id_idx").on(t.userId)]
 );

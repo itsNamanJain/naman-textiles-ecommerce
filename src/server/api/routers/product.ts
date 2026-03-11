@@ -117,7 +117,7 @@ export const productRouter = createTRPCRouter({
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
         query = query
-          .where("product.createdAt", ">=", thirtyDaysAgo)
+          .where("product.createdAt", ">=", thirtyDaysAgo.toISOString())
           .where("product.isFeatured", "=", false);
       }
 

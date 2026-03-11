@@ -1,10 +1,10 @@
-import { sql } from "drizzle-orm";
 import {
   boolean,
   index,
   integer,
   text,
   timestamp,
+  uuid,
   varchar,
 } from "drizzle-orm/pg-core";
 import { users } from "./users";
@@ -14,25 +14,21 @@ import { createTable } from "./table-creator";
 export const reviews = createTable(
   "review",
   {
-    id: varchar("id", { length: 255 })
-      .primaryKey()
-      .default(sql`gen_random_uuid()`),
-    userId: varchar("user_id", { length: 255 })
+    id: uuid("id").defaultRandom().primaryKey().notNull(),
+    userId: uuid("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
-    productId: varchar("product_id", { length: 255 })
+    productId: uuid("product_id")
       .notNull()
       .references(() => products.id, { onDelete: "cascade" }),
     rating: integer("rating").notNull(), // 1-5
     comment: text("comment"),
     isVerified: boolean("is_verified").default(false).notNull(), // Verified purchase
     isApproved: boolean("is_approved").default(false).notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`now()`)
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
       .notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date()
-    ),
+    updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }),
   },
   (t) => [
     index("review_user_id_idx").on(t.userId),
