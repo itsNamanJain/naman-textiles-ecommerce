@@ -70,7 +70,7 @@ export function InstagramFeed() {
                   return (
                     <CarouselItem
                       key={reel.id}
-                      className="basis-[200px] sm:basis-[220px] md:basis-[260px]"
+                      className="basis-[260px] sm:basis-[300px] md:basis-[340px]"
                     >
                       {/* Outer container clips to show only the video portion.
                           The iframe is shifted up to hide the profile header
