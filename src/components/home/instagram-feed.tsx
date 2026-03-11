@@ -57,9 +57,9 @@ export function InstagramFeed() {
             <Loader2 className="text-brand-1 h-8 w-8 animate-spin" />
           </div>
         ) : (
-          <div className="px-10">
+          <div className="px-2 md:px-10">
             <Carousel
-              opts={{ align: "start", dragFree: true }}
+              opts={{ align: "start", loop: true, dragFree: true }}
               className="w-full"
             >
               <CarouselContent>
@@ -84,10 +84,10 @@ export function InstagramFeed() {
                           scrolling="no"
                           className="absolute border-0"
                           style={{
-                            width: "100%",
-                            height: "200%",
-                            top: "-64px",
-                            left: 0,
+                            width: "calc(100% + 2px)",
+                            height: "calc(100% + 350px)",
+                            top: "-56px",
+                            left: "-1px",
                           }}
                         />
                       </div>

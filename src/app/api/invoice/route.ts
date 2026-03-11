@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { jsPDF } from "jspdf";
 import { auth } from "@/server/auth";
 import { kyselyDb } from "@/server/db";

@@ -58,9 +58,9 @@ export function YouTubeFeed() {
               <Loader2 className="text-brand-1 h-8 w-8 animate-spin" />
             </div>
           ) : (
-            <div className="px-10">
+            <div className="px-2 md:px-10">
               <Carousel
-                opts={{ align: "start", dragFree: true }}
+                opts={{ align: "start", loop: true, dragFree: true }}
                 className="w-full"
               >
                 <CarouselContent>

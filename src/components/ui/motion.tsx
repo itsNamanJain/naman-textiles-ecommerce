@@ -11,8 +11,7 @@ import {
 } from "framer-motion";
 import { forwardRef, useRef, type ReactNode, type MouseEvent } from "react";
 
-// Custom easing curves
-const easeOutQuad = [0.25, 0.46, 0.45, 0.94] as const;
+// Custom easing curve
 const easeOutCubic = [0.33, 1, 0.68, 1] as const;
 
 // ─── Blur Fade In (Premium scroll reveal) ──────────────────────────
@@ -325,10 +324,6 @@ export const CountUp = ({
       onViewportEnter={() => {
         motionValue.set(0);
         // Animate to target value
-        const controls = {
-          duration: 1.5,
-          ease: easeOutCubic,
-        };
         // Use spring for natural feel
         motionValue.set(value);
       }}

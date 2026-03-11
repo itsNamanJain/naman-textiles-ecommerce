@@ -5,7 +5,6 @@ import {
   text,
   timestamp,
   uuid,
-  varchar,
 } from "drizzle-orm/pg-core";
 import { users } from "./users";
 import { products } from "./inventory";
