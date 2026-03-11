@@ -14,37 +14,6 @@ const REDIS_KEY = "instagram:reels";
 interface InstagramReel {
   id: string;
   url: string;
-  title: string;
-  thumbnailUrl: string;
-  position: number;
-  isActive: boolean;
-}
-
-interface OEmbedResponse {
-  thumbnail_url?: string;
-  title?: string;
-}
-
-async function fetchInstagramOEmbed(
-  url: string,
-): Promise<{ thumbnailUrl: string; title: string }> {
-  try {
-    const res = await fetch(
-      `https://api.instagram.com/oembed?url=${encodeURIComponent(url)}`,
-    );
-    if (!res.ok) {
-      console.error("[Instagram] oEmbed error:", res.status);
-      return { thumbnailUrl: "", title: "" };
-    }
-    const data = (await res.json()) as OEmbedResponse;
-    return {
-      thumbnailUrl: data.thumbnail_url ?? "",
-      title: data.title ?? "",
-    };
-  } catch (error) {
-    console.error("[Instagram] oEmbed fetch failed:", error);
-    return { thumbnailUrl: "", title: "" };
-  }
 }
 
 async function getAllReels(): Promise<InstagramReel[]> {
@@ -56,86 +25,22 @@ async function saveAllReels(reels: InstagramReel[]): Promise<void> {
   await redis.set(REDIS_KEY, reels);
 }
 
-const reelInputSchema = z.object({
-  url: z.string().url("Please enter a valid URL"),
-  title: z.string().default(""),
-  position: z.number().int().min(0).default(0),
-  isActive: z.boolean().default(true),
-});
-
 export const instagramRouter = createTRPCRouter({
-  getActive: publicProcedure.query(async () => {
-    const reels = await getAllReels();
-    return reels
-      .filter((r) => r.isActive)
-      .sort((a, b) => a.position - b.position);
-  }),
-
-  getAll: adminProcedure.query(async () => {
-    const reels = await getAllReels();
-    return reels.sort((a, b) => a.position - b.position);
+  getAll: publicProcedure.query(async () => {
+    return getAllReels();
   }),
 
   create: adminProcedure
-    .input(reelInputSchema)
+    .input(z.object({ url: z.string().url("Please enter a valid URL") }))
     .mutation(async ({ input }) => {
-      const oembed = await fetchInstagramOEmbed(input.url);
-      if (!oembed.thumbnailUrl) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message:
-            "Could not fetch thumbnail from Instagram. Please check the reel URL.",
-        });
-      }
       const reels = await getAllReels();
       const newReel: InstagramReel = {
         id: randomUUID(),
         url: input.url,
-        title: input.title || oembed.title,
-        thumbnailUrl: oembed.thumbnailUrl,
-        position: input.position,
-        isActive: input.isActive,
       };
       reels.push(newReel);
       await saveAllReels(reels);
       return newReel;
-    }),
-
-  update: adminProcedure
-    .input(reelInputSchema.extend({ id: z.string() }))
-    .mutation(async ({ input }) => {
-      const reels = await getAllReels();
-      const index = reels.findIndex((r) => r.id === input.id);
-      if (index === -1) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Reel not found",
-        });
-      }
-      const existing = reels[index]!;
-      const urlChanged = existing.url !== input.url;
-      let thumbnailUrl = existing.thumbnailUrl;
-      if (urlChanged) {
-        const oembed = await fetchInstagramOEmbed(input.url);
-        if (!oembed.thumbnailUrl) {
-          throw new TRPCError({
-            code: "BAD_REQUEST",
-            message:
-              "Could not fetch thumbnail from Instagram. Please check the reel URL.",
-          });
-        }
-        thumbnailUrl = oembed.thumbnailUrl;
-      }
-      reels[index] = {
-        id: input.id,
-        url: input.url,
-        title: input.title || existing.title,
-        thumbnailUrl,
-        position: input.position,
-        isActive: input.isActive,
-      };
-      await saveAllReels(reels);
-      return reels[index];
     }),
 
   delete: adminProcedure
@@ -143,6 +48,12 @@ export const instagramRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       const reels = await getAllReels();
       const filtered = reels.filter((r) => r.id !== input.id);
+      if (filtered.length === reels.length) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Reel not found",
+        });
+      }
       await saveAllReels(filtered);
       return { success: true };
     }),
