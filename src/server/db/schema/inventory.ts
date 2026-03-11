@@ -1,4 +1,3 @@
-import { sql } from "drizzle-orm";
 import {
   boolean,
   index,
@@ -6,6 +5,7 @@ import {
   numeric,
   text,
   timestamp,
+  uuid,
   varchar,
 } from "drizzle-orm/pg-core";
 import { sellingModeEnum } from "./enums";
@@ -14,18 +14,14 @@ import { createTable } from "./table-creator";
 export const categories = createTable(
   "category",
   {
-    id: varchar("id", { length: 255 })
-      .primaryKey()
-      .default(sql`gen_random_uuid()`),
+    id: uuid("id").defaultRandom().primaryKey().notNull(),
     name: varchar("name", { length: 255 }).notNull().unique(),
     slug: varchar("slug", { length: 255 }).notNull().unique(),
     description: text("description"),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`now()`)
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
       .notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date()
-    ),
+    updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }),
   },
   (t) => [index("category_slug_idx").on(t.slug)]
 );
@@ -33,9 +29,7 @@ export const categories = createTable(
 export const products = createTable(
   "product",
   {
-    id: varchar("id", { length: 255 })
-      .primaryKey()
-      .default(sql`gen_random_uuid()`),
+    id: uuid("id").defaultRandom().primaryKey().notNull(),
     name: varchar("name", { length: 255 }).notNull(),
     slug: varchar("slug", { length: 255 }).notNull().unique(),
     description: text("description"),
@@ -50,16 +44,14 @@ export const products = createTable(
     stockQuantity: integer("stock_quantity").default(-1).notNull(), // -1 = unlimited, 0 = out of stock, >0 = limited stock
     isActive: boolean("is_active").default(true).notNull(),
     isFeatured: boolean("is_featured").default(false).notNull(),
-    categoryId: varchar("category_id", { length: 255 })
+    categoryId: uuid("category_id")
       .notNull()
       .references(() => categories.id),
 
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`now()`)
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
       .notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date()
-    ),
+    updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }),
   },
   (t) => [
     index("product_slug_idx").on(t.slug),
@@ -74,18 +66,16 @@ export const products = createTable(
 export const productImages = createTable(
   "product_image",
   {
-    id: varchar("id", { length: 255 })
-      .primaryKey()
-      .default(sql`gen_random_uuid()`),
-    productId: varchar("product_id", { length: 255 })
+    id: uuid("id").defaultRandom().primaryKey().notNull(),
+    productId: uuid("product_id")
       .notNull()
       .references(() => products.id, { onDelete: "cascade" }),
     url: varchar("url", { length: 500 }).notNull(),
     publicId: varchar("public_id", { length: 255 }),
     alt: varchar("alt", { length: 255 }),
     position: integer("position").default(0).notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`now()`)
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
       .notNull(),
   },
   (t) => [index("product_image_product_id_idx").on(t.productId)]
@@ -94,10 +84,8 @@ export const productImages = createTable(
 export const productVariants = createTable(
   "product_variant",
   {
-    id: varchar("id", { length: 255 })
-      .primaryKey()
-      .default(sql`gen_random_uuid()`),
-    productId: varchar("product_id", { length: 255 })
+    id: uuid("id").defaultRandom().primaryKey().notNull(),
+    productId: uuid("product_id")
       .notNull()
       .references(() => products.id, { onDelete: "cascade" }),
     name: varchar("name", { length: 255 }).notNull(),
@@ -106,12 +94,10 @@ export const productVariants = createTable(
     size: varchar("size", { length: 50 }),
     length: varchar("length", { length: 50 }),
 
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`now()`)
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
       .notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date()
-    ),
+    updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }),
   },
   (t) => [index("product_variant_product_id_idx").on(t.productId)]
 );

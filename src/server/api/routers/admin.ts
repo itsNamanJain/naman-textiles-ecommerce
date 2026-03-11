@@ -110,8 +110,8 @@ export const adminRouter = createTRPCRouter({
   getStats: adminProcedure.query(async ({ ctx }) => {
     // Calculate date ranges
     const now = new Date();
-    const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-    const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+    const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString();
 
     // Total revenue (all time)
     const revenueResult = await ctx.db

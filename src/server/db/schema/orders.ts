@@ -1,10 +1,10 @@
-import { sql } from "drizzle-orm";
 import {
   index,
   numeric,
   text,
   timestamp,
   uniqueIndex,
+  uuid,
   varchar,
 } from "drizzle-orm/pg-core";
 import {
@@ -21,11 +21,9 @@ import { createTable } from "./table-creator";
 export const orders = createTable(
   "order",
   {
-    id: varchar("id", { length: 255 })
-      .primaryKey()
-      .default(sql`gen_random_uuid()`),
+    id: uuid("id").defaultRandom().primaryKey().notNull(),
     orderNumber: varchar("order_number", { length: 50 }).notNull().unique(),
-    userId: varchar("user_id", { length: 255 })
+    userId: uuid("user_id")
       .notNull()
       .references(() => users.id),
 
@@ -72,12 +70,10 @@ export const orders = createTable(
     couponCode: varchar("coupon_code", { length: 100 }),
     couponDiscount: numeric("coupon_discount", { precision: 10, scale: 2 }),
 
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`now()`)
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
       .notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date()
-    ),
+    updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }),
   },
   (t) => [
     index("order_user_id_idx").on(t.userId),
@@ -91,25 +87,21 @@ export const orders = createTable(
 export const cancellationRequests = createTable(
   "cancellation_request",
   {
-    id: varchar("id", { length: 255 })
-      .primaryKey()
-      .default(sql`gen_random_uuid()`),
-    orderId: varchar("order_id", { length: 255 })
+    id: uuid("id").defaultRandom().primaryKey().notNull(),
+    orderId: uuid("order_id")
       .notNull()
       .references(() => orders.id, { onDelete: "cascade" }),
-    userId: varchar("user_id", { length: 255 })
+    userId: uuid("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     reason: text("reason"),
     status: cancellationRequestStatusEnum("status")
       .default("pending")
       .notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`now()`)
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
       .notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date()
-    ),
+    updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }),
   },
   (t) => [
     index("cancellation_request_order_id_idx").on(t.orderId),
@@ -122,16 +114,14 @@ export const cancellationRequests = createTable(
 export const orderItems = createTable(
   "order_item",
   {
-    id: varchar("id", { length: 255 })
-      .primaryKey()
-      .default(sql`gen_random_uuid()`),
-    orderId: varchar("order_id", { length: 255 })
+    id: uuid("id").defaultRandom().primaryKey().notNull(),
+    orderId: uuid("order_id")
       .notNull()
       .references(() => orders.id, { onDelete: "cascade" }),
-    productId: varchar("product_id", { length: 255 })
+    productId: uuid("product_id")
       .notNull()
       .references(() => products.id),
-    variantId: varchar("variant_id", { length: 255 }),
+    variantId: uuid("variant_id"),
 
     // Snapshot of product at time of order
     productName: varchar("product_name", { length: 255 }).notNull(),
@@ -144,8 +134,8 @@ export const orderItems = createTable(
     unit: varchar("unit", { length: 50 }).notNull(), // meter, piece, etc.
     total: numeric("total", { precision: 10, scale: 2 }).notNull(),
 
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`now()`)
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
       .notNull(),
   },
   (t) => [

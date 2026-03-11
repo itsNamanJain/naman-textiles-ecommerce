@@ -1,5 +1,5 @@
-import { relations, sql } from "drizzle-orm";
-import { index, numeric, timestamp, varchar } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
+import { index, numeric, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 import { users } from "./users";
 import { products, productVariants } from "./inventory";
 import { createTable } from "./table-creator";
@@ -9,19 +9,15 @@ import { createTable } from "./table-creator";
 export const carts = createTable(
   "cart",
   {
-    id: varchar("id", { length: 255 })
-      .primaryKey()
-      .default(sql`gen_random_uuid()`),
-    userId: varchar("user_id", { length: 255 })
+    id: uuid("id").defaultRandom().primaryKey().notNull(),
+    userId: uuid("user_id")
       .unique()
       .references(() => users.id, { onDelete: "cascade" }),
     sessionId: varchar("session_id", { length: 255 }), // For guest carts
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`now()`)
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
       .notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date()
-    ),
+    updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }),
   },
   (t) => [
     index("cart_user_id_idx").on(t.userId),
@@ -34,28 +30,23 @@ export const carts = createTable(
 export const cartItems = createTable(
   "cart_item",
   {
-    id: varchar("id", { length: 255 })
-      .primaryKey()
-      .default(sql`gen_random_uuid()`),
-    cartId: varchar("cart_id", { length: 255 })
+    id: uuid("id").defaultRandom().primaryKey().notNull(),
+    cartId: uuid("cart_id")
       .notNull()
       .references(() => carts.id, { onDelete: "cascade" }),
-    productId: varchar("product_id", { length: 255 })
+    productId: uuid("product_id")
       .notNull()
       .references(() => products.id, { onDelete: "cascade" }),
-    variantId: varchar("variant_id", { length: 255 }).references(
-      () => productVariants.id,
-      { onDelete: "set null" }
-    ),
+    variantId: uuid("variant_id").references(() => productVariants.id, {
+      onDelete: "set null",
+    }),
     quantity: numeric("quantity", { precision: 10, scale: 2 })
       .default("1")
       .notNull(), // Supports decimal for meters
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`now()`)
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
       .notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date()
-    ),
+    updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }),
   },
   (t) => [
     index("cart_item_cart_id_idx").on(t.cartId),
@@ -68,19 +59,15 @@ export const cartItems = createTable(
 export const wishlists = createTable(
   "wishlist",
   {
-    id: varchar("id", { length: 255 })
-      .primaryKey()
-      .default(sql`gen_random_uuid()`),
-    userId: varchar("user_id", { length: 255 })
+    id: uuid("id").defaultRandom().primaryKey().notNull(),
+    userId: uuid("user_id")
       .notNull()
       .unique()
       .references(() => users.id, { onDelete: "cascade" }),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`now()`)
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
       .notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date()
-    ),
+    updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }),
   },
   (t) => [index("wishlist_user_id_idx").on(t.userId)]
 );
@@ -90,17 +77,15 @@ export const wishlists = createTable(
 export const wishlistItems = createTable(
   "wishlist_item",
   {
-    id: varchar("id", { length: 255 })
-      .primaryKey()
-      .default(sql`gen_random_uuid()`),
-    wishlistId: varchar("wishlist_id", { length: 255 })
+    id: uuid("id").defaultRandom().primaryKey().notNull(),
+    wishlistId: uuid("wishlist_id")
       .notNull()
       .references(() => wishlists.id, { onDelete: "cascade" }),
-    productId: varchar("product_id", { length: 255 })
+    productId: uuid("product_id")
       .notNull()
       .references(() => products.id, { onDelete: "cascade" }),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`now()`)
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
       .notNull(),
   },
   (t) => [

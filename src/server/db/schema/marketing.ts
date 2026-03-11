@@ -1,4 +1,3 @@
-import { sql } from "drizzle-orm";
 import {
   boolean,
   index,
@@ -6,6 +5,7 @@ import {
   numeric,
   text,
   timestamp,
+  uuid,
   varchar,
 } from "drizzle-orm/pg-core";
 import { discountTypeEnum } from "./enums";
@@ -14,9 +14,7 @@ import { createTable } from "./table-creator";
 export const coupons = createTable(
   "coupon",
   {
-    id: varchar("id", { length: 255 })
-      .primaryKey()
-      .default(sql`gen_random_uuid()`),
+    id: uuid("id").defaultRandom().primaryKey().notNull(),
     code: varchar("code", { length: 100 }).notNull().unique(),
     description: text("description"),
     discountType: discountTypeEnum("discount_type").notNull(),
@@ -31,12 +29,10 @@ export const coupons = createTable(
     startDate: timestamp("start_date", { withTimezone: true }).notNull(),
     endDate: timestamp("end_date", { withTimezone: true }).notNull(),
     isActive: boolean("is_active").default(true).notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`now()`)
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
       .notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date()
-    ),
+    updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }),
   },
   (t) => [
     index("coupon_code_idx").on(t.code),
@@ -47,9 +43,7 @@ export const coupons = createTable(
 export const banners = createTable(
   "banner",
   {
-    id: varchar("id", { length: 255 })
-      .primaryKey()
-      .default(sql`gen_random_uuid()`),
+    id: uuid("id").defaultRandom().primaryKey().notNull(),
     title: varchar("title", { length: 255 }).notNull(),
     subtitle: varchar("subtitle", { length: 500 }),
     image: varchar("image", { length: 500 }).notNull(),
@@ -58,12 +52,10 @@ export const banners = createTable(
     isActive: boolean("is_active").default(true).notNull(),
     startDate: timestamp("start_date", { withTimezone: true }),
     endDate: timestamp("end_date", { withTimezone: true }),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`now()`)
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
       .notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date()
-    ),
+    updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }),
   },
   (t) => [
     index("banner_is_active_idx").on(t.isActive),
