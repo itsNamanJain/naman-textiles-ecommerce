@@ -70,11 +70,8 @@ export function InstagramFeed() {
                   return (
                     <CarouselItem
                       key={reel.id}
-                      className="basis-[260px] sm:basis-[300px] md:basis-[340px]"
+                      className="basis-[280px] sm:basis-[320px] md:basis-[360px]"
                     >
-                      {/* Outer container clips to show only the video portion.
-                          The iframe is shifted up to hide the profile header
-                          and made taller to push the bottom UI out of view. */}
                       <div className="relative aspect-[9/16] overflow-hidden rounded-lg bg-black">
                         <iframe
                           src={`https://www.instagram.com/reel/${code}/embed/`}
@@ -85,7 +82,7 @@ export function InstagramFeed() {
                           className="absolute border-0"
                           style={{
                             width: "calc(100% + 2px)",
-                            height: "calc(100% + 350px)",
+                            height: "calc(100% + 400px)",
                             top: "-56px",
                             left: "-1px",
                           }}
